@@ -5,6 +5,27 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 HOME_DIR="$(eval echo ~$(whoami))"
+FORCE=false
+CHECK=false
+
+usage() {
+    echo "Usage: $0 [OPTIONS]"
+    echo ""
+    echo "Options:"
+    echo "  --force    Overwrite all local changes"
+    echo "  --check    Show what would change without applying"
+    echo "  --help     Show this help message"
+    exit 0
+}
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --force) FORCE=true; shift ;;
+        --check) CHECK=true; shift ;;
+        --help) usage ;;
+        *) echo "Unknown option: $1"; usage ;;
+    esac
+done
 
 echo "=== Omarchy Config Installer ==="
 echo ""
@@ -12,34 +33,111 @@ echo "Installing for user: $(whoami)"
 echo "Home directory: $HOME_DIR"
 echo ""
 
-# Function to backup and copy
+compute_hash() {
+    if [ -d "$1" ]; then
+        find "$1" -type f -name '*.jsonc' -o -name '*.css' -o -name '*.txt' -o -name '*.sh' 2>/dev/null | sort | xargs -I{} sha256sum {} 2>/dev/null | sha256sum | cut -d' ' -f1
+    else
+        sha256sum "$1" 2>/dev/null | cut -d' ' -f1
+    fi
+}
+
+check_file() {
+    local src="$1"
+    local dest="$2"
+    local name="$3"
+    
+    if [ ! -e "$dest" ]; then
+        echo "✓ $name: New (will be created)"
+        return 0
+    fi
+    
+    local src_hash=$(compute_hash "$src")
+    local dest_hash=$(compute_hash "$dest")
+    
+    if [ "$src_hash" = "$dest_hash" ]; then
+        echo "✓ $name: Up to date"
+        return 0
+    else
+        echo "✗ $name: Has local changes"
+        return 1
+    fi
+}
+
 backup_and_copy() {
     local src="$1"
     local dest="$2"
     local name="$3"
     
-    if [ -e "$dest" ]; then
-        echo "Backing up existing $name..."
-        mkdir -p "$dest.bak.$TIMESTAMP"
-        cp -r "$dest"/* "$dest.bak.$TIMESTAMP/" 2>/dev/null || true
+    if [ ! -e "$dest" ]; then
+        echo "[COPY] $name: New directory (creating)"
+        mkdir -p "$(dirname "$dest")"
+        cp -r "$src"/* "$dest"/
+        return
     fi
     
-    echo "Copying $name..."
-    mkdir -p "$(dirname "$dest")"
-    cp -r "$src"/* "$dest"/
+    local src_hash=$(compute_hash "$src")
+    local dest_hash=$(compute_hash "$dest")
+    
+    if [ "$src_hash" = "$dest_hash" ]; then
+        echo "[SKIP] $name: Up to date"
+        return
+    fi
+    
+    if [ "$FORCE" = true ]; then
+        echo "[BACKUP] $name: Backing up..."
+        mkdir -p "$dest.bak.$TIMESTAMP"
+        cp -r "$dest"/* "$dest.bak.$TIMESTAMP/" 2>/dev/null || true
+        
+        echo "[COPY] $name: Overwriting (--force)"
+        cp -r "$src"/* "$dest"/
+    else
+        echo "[SKIP] $name: Has local changes (use --force to overwrite)"
+    fi
 }
 
-# Backup and copy waybar config
-backup_and_copy "$SCRIPT_DIR/waybar" "$HOME_DIR/.config/waybar" "Waybar config"
+echo "=== Checking for local changes ==="
+echo ""
 
-# Backup and copy branding
+check_status=0
+
+check_file "$SCRIPT_DIR/waybar/config.jsonc" "$HOME_DIR/.config/waybar/config.jsonc" "waybar/config.jsonc" || check_status=1
+check_file "$SCRIPT_DIR/waybar/style.css" "$HOME_DIR/.config/waybar/style.css" "waybar/style.css" || check_status=1
+check_file "$SCRIPT_DIR/branding/about.txt" "$HOME_DIR/.config/omarchy/branding/about.txt" "branding/about.txt" || check_status=1
+check_file "$SCRIPT_DIR/branding/screensaver.txt" "$HOME_DIR/.config/omarchy/branding/screensaver.txt" "branding/screensaver.txt" || check_status=1
+
+for script in "$SCRIPT_DIR/scripts"/*.sh; do
+    if [ -f "$script" ]; then
+        base_name=$(basename "$script" .sh)
+        check_file "$script" "$HOME_DIR/scripts/$base_name.sh" "scripts/$base_name.sh" || check_status=1
+    fi
+done
+
+echo ""
+
+if [ "$CHECK" = true ]; then
+    echo "=== Check complete ==="
+    if [ $check_status -eq 0 ]; then
+        echo "All files are up to date."
+    else
+        echo "Some files have local changes. Use --force to overwrite."
+    fi
+    exit 0
+fi
+
+if [ $check_status -eq 0 ] && [ "$FORCE" = false ]; then
+    echo "=== All configs up to date - nothing to do ==="
+    exit 0
+fi
+
+echo "=== Applying changes ==="
+echo ""
+
+backup_and_copy "$SCRIPT_DIR/waybar" "$HOME_DIR/.config/waybar" "Waybar config"
 backup_and_copy "$SCRIPT_DIR/branding" "$HOME_DIR/.config/omarchy/branding" "Branding files"
 
-# Copy scripts to ~/scripts/
 mkdir -p "$HOME_DIR/scripts"
 backup_and_copy "$SCRIPT_DIR/scripts" "$HOME_DIR/scripts" "Custom scripts"
 
-# Create omarchy-style command wrappers in ~/.local/bin
 create_command_wrappers() {
     local bin_dir="$HOME_DIR/.local/bin"
     local scripts_dir="$HOME_DIR/scripts"
@@ -60,14 +158,13 @@ SCRIPT_DIR="$scripts_dir"
 "\$SCRIPT_DIR/$base_name.sh" "\$@"
 EOF
             chmod +x "$wrapper_path"
-            echo "Created command: $wrapper_name"
+            echo "[WRAPPER] Created command: $wrapper_name"
         fi
     done
 }
 
 create_command_wrappers
 
-# Add ~/scripts to system-wide PATH (available to all users/shells)
 add_system_path() {
     local profile_script="/etc/profile.d/omarchy-scripts.sh"
     local path_line='export PATH="$HOME/scripts:$HOME/.local/bin:$PATH"'
@@ -85,7 +182,6 @@ add_system_path() {
 
 add_system_path
 
-# Also add to user's shell rc files for immediate effect
 add_path_to_shell() {
     local shell_rc="$1"
     local path_line='export PATH="$HOME/scripts:$HOME/.local/bin:$PATH"'
@@ -105,7 +201,6 @@ add_path_to_shell() {
 add_path_to_shell "$HOME_DIR/.bashrc"
 add_path_to_shell "$HOME_DIR/.zshrc"
 
-# Make scripts executable
 chmod +x "$HOME_DIR/scripts/"*.sh 2>/dev/null || true
 
 echo ""
@@ -119,9 +214,6 @@ fi
 echo ""
 echo "=== Installation Complete ==="
 echo "Scripts are in: $HOME_DIR/scripts/"
-echo "Custom commands available as: blob_<script-name>"
-echo ""
-echo "Example:"
-echo "  blob_wifi"
+echo "Custom commands: blob_wifi"
 echo ""
 echo "To apply PATH changes, run: source ~/.bashrc (or ~/.zshrc)"
