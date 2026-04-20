@@ -1,9 +1,11 @@
 #!/bin/bash
 
 WALLPAPER_DIR="$HOME/wallpapers"
+THEME_DIR="$HOME/.config/omarchy/themes/Blob-Dynamic"
 
 # Create the directory if it doesn't exist
 mkdir -p "$WALLPAPER_DIR"
+mkdir -p "$THEME_DIR/backgrounds"
 
 if [ -z "$1" ]; then
     echo "Usage: blob_wallpaper <filename-or-path>"
@@ -23,11 +25,42 @@ else
     exit 1
 fi
 
-# Point the Omarchy background link to your custom image
-ln -nsf "$IMAGE_PATH" "$HOME/.config/omarchy/current/background"
+echo "Extracting colors using Pywal..."
+wal -i "$IMAGE_PATH" -n -q
 
-# Relaunch swaybg smoothly
-pkill -x swaybg
-setsid uwsm-app -- swaybg -i "$HOME/.config/omarchy/current/background" -m fill >/dev/null 2>&1 &
+# Clear old backgrounds and copy the new one into the dynamic theme
+rm -f "$THEME_DIR/backgrounds/"*
+cp "$IMAGE_PATH" "$THEME_DIR/backgrounds/"
 
-echo "Wallpaper updated to: $IMAGE_PATH"
+# Parse pywal colors and write to colors.toml in the dynamic theme
+cat <<EOF > "$THEME_DIR/colors.toml"
+accent = "$(sed -n '2p' ~/.cache/wal/colors)"
+cursor = "$(sed -n '8p' ~/.cache/wal/colors)"
+foreground = "$(sed -n '8p' ~/.cache/wal/colors)"
+background = "$(sed -n '1p' ~/.cache/wal/colors)"
+selection_foreground = "$(sed -n '1p' ~/.cache/wal/colors)"
+selection_background = "$(sed -n '2p' ~/.cache/wal/colors)"
+
+color0 = "$(sed -n '1p' ~/.cache/wal/colors)"
+color1 = "$(sed -n '2p' ~/.cache/wal/colors)"
+color2 = "$(sed -n '3p' ~/.cache/wal/colors)"
+color3 = "$(sed -n '4p' ~/.cache/wal/colors)"
+color4 = "$(sed -n '5p' ~/.cache/wal/colors)"
+color5 = "$(sed -n '6p' ~/.cache/wal/colors)"
+color6 = "$(sed -n '7p' ~/.cache/wal/colors)"
+color7 = "$(sed -n '8p' ~/.cache/wal/colors)"
+color8 = "$(sed -n '9p' ~/.cache/wal/colors)"
+color9 = "$(sed -n '10p' ~/.cache/wal/colors)"
+color10 = "$(sed -n '11p' ~/.cache/wal/colors)"
+color11 = "$(sed -n '12p' ~/.cache/wal/colors)"
+color12 = "$(sed -n '13p' ~/.cache/wal/colors)"
+color13 = "$(sed -n '14p' ~/.cache/wal/colors)"
+color14 = "$(sed -n '15p' ~/.cache/wal/colors)"
+color15 = "$(sed -n '16p' ~/.cache/wal/colors)"
+EOF
+
+# Apply the Blob-Dynamic theme
+# omarchy-theme-set manages the background and reloads waybar and AGS
+omarchy-theme-set "Blob-Dynamic"
+
+echo "Wallpaper and dynamic theme applied successfully: $IMAGE_PATH"
