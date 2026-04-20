@@ -8,6 +8,8 @@
   <img src="https://img.shields.io/badge/AGS-231F20?style=for-the-badge&logo=gnome&logoColor=white" alt="AGS" />
 </div>
 
+---
+
 ## What's Inside?
 
 My current setup is built around these core components:
@@ -15,14 +17,25 @@ My current setup is built around these core components:
 - **[Hyprland](https://hyprland.org/):** A highly customizable dynamic tiling Wayland compositor.
 - **[Waybar](https://github.com/Alexays/Waybar):** A customizable, modular status bar.
 - **[AGS](https://github.com/Aylur/ags):** Aylur's Gtk Shell, used for creating custom, scriptable desktop widgets.
+- **Dynamic Theming:** Seamlessly integrated with Pywal to extract color palettes from wallpapers and apply them instantly across the entire system (widgets, terminal, status bar).
 
 ### Directory Structure
 
 - **`hypr/`**: Hyprland configurations (keybindings, window rules, animations, layout settings, and autostart).
 - **`waybar/`**: Status bar layout, CSS styling, and custom interactive modules.
 - **`ags/`**: Custom desktop widgets built with TypeScript and GTK.
-- **`scripts/`**: Global utility scripts (such as a streamlined GMU Eduroam Wi-Fi connector).
+- **`scripts/`**: Global utility scripts seamlessly exposed as commands by the installer.
+- **`wallpapers/`**: A collection of local custom wallpapers for dynamic theming.
+- **`omarchy/hooks/`**: Event hooks for the Omarchy system (e.g. automatically applying dynamic themes when changing wallpapers).
 - **`branding/`**: Custom ASCII art and system branding assets.
+
+## Custom Commands
+
+The installer automatically exposes scripts from the `scripts/` directory as global commands:
+
+- **`blob_wallpaper [path]`**: Sets your background using Omarchy's background system. If used with an image from `~/wallpapers/` or a valid path, it leverages Pywal to generate a full system color palette and dynamically updates the `blob-dynamic` theme, AGS widgets, and Waybar.
+- **`blob_glass [on|off|toggle]`**: A quick toggle to enable or disable window transparency on the fly.
+- **`blob_wifi`**: A streamlined script to connect to the GMU Eduroam Wi-Fi network using `iwd` and `systemd-resolved` (replaces NetworkManager).
 
 ## Installation
 
@@ -44,5 +57,6 @@ An automated installer script (`install.sh`) is provided to safely apply these c
 1. **Safety First:** Computes file hashes to detect local changes. Backs up existing configurations before applying updates.
 2. **Auto-Deployment:** Copies the tracked configurations seamlessly into your `~/.config/` directory.
 3. **Command Wrapping:** Automatically sets up scripts from the `scripts/` directory as global commands in `~/.local/bin/`.
-4. **Shell Integration:** Injects the necessary paths into your `~/.bashrc`, `~/.zshrc`, and system-wide profiles.
-5. **Instant Refresh:** Automatically restarts background services like `waybar` and `ags` so changes take effect immediately.
+4. **Dependency Management:** Automatically installs missing system dependencies (like `python-pywal` and `imagemagick`).
+5. **Shell Integration:** Injects the necessary paths into your `~/.bashrc`, `~/.zshrc`, and system-wide profiles.
+6. **Instant Refresh:** Automatically restarts background services like `waybar` and `ags` so changes take effect immediately.
