@@ -1,0 +1,32 @@
+* {
+  all: unset;
+}
+
+.MediaWindow {
+  background-color: transparent;
+}
+
+.media-container {
+  background-color: rgba(30, 30, 46, 0.85);
+  border-radius: 8px;
+  border: 2px solid rgba(137, 180, 250, 0.5);
+  padding: 8px 15px;
+  font-family: "JetBrainsMono Nerd Font", sans-serif;
+}
+
+.media-btn {
+  color: #cba6f7;
+  font-size: 16px;
+  padding: 0 5px;
+  transition: all 0.2s;
+}
+
+.media-btn:hover {
+  color: #89b4fa;
+}
+
+.media-text {
+  color: #cdd6f4;
+  font-size: 14px;
+  margin-left: 10px;
+}

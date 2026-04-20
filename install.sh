@@ -3,7 +3,6 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 HOME_DIR="$(eval echo ~$(whoami))"
 FORCE=false
 CHECK=false
@@ -85,8 +84,9 @@ backup_and_copy() {
     
     if [ "$FORCE" = true ]; then
         echo "[BACKUP] $name: Backing up..."
-        mkdir -p "$dest.bak.$TIMESTAMP"
-        cp -r "$dest"/* "$dest.bak.$TIMESTAMP/" 2>/dev/null || true
+        rm -rf "$dest.bak"
+        mkdir -p "$dest.bak"
+        cp -r "$dest"/* "$dest.bak/" 2>/dev/null || true
         
         echo "[COPY] $name: Overwriting (--force)"
         cp -r "$src"/* "$dest"/
@@ -101,6 +101,9 @@ echo ""
 check_status=0
 
 check_file "$SCRIPT_DIR/waybar/config.jsonc" "$HOME_DIR/.config/waybar/config.jsonc" "waybar/config.jsonc" || check_status=1
+check_file "$SCRIPT_DIR/ags/app.ts" "$HOME_DIR/.config/ags/app.ts" "ags/app.ts" || check_status=1
+check_file "$SCRIPT_DIR/ags/style.css" "$HOME_DIR/.config/ags/style.css" "ags/style.css" || check_status=1
+check_file "$SCRIPT_DIR/ags/widget/Media.tsx" "$HOME_DIR/.config/ags/widget/Media.tsx" "ags/widget/Media.tsx" || check_status=1
 check_file "$SCRIPT_DIR/waybar/style.css" "$HOME_DIR/.config/waybar/style.css" "waybar/style.css" || check_status=1
 check_file "$SCRIPT_DIR/branding/about.txt" "$HOME_DIR/.config/omarchy/branding/about.txt" "branding/about.txt" || check_status=1
 check_file "$SCRIPT_DIR/branding/screensaver.txt" "$HOME_DIR/.config/omarchy/branding/screensaver.txt" "branding/screensaver.txt" || check_status=1
@@ -133,6 +136,7 @@ echo "=== Applying changes ==="
 echo ""
 
 backup_and_copy "$SCRIPT_DIR/waybar" "$HOME_DIR/.config/waybar" "Waybar config"
+backup_and_copy "$SCRIPT_DIR/ags" "$HOME_DIR/.config/ags" "AGS config"
 backup_and_copy "$SCRIPT_DIR/branding" "$HOME_DIR/.config/omarchy/branding" "Branding files"
 
 mkdir -p "$HOME_DIR/scripts"
@@ -209,6 +213,15 @@ if command -v omarchy-restart-waybar &> /dev/null; then
     omarchy-restart-waybar
 else
     echo "Warning: omarchy-restart-waybar not found. Please restart waybar manually."
+fi
+
+echo ""
+echo "=== Restarting AGS ==="
+if command -v ags &> /dev/null; then
+    ags quit || true
+    nohup ags run -d "$HOME_DIR/.config/ags" >/dev/null 2>&1 &
+else
+    echo "Warning: ags not found. Please start ags manually."
 fi
 
 echo ""
