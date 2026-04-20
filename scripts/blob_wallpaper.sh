@@ -8,21 +8,43 @@ mkdir -p "$WALLPAPER_DIR"
 mkdir -p "$THEME_DIR/backgrounds"
 
 if [ -z "$1" ]; then
-    echo "Usage: blob_wallpaper <filename-or-path>"
     echo "Available wallpapers in $WALLPAPER_DIR:"
-    ls -1 "$WALLPAPER_DIR" 2>/dev/null || echo "No wallpapers found."
-    exit 1
-fi
-
-# Check if the argument is a file in the wallpapers directory
-if [ -f "$WALLPAPER_DIR/$1" ]; then
-    IMAGE_PATH=$(realpath "$WALLPAPER_DIR/$1")
-# Check if the argument is an absolute or relative path
-elif [ -f "$1" ]; then
-    IMAGE_PATH=$(realpath "$1")
+    
+    # Read files into an array
+    mapfile -t files < <(ls -1 "$WALLPAPER_DIR" 2>/dev/null)
+    
+    if [ ${#files[@]} -eq 0 ]; then
+        echo "No wallpapers found."
+        exit 1
+    fi
+    
+    # Print the menu
+    for i in "${!files[@]}"; do
+        printf "%3d. %s\n" "$((i+1))" "${files[$i]}"
+    done
+    
+    echo ""
+    read -p "Select a wallpaper number (1-${#files[@]}): " selection
+    
+    # Validate selection
+    if ! [[ "$selection" =~ ^[0-9]+$ ]] || [ "$selection" -lt 1 ] || [ "$selection" -gt "${#files[@]}" ]; then
+        echo "Invalid selection."
+        exit 1
+    fi
+    
+    SELECTED_FILE="${files[$((selection-1))]}"
+    IMAGE_PATH=$(realpath "$WALLPAPER_DIR/$SELECTED_FILE")
 else
-    echo "Error: File '$1' does not exist in $WALLPAPER_DIR or as a valid path."
-    exit 1
+    # Check if the argument is a file in the wallpapers directory
+    if [ -f "$WALLPAPER_DIR/$1" ]; then
+        IMAGE_PATH=$(realpath "$WALLPAPER_DIR/$1")
+    # Check if the argument is an absolute or relative path
+    elif [ -f "$1" ]; then
+        IMAGE_PATH=$(realpath "$1")
+    else
+        echo "Error: File '$1' does not exist in $WALLPAPER_DIR or as a valid path."
+        exit 1
+    fi
 fi
 
 echo "Extracting colors using Pywal..."
