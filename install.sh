@@ -34,7 +34,7 @@ echo ""
 
 compute_hash() {
     if [ -d "$1" ]; then
-        find "$1" -type f -name '*.jsonc' -o -name '*.css' -o -name '*.txt' -o -name '*.sh' 2>/dev/null | sort | xargs -I{} sha256sum {} 2>/dev/null | sha256sum | cut -d' ' -f1
+        find "$1" -type f 2>/dev/null | sort | xargs -I{} sha256sum {} 2>/dev/null | sha256sum | cut -d' ' -f1
     else
         sha256sum "$1" 2>/dev/null | cut -d' ' -f1
     fi
