@@ -1,6 +1,6 @@
 <div align="center">
   <h1>Blob's Dotfiles</h1>
-  <p>My personal system configurations for a custom Wayland desktop environment.</p>
+  <p>My personal system configurations for a custom Wayland desktop environment built on <a href="https://omarchy.org">Omarchy</a>.</p>
 
   <img src="https://img.shields.io/badge/Arch_Linux-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white" alt="Arch Linux" />
   <img src="https://img.shields.io/badge/Hyprland-00A86B?style=for-the-badge&logo=hyprland&logoColor=white" alt="Hyprland" />
@@ -52,11 +52,3 @@ An automated installer script (`install.sh`) is provided to safely apply these c
 ./install.sh --force
 ```
 
-### Installer Features
-
-1. **Safety First:** Computes file hashes to detect local changes. Backs up existing configurations before applying updates.
-2. **Auto-Deployment:** Copies the tracked configurations seamlessly into your `~/.config/` directory.
-3. **Command Wrapping:** Automatically sets up scripts from the `scripts/` directory as global commands in `~/.local/bin/`.
-4. **Dependency Management:** Automatically installs missing system dependencies (like `python-pywal` and `imagemagick`).
-5. **Shell Integration:** Injects the necessary paths into your `~/.bashrc`, `~/.zshrc`, and system-wide profiles.
-6. **Instant Refresh:** Automatically restarts background services like `waybar` and `ags` so changes take effect immediately.
