@@ -35,6 +35,7 @@ The installer automatically exposes scripts from the `scripts/` directory as glo
 
 - **`blob_wallpaper [path]`**: Sets your background using Omarchy's background system. If used with an image from `~/wallpapers/` or a valid path, it leverages Pywal to generate a full system color palette and dynamically updates the `blob-dynamic` theme, AGS widgets, and Waybar.
 - **`blob_glass [on|off|toggle]`**: A quick toggle to enable or disable window transparency on the fly.
+- **`blob_boot [path]`**: Safely updates your Plymouth boot splash image (defaults to `branding/boot_flash.png`) and rebuilds the `initramfs` (GRUB compatible via `mkinitcpio`).
 - **`blob_wifi`**: A streamlined script to connect to the GMU Eduroam Wi-Fi network using `iwd` and `systemd-resolved` (replaces NetworkManager).
 
 ## Installation
