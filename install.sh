@@ -144,6 +144,7 @@ backup_and_copy "$SCRIPT_DIR/ags" "$HOME_DIR/.config/ags" "AGS config"
 backup_and_copy "$SCRIPT_DIR/hypr" "$HOME_DIR/.config/hypr" "Hyprland config"
 backup_and_copy "$SCRIPT_DIR/branding" "$HOME_DIR/.config/omarchy/branding" "Branding files"
 backup_and_copy "$SCRIPT_DIR/omarchy/hooks" "$HOME_DIR/.config/omarchy/hooks" "Omarchy hooks"
+backup_and_copy "$SCRIPT_DIR/wallpapers" "$HOME_DIR/wallpapers" "Custom wallpapers"
 
 mkdir -p "$HOME_DIR/scripts"
 backup_and_copy "$SCRIPT_DIR/scripts" "$HOME_DIR/scripts" "Custom scripts"
