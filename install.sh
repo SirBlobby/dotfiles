@@ -101,6 +101,10 @@ echo ""
 check_status=0
 
 check_file "$SCRIPT_DIR/waybar/config.jsonc" "$HOME_DIR/.config/waybar/config.jsonc" "waybar/config.jsonc" || check_status=1
+check_file "$SCRIPT_DIR/hypr/hyprland.conf" "$HOME_DIR/.config/hypr/hyprland.conf" "hypr/hyprland.conf" || check_status=1
+check_file "$SCRIPT_DIR/hypr/autostart.conf" "$HOME_DIR/.config/hypr/autostart.conf" "hypr/autostart.conf" || check_status=1
+check_file "$SCRIPT_DIR/hypr/looknfeel.conf" "$HOME_DIR/.config/hypr/looknfeel.conf" "hypr/looknfeel.conf" || check_status=1
+check_file "$SCRIPT_DIR/omarchy/hooks/theme-set" "$HOME_DIR/.config/omarchy/hooks/theme-set" "omarchy/hooks/theme-set" || check_status=1
 check_file "$SCRIPT_DIR/ags/app.ts" "$HOME_DIR/.config/ags/app.ts" "ags/app.ts" || check_status=1
 check_file "$SCRIPT_DIR/ags/style.css" "$HOME_DIR/.config/ags/style.css" "ags/style.css" || check_status=1
 check_file "$SCRIPT_DIR/ags/widget/Media.tsx" "$HOME_DIR/.config/ags/widget/Media.tsx" "ags/widget/Media.tsx" || check_status=1
@@ -137,7 +141,9 @@ echo ""
 
 backup_and_copy "$SCRIPT_DIR/waybar" "$HOME_DIR/.config/waybar" "Waybar config"
 backup_and_copy "$SCRIPT_DIR/ags" "$HOME_DIR/.config/ags" "AGS config"
+backup_and_copy "$SCRIPT_DIR/hypr" "$HOME_DIR/.config/hypr" "Hyprland config"
 backup_and_copy "$SCRIPT_DIR/branding" "$HOME_DIR/.config/omarchy/branding" "Branding files"
+backup_and_copy "$SCRIPT_DIR/omarchy/hooks" "$HOME_DIR/.config/omarchy/hooks" "Omarchy hooks"
 
 mkdir -p "$HOME_DIR/scripts"
 backup_and_copy "$SCRIPT_DIR/scripts" "$HOME_DIR/scripts" "Custom scripts"

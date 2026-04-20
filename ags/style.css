@@ -1,3 +1,5 @@
+@import "./colors.css";
+
 * {
   all: unset;
 }
@@ -7,26 +9,26 @@
 }
 
 .media-container {
-  background-color: rgba(30, 30, 46, 0.85);
+  background-color: alpha(@background, 0.85);
   border-radius: 8px;
-  border: 2px solid rgba(137, 180, 250, 0.5);
+  border: 2px solid alpha(@color4, 0.5);
   padding: 8px 15px;
   font-family: "JetBrainsMono Nerd Font", sans-serif;
 }
 
 .media-btn {
-  color: #cba6f7;
+  color: @color5;
   font-size: 16px;
   padding: 0 5px;
   transition: all 0.2s;
 }
 
 .media-btn:hover {
-  color: #89b4fa;
+  color: @color4;
 }
 
 .media-text {
-  color: #cdd6f4;
+  color: @foreground;
   font-size: 14px;
   margin-left: 10px;
 }

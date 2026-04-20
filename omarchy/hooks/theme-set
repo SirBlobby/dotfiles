@@ -1,0 +1,12 @@
+#!/bin/bash
+THEME_NAME=$1
+echo "Theme changed to: $THEME_NAME"
+
+# Generate AGS colors from Omarchy theme colors.toml
+awk -F '=' 'NF==2 { gsub(/"/,"",$2); gsub(/ /,"",$1); gsub(/ /,"",$2); print "@define-color " $1 " " $2 ";" }' ~/.config/omarchy/current/theme/colors.toml > ~/.config/ags/colors.css
+
+# Restart AGS to apply new theme colors
+if command -v ags &> /dev/null; then
+    ags quit || true
+    nohup ags run -d "$HOME/.config/ags" >/dev/null 2>&1 &
+fi
