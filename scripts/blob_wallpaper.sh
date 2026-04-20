@@ -26,7 +26,7 @@ else
 fi
 
 echo "Extracting colors using Pywal..."
-wal -i "$IMAGE_PATH" -n -q
+wal -i "$IMAGE_PATH" -n -q 2> >(grep -v "deprecated in IMv7" >&2)
 
 # Clear old backgrounds and copy the new one into the dynamic theme
 rm -f "$THEME_DIR/backgrounds/"*

@@ -95,6 +95,31 @@ backup_and_copy() {
     fi
 }
 
+install_dependencies() {
+    echo "=== Checking Dependencies ==="
+    local deps_needed=()
+    if ! command -v wal &> /dev/null; then
+        deps_needed+=("python-pywal")
+    fi
+    if ! command -v magick &> /dev/null && ! command -v convert &> /dev/null; then
+        deps_needed+=("imagemagick")
+    fi
+    
+    if [ ${#deps_needed[@]} -gt 0 ]; then
+        echo "Installing missing dependencies: ${deps_needed[*]}"
+        if command -v sudo &> /dev/null; then
+            sudo pacman -S --needed --noconfirm "${deps_needed[@]}"
+        else
+            echo "Warning: sudo not found. Please install manually: ${deps_needed[*]}"
+        fi
+    else
+        echo "All dependencies are installed."
+    fi
+    echo ""
+}
+
+install_dependencies
+
 echo "=== Checking for local changes ==="
 echo ""
 
