@@ -1,7 +1,7 @@
 #!/bin/bash
 
 WALLPAPER_DIR="$HOME/wallpapers"
-THEME_DIR="$HOME/.config/omarchy/themes/Blob-Dynamic"
+THEME_DIR="$HOME/.config/omarchy/themes/blob-dynamic"
 
 # Create the directory if it doesn't exist
 mkdir -p "$WALLPAPER_DIR"
@@ -61,6 +61,6 @@ EOF
 
 # Apply the Blob-Dynamic theme
 # omarchy-theme-set manages the background and reloads waybar and AGS
-omarchy-theme-set "Blob-Dynamic"
+omarchy-theme-set "blob-dynamic"
 
 echo "Wallpaper and dynamic theme applied successfully: $IMAGE_PATH"
