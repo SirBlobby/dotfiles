@@ -104,6 +104,9 @@ install_dependencies() {
     if ! command -v magick &> /dev/null && ! command -v convert &> /dev/null; then
         deps_needed+=("imagemagick")
     fi
+    if ! command -v awww &> /dev/null; then
+        deps_needed+=("awww")
+    fi
     
     if [ ${#deps_needed[@]} -gt 0 ]; then
         echo "Installing missing dependencies: ${deps_needed[*]}"

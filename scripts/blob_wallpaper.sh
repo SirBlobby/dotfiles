@@ -8,31 +8,14 @@ mkdir -p "$WALLPAPER_DIR"
 mkdir -p "$THEME_DIR/backgrounds"
 
 if [ -z "$1" ]; then
-    echo "Available wallpapers in $WALLPAPER_DIR:"
+    # Use walker dmenu for GUI selection
+    SELECTED_FILE=$(ls -1 "$WALLPAPER_DIR" 2>/dev/null | omarchy-launch-walker --dmenu -p "Select Wallpaper")
     
-    # Read files into an array
-    mapfile -t files < <(ls -1 "$WALLPAPER_DIR" 2>/dev/null)
-    
-    if [ ${#files[@]} -eq 0 ]; then
-        echo "No wallpapers found."
-        exit 1
+    if [ -z "$SELECTED_FILE" ]; then
+        echo "No wallpaper selected."
+        exit 0
     fi
     
-    # Print the menu
-    for i in "${!files[@]}"; do
-        printf "%3d. %s\n" "$((i+1))" "${files[$i]}"
-    done
-    
-    echo ""
-    read -p "Select a wallpaper number (1-${#files[@]}): " selection
-    
-    # Validate selection
-    if ! [[ "$selection" =~ ^[0-9]+$ ]] || [ "$selection" -lt 1 ] || [ "$selection" -gt "${#files[@]}" ]; then
-        echo "Invalid selection."
-        exit 1
-    fi
-    
-    SELECTED_FILE="${files[$((selection-1))]}"
     IMAGE_PATH=$(realpath "$WALLPAPER_DIR/$SELECTED_FILE")
 else
     # Check if the argument is a file in the wallpapers directory
@@ -87,5 +70,24 @@ EOF
 # Apply the Blob-Dynamic theme
 # omarchy-theme-set manages the background and reloads waybar and AGS
 omarchy-theme-set "blob-dynamic"
+
+# If it's a GIF, override swaybg with awww (swww replacement)
+if [[ "${IMAGE_PATH,,}" == *.gif ]]; then
+    echo "GIF detected, switching to awww..."
+    pkill -x swaybg
+    
+    # Start awww daemon if not running
+    if ! pgrep -x awww-daemon >/dev/null; then
+        awww-daemon >/dev/null 2>&1 &
+        sleep 1
+    fi
+    
+    awww img "$IMAGE_PATH"
+else
+    # Ensure awww is stopped for static wallpapers so swaybg can render them
+    if pgrep -x awww-daemon >/dev/null; then
+        pkill -x awww-daemon
+    fi
+fi
 
 echo "Wallpaper and dynamic theme applied successfully: $IMAGE_PATH"
