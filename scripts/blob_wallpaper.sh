@@ -9,14 +9,8 @@ mkdir -p "$THEME_DIR/backgrounds"
 
 if [ -z "$1" ]; then
     # Use walker dmenu for GUI selection
-    SELECTED_FILE=$(ls -1 "$WALLPAPER_DIR" 2>/dev/null | omarchy-launch-walker --dmenu -p "Select Wallpaper")
-    
-    if [ -z "$SELECTED_FILE" ]; then
-        echo "No wallpaper selected."
-        exit 0
-    fi
-    
-    IMAGE_PATH=$(realpath "$WALLPAPER_DIR/$SELECTED_FILE")
+    omarchy-launch-walker -m menus:blobBackgroundSelector --width 800 --minheight 400 -p "Select Wallpaper…"
+    exit 0
 else
     # Check if the argument is a file in the wallpapers directory
     if [ -f "$WALLPAPER_DIR/$1" ]; then

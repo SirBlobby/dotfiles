@@ -137,6 +137,7 @@ check_file "$SCRIPT_DIR/ags/app.ts" "$HOME_DIR/.config/ags/app.ts" "ags/app.ts" 
 check_file "$SCRIPT_DIR/ags/style.css" "$HOME_DIR/.config/ags/style.css" "ags/style.css" || check_status=1
 check_file "$SCRIPT_DIR/ags/widget/Media.tsx" "$HOME_DIR/.config/ags/widget/Media.tsx" "ags/widget/Media.tsx" || check_status=1
 check_file "$SCRIPT_DIR/waybar/style.css" "$HOME_DIR/.config/waybar/style.css" "waybar/style.css" || check_status=1
+check_file "$SCRIPT_DIR/elephant/menus/blob_background_selector.lua" "$HOME_DIR/.config/elephant/menus/blob_background_selector.lua" "elephant/menus/blob_background_selector.lua" || check_status=1
 check_file "$SCRIPT_DIR/branding/about.txt" "$HOME_DIR/.config/omarchy/branding/about.txt" "branding/about.txt" || check_status=1
 check_file "$SCRIPT_DIR/branding/screensaver.txt" "$HOME_DIR/.config/omarchy/branding/screensaver.txt" "branding/screensaver.txt" || check_status=1
 
@@ -171,6 +172,7 @@ backup_and_copy "$SCRIPT_DIR/waybar" "$HOME_DIR/.config/waybar" "Waybar config"
 backup_and_copy "$SCRIPT_DIR/ags" "$HOME_DIR/.config/ags" "AGS config"
 backup_and_copy "$SCRIPT_DIR/hypr" "$HOME_DIR/.config/hypr" "Hyprland config"
 backup_and_copy "$SCRIPT_DIR/branding" "$HOME_DIR/.config/omarchy/branding" "Branding files"
+backup_and_copy "$SCRIPT_DIR/elephant" "$HOME_DIR/.config/elephant" "Elephant configs"
 backup_and_copy "$SCRIPT_DIR/omarchy/hooks" "$HOME_DIR/.config/omarchy/hooks" "Omarchy hooks"
 backup_and_copy "$SCRIPT_DIR/wallpapers" "$HOME_DIR/wallpapers" "Custom wallpapers"
 
