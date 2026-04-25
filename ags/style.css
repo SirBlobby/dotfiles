@@ -13,6 +13,7 @@
   border-radius: 8px;
   border: 2px solid alpha(@color4, 0.5);
   padding: 8px 15px;
+  min-width: 300px;
   font-family: "JetBrainsMono Nerd Font", sans-serif;
 }
 
@@ -53,4 +54,28 @@
 
 .media-btn:hover {
   color: @color4;
+}
+
+.media-progress {
+  min-height: 4px;
+  padding: 0;
+}
+
+.media-progress trough {
+  min-height: 4px;
+  background-color: alpha(@foreground, 0.2);
+  border-radius: 4px;
+}
+
+.media-progress highlight {
+  background-color: @accent;
+  border-radius: 4px;
+}
+
+.media-progress slider {
+  background-color: transparent;
+  min-width: 0px;
+  min-height: 0px;
+  border: none;
+  box-shadow: none;
 }
