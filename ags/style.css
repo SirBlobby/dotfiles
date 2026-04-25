@@ -16,6 +16,34 @@
   font-family: "JetBrainsMono Nerd Font", sans-serif;
 }
 
+.media-cover {
+  min-width: 64px;
+  min-height: 64px;
+  border-radius: 4px;
+  background-size: cover;
+  background-position: center;
+}
+
+.media-info-box {
+  margin-left: 10px;
+}
+
+.media-title {
+  color: @foreground;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.media-artist {
+  color: @foreground;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.media-controls {
+  /* Box spacing is handled by the component */
+}
+
 .media-btn {
   color: @color5;
   font-size: 16px;
@@ -25,10 +53,4 @@
 
 .media-btn:hover {
   color: @color4;
-}
-
-.media-text {
-  color: @foreground;
-  font-size: 14px;
-  margin-left: 10px;
 }
