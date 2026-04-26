@@ -61,6 +61,18 @@ color14 = "$(sed -n '15p' ~/.cache/wal/colors)"
 color15 = "$(sed -n '16p' ~/.cache/wal/colors)"
 EOF
 
+# Write neovim.lua to satisfy LazyVim's theme symlink requirement
+cat <<EOF > "$THEME_DIR/neovim.lua"
+return {
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "tokyonight",
+    },
+  },
+}
+EOF
+
 # Apply the Blob-Dynamic theme
 # omarchy-theme-set manages the background and reloads waybar and AGS
 omarchy-theme-set "blob-dynamic"
