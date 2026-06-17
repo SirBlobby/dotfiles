@@ -47,7 +47,7 @@ check_file() {
     
     if [ ! -e "$dest" ]; then
         echo "✓ $name: New (will be created)"
-        return 0
+        return 1
     fi
     
     local src_hash=$(compute_hash "$src")
@@ -141,6 +141,11 @@ check_file "$SCRIPT_DIR/elephant/menus/blob_background_selector.lua" "$HOME_DIR/
 check_file "$SCRIPT_DIR/branding/about.txt" "$HOME_DIR/.config/omarchy/branding/about.txt" "branding/about.txt" || check_status=1
 check_file "$SCRIPT_DIR/branding/screensaver.txt" "$HOME_DIR/.config/omarchy/branding/screensaver.txt" "branding/screensaver.txt" || check_status=1
 
+zen_profile=$(find "$HOME_DIR/.config/zen" -maxdepth 1 -type d -name "*.Default (release)*" 2>/dev/null | head -n 1)
+if [ -n "$zen_profile" ]; then
+    check_file "$SCRIPT_DIR/zen/userChrome.css" "$zen_profile/chrome/userChrome.css" "zen/userChrome.css" || check_status=1
+fi
+
 for script in "$SCRIPT_DIR/scripts"/*.sh; do
     if [ -f "$script" ]; then
         base_name=$(basename "$script" .sh)
@@ -175,6 +180,13 @@ backup_and_copy "$SCRIPT_DIR/branding" "$HOME_DIR/.config/omarchy/branding" "Bra
 backup_and_copy "$SCRIPT_DIR/elephant" "$HOME_DIR/.config/elephant" "Elephant configs"
 backup_and_copy "$SCRIPT_DIR/omarchy/hooks" "$HOME_DIR/.config/omarchy/hooks" "Omarchy hooks"
 backup_and_copy "$SCRIPT_DIR/wallpapers" "$HOME_DIR/wallpapers" "Custom wallpapers"
+
+zen_profile=$(find "$HOME_DIR/.config/zen" -maxdepth 1 -type d -name "*.Default (release)*" 2>/dev/null | head -n 1)
+if [ -n "$zen_profile" ]; then
+    backup_and_copy "$SCRIPT_DIR/zen" "$zen_profile/chrome" "Zen Browser config"
+else
+    echo "[WARN] Zen Browser profile not found. Skipping Zen theme."
+fi
 
 mkdir -p "$HOME_DIR/scripts"
 backup_and_copy "$SCRIPT_DIR/scripts" "$HOME_DIR/scripts" "Custom scripts"
