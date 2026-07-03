@@ -21,9 +21,9 @@ My current setup is built around these core components:
 
 ### Directory Structure
 
-- **`hypr/`**: Hyprland configurations (keybindings, window rules, animations, layout settings, and autostart).
+- **`hypr/`**: Hyprland configurations (keybindings, window rules, animations, monitor layout, lid-close display handling, and autostart).
 - **`waybar/`**: Status bar layout, CSS styling, and custom interactive modules.
-- **`ags/`**: Custom desktop widgets built with TypeScript and GTK.
+- **`ags/`**: Custom desktop widgets built with TypeScript and GTK — media player, notification hub, quick settings, system monitor, and wallpaper picker.
 - **`scripts/`**: Global utility scripts seamlessly exposed as commands by the installer.
 - **`wallpapers/`**: A collection of local custom wallpapers for dynamic theming.
 - **`omarchy/hooks/`**: Event hooks for the Omarchy system (e.g. automatically applying dynamic themes when changing wallpapers).
@@ -34,6 +34,7 @@ My current setup is built around these core components:
 The installer automatically exposes scripts from the `scripts/` directory as global commands:
 
 - **`blob_wallpaper [path]`**: Sets your background using Omarchy's background system. If used with an image from `~/wallpapers/` or a valid path, it leverages Pywal to generate a full system color palette and dynamically updates the `blob-dynamic` theme, AGS widgets, and Waybar.
+- **`blob_theme <share-link-or-id>`**: Pulls a color palette shared from the wall-styles site and applies it as the `blob-dynamic` theme (e.g. `blob_theme "https://wall-styles.vercel.app/?id=ab12cd34ef"`).
 - **`blob_glass [on|off|toggle]`**: A quick toggle to enable or disable window transparency on the fly.
 - **`blob_boot [path]`**: Safely updates your Plymouth boot splash image (defaults to `branding/boot_flash.png`) and rebuilds the `initramfs` (GRUB compatible via `mkinitcpio`).
 - **`blob_wifi`**: A streamlined script to connect to the GMU Eduroam Wi-Fi network using `iwd` and `systemd-resolved` (replaces NetworkManager).
@@ -51,5 +52,14 @@ An automated installer script (`install.sh`) is provided to safely apply these c
 
 # Force overwrite of any existing local changes
 ./install.sh --force
+```
+
+The installer also configures the laptop lid switch so the machine stays awake (and the external monitors stay active) when docked or on AC power.
+
+To roll back to the backups the installer created, use `revert.sh`:
+
+```bash
+# Restore configs from their .bak versions (prompts first)
+./revert.sh
 ```
 
