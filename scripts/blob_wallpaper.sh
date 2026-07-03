@@ -8,7 +8,11 @@ mkdir -p "$WALLPAPER_DIR"
 mkdir -p "$THEME_DIR/backgrounds"
 
 if [ -z "$1" ]; then
-    # Use walker dmenu for GUI selection
+    # Open the AGS wallpaper selector widget
+    ags toggle wall-picker
+    exit 0
+elif [ "$1" = "--menu" ]; then
+    # Fallback: walker dmenu selection
     omarchy-launch-walker -m menus:blobBackgroundSelector --width 800 --minheight 400 -p "Select Wallpaper…"
     exit 0
 else
