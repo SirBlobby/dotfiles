@@ -15,7 +15,7 @@ export default function Media(gdkmonitor: Gdk.Monitor) {
     status: "Stopped",
     length: 0,
     position: 0
-  }, 1000, pollCmd, (stdout) => {
+  }, 1000, ["bash", "-c", pollCmd], (stdout) => {
     const parts = stdout.split("|||");
     const title = parts[0]?.trim() || "No Media";
     const artist = parts[1]?.trim() || "";

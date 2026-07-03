@@ -79,3 +79,385 @@
   border: none;
   box-shadow: none;
 }
+
+.NotificationCenter,
+.QuickSettings,
+.SysMonitor,
+.Calendar,
+.WallPicker {
+  background-color: transparent;
+}
+
+.panel {
+  background-color: alpha(@background, 0.92);
+  border-radius: 12px;
+  border: 2px solid alpha(@color4, 0.5);
+  padding: 14px;
+  font-family: "JetBrainsMono Nerd Font", sans-serif;
+  color: @foreground;
+}
+
+.panel-title {
+  color: @foreground;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.panel-header {
+  margin-bottom: 2px;
+}
+
+.panel-icon-btn {
+  color: @color5;
+  font-size: 13px;
+  padding: 3px 6px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.panel-icon-btn:hover {
+  background-color: alpha(@color4, 0.25);
+  color: @color4;
+}
+
+.panel-icon-btn.active {
+  background-color: @accent;
+  color: @background;
+}
+
+.notification-center {
+  min-width: 360px;
+  min-height: 420px;
+}
+
+.notification-scroll {
+  min-height: 360px;
+}
+
+.notification-item {
+  background-color: alpha(@color0, 0.6);
+  border-radius: 10px;
+  border-left: 3px solid @accent;
+  padding: 10px 12px;
+}
+
+.notification-item-app {
+  color: @accent;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.notification-item-close {
+  color: @color5;
+  font-size: 12px;
+  padding: 0 4px;
+  transition: all 0.2s;
+}
+
+.notification-item-close:hover {
+  color: @color1;
+}
+
+.notification-item-summary {
+  color: @foreground;
+  font-size: 13px;
+  font-weight: bold;
+  margin-top: 2px;
+}
+
+.notification-item-body {
+  color: @foreground;
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
+.notification-empty {
+  opacity: 0.6;
+}
+
+.notification-empty-icon {
+  font-size: 42px;
+  color: @color4;
+  margin-bottom: 8px;
+}
+
+.notification-empty-text {
+  font-size: 13px;
+  color: @foreground;
+}
+
+.quick-settings {
+  min-width: 320px;
+}
+
+.qs-tile {
+  background-color: alpha(@color0, 0.6);
+  border-radius: 10px;
+  padding: 8px 4px;
+  transition: all 0.2s;
+}
+
+.qs-tile:hover {
+  background-color: alpha(@color4, 0.25);
+}
+
+.qs-tile.active {
+  background-color: @accent;
+  color: @background;
+}
+
+.qs-tile-icon {
+  font-size: 15px;
+}
+
+.qs-tile-label {
+  font-size: 10px;
+}
+
+.qs-slider-row {
+  padding: 2px 4px;
+}
+
+.qs-slider-icon {
+  color: @color5;
+  font-size: 14px;
+  min-width: 20px;
+}
+
+.qs-slider trough {
+  min-height: 8px;
+  border-radius: 8px;
+  background-color: alpha(@foreground, 0.2);
+}
+
+.qs-slider highlight {
+  border-radius: 8px;
+  background-color: @accent;
+}
+
+.qs-slider slider {
+  background-color: @foreground;
+  border-radius: 50%;
+  min-width: 14px;
+  min-height: 14px;
+  margin: -4px;
+}
+
+.sys-monitor {
+  min-width: 320px;
+}
+
+.sys-metric-icon {
+  font-size: 16px;
+  color: @color5;
+  min-width: 22px;
+}
+
+.sys-metric-name {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.sys-metric-detail {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.sys-metric-bar {
+  min-height: 8px;
+}
+
+.sys-metric-bar trough {
+  min-height: 8px;
+  border-radius: 8px;
+  background-color: alpha(@foreground, 0.2);
+}
+
+.sys-metric-bar block.filled {
+  border-radius: 8px;
+  background-color: @accent;
+}
+
+.calendar {
+  min-width: 280px;
+}
+
+.calendar-time {
+  font-size: 40px;
+  font-weight: bold;
+  color: @foreground;
+}
+
+.calendar-date {
+  font-size: 14px;
+  color: @accent;
+}
+
+.calendar-month {
+  font-size: 14px;
+  font-weight: bold;
+  color: @accent;
+}
+
+.calendar-days {
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 14px;
+  color: @foreground;
+}
+
+.wall-picker {
+  min-width: 680px;
+  min-height: 460px;
+}
+
+.wall-scroll {
+  min-height: 400px;
+}
+
+.wall-thumb {
+  padding: 0;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.wall-thumb:hover {
+  border: 2px solid @accent;
+}
+
+.wall-thumb-image {
+  min-width: 200px;
+  min-height: 112px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.wall-empty {
+  opacity: 0.6;
+}
+
+.wall-empty-icon {
+  font-size: 42px;
+  color: @color4;
+  margin-bottom: 8px;
+}
+
+.wall-empty-text {
+  font-size: 13px;
+}
+
+.control-center {
+  min-width: 360px;
+}
+
+.cc-header {
+  margin-bottom: 2px;
+}
+
+.cc-uptime {
+  font-size: 13px;
+  color: @foreground;
+}
+
+.cc-uptime-icon {
+  color: @accent;
+}
+
+.cc-clock {
+  font-size: 22px;
+  font-weight: bold;
+  color: @foreground;
+}
+
+.cc-date {
+  font-size: 12px;
+  color: @accent;
+}
+
+.cc-media {
+  background-color: alpha(@color0, 0.6);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.cc-media-cover {
+  min-width: 84px;
+  min-height: 84px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.cc-media-info {
+  margin-left: 10px;
+}
+
+.cc-media-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: @foreground;
+}
+
+.cc-media-artist {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.cc-media-seek {
+  margin: 6px 0;
+}
+
+.cc-media-seek trough {
+  min-height: 4px;
+  border-radius: 4px;
+  background-color: alpha(@foreground, 0.2);
+}
+
+.cc-media-seek highlight {
+  border-radius: 4px;
+  background-color: @accent;
+}
+
+.cc-media-seek slider {
+  background-color: transparent;
+  min-width: 0;
+  min-height: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.cc-media-controls button {
+  color: @color5;
+  font-size: 14px;
+  padding: 0 4px;
+  transition: all 0.2s;
+}
+
+.cc-media-controls button:hover {
+  color: @accent;
+}
+
+.cc-calendar {
+  margin-top: 2px;
+}
+
+.cc-calendar-month {
+  font-size: 13px;
+  font-weight: bold;
+  color: @accent;
+}
+
+.cc-calendar-time {
+  font-size: 13px;
+  color: @foreground;
+}
+
+.cc-calendar-grid {
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
+  color: @foreground;
+}
