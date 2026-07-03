@@ -130,12 +130,20 @@ check_status=0
 
 check_file "$SCRIPT_DIR/waybar/config.jsonc" "$HOME_DIR/.config/waybar/config.jsonc" "waybar/config.jsonc" || check_status=1
 check_file "$SCRIPT_DIR/hypr/hyprland.conf" "$HOME_DIR/.config/hypr/hyprland.conf" "hypr/hyprland.conf" || check_status=1
+check_file "$SCRIPT_DIR/hypr/monitors.conf" "$HOME_DIR/.config/hypr/monitors.conf" "hypr/monitors.conf" || check_status=1
 check_file "$SCRIPT_DIR/hypr/autostart.conf" "$HOME_DIR/.config/hypr/autostart.conf" "hypr/autostart.conf" || check_status=1
 check_file "$SCRIPT_DIR/hypr/looknfeel.conf" "$HOME_DIR/.config/hypr/looknfeel.conf" "hypr/looknfeel.conf" || check_status=1
+check_file "$SCRIPT_DIR/hypr/bindings.conf" "$HOME_DIR/.config/hypr/bindings.conf" "hypr/bindings.conf" || check_status=1
+check_file "$SCRIPT_DIR/hypr/hypridle.conf" "$HOME_DIR/.config/hypr/hypridle.conf" "hypr/hypridle.conf" || check_status=1
 check_file "$SCRIPT_DIR/omarchy/hooks/theme-set" "$HOME_DIR/.config/omarchy/hooks/theme-set" "omarchy/hooks/theme-set" || check_status=1
 check_file "$SCRIPT_DIR/ags/app.ts" "$HOME_DIR/.config/ags/app.ts" "ags/app.ts" || check_status=1
 check_file "$SCRIPT_DIR/ags/style.css" "$HOME_DIR/.config/ags/style.css" "ags/style.css" || check_status=1
+check_file "$SCRIPT_DIR/ags/lib/utils.ts" "$HOME_DIR/.config/ags/lib/utils.ts" "ags/lib/utils.ts" || check_status=1
 check_file "$SCRIPT_DIR/ags/widget/Media.tsx" "$HOME_DIR/.config/ags/widget/Media.tsx" "ags/widget/Media.tsx" || check_status=1
+check_file "$SCRIPT_DIR/ags/widget/Notifications.tsx" "$HOME_DIR/.config/ags/widget/Notifications.tsx" "ags/widget/Notifications.tsx" || check_status=1
+check_file "$SCRIPT_DIR/ags/widget/QuickSettings.tsx" "$HOME_DIR/.config/ags/widget/QuickSettings.tsx" "ags/widget/QuickSettings.tsx" || check_status=1
+check_file "$SCRIPT_DIR/ags/widget/SysMonitor.tsx" "$HOME_DIR/.config/ags/widget/SysMonitor.tsx" "ags/widget/SysMonitor.tsx" || check_status=1
+check_file "$SCRIPT_DIR/ags/widget/WallPicker.tsx" "$HOME_DIR/.config/ags/widget/WallPicker.tsx" "ags/widget/WallPicker.tsx" || check_status=1
 check_file "$SCRIPT_DIR/waybar/style.css" "$HOME_DIR/.config/waybar/style.css" "waybar/style.css" || check_status=1
 check_file "$SCRIPT_DIR/elephant/menus/blob_background_selector.lua" "$HOME_DIR/.config/elephant/menus/blob_background_selector.lua" "elephant/menus/blob_background_selector.lua" || check_status=1
 check_file "$SCRIPT_DIR/branding/about.txt" "$HOME_DIR/.config/omarchy/branding/about.txt" "branding/about.txt" || check_status=1
@@ -235,6 +243,33 @@ add_system_path() {
 
 add_system_path
 
+# Keep the laptop awake with the lid closed while docked / on AC, so the two
+# external monitors stay usable. Paired with the lid-switch binds in
+# hypr/bindings.conf, which disable eDP-1 on close so no workspace is stranded.
+configure_lid_switch() {
+    local dropin="/etc/systemd/logind.conf.d/10-lid.conf"
+    local content="[Login]
+HandleLidSwitch=suspend
+HandleLidSwitchExternalPower=ignore
+HandleLidSwitchDocked=ignore"
+
+    if [ -f "$dropin" ] && [ "$(cat "$dropin" 2>/dev/null)" = "$content" ]; then
+        echo "Lid switch behavior already configured"
+        return
+    fi
+
+    if sudo mkdir -p "$(dirname "$dropin")" 2>/dev/null \
+        && printf '%s\n' "$content" | sudo tee "$dropin" > /dev/null 2>&1; then
+        sudo chmod 644 "$dropin"
+        sudo systemctl restart systemd-logind 2>/dev/null || true
+        echo "Configured lid switch (suspend on battery, ignore when docked/on AC)"
+    else
+        echo "Skipped lid switch config (no sudo available)"
+    fi
+}
+
+configure_lid_switch
+
 add_path_to_shell() {
     local shell_rc="$1"
     local path_line='export PATH="$HOME/scripts:$HOME/.local/bin:$PATH"'
@@ -271,6 +306,23 @@ if command -v ags &> /dev/null; then
     nohup ags run -d "$HOME_DIR/.config/ags" >/dev/null 2>&1 &
 else
     echo "Warning: ags not found. Please start ags manually."
+fi
+
+echo ""
+echo "=== Reloading Hyprland ==="
+if command -v hyprctl &> /dev/null; then
+    hyprctl reload || true
+else
+    echo "Warning: hyprctl not found. Please reload Hyprland manually."
+fi
+
+echo ""
+echo "=== Restarting hypridle ==="
+if command -v hypridle &> /dev/null; then
+    pkill -x hypridle 2>/dev/null || true
+    nohup hypridle >/dev/null 2>&1 &
+else
+    echo "Warning: hypridle not found. Please restart hypridle manually."
 fi
 
 echo ""

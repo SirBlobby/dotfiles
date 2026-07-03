@@ -69,6 +69,24 @@ if [ -n "$zen_profile" ]; then
     revert_dir "$zen_profile/chrome" "Zen Browser config"
 fi
 
+# Undo the lid-switch override installed by install.sh (restores default
+# logind behavior: suspend on lid close regardless of power/dock state).
+remove_lid_switch() {
+    local dropin="/etc/systemd/logind.conf.d/10-lid.conf"
+    if [ ! -f "$dropin" ]; then
+        echo "[SKIP] No lid switch config to remove"
+        return
+    fi
+    if sudo rm -f "$dropin" 2>/dev/null; then
+        sudo systemctl restart systemd-logind 2>/dev/null || true
+        echo "✓ Removed lid switch config ($dropin)"
+    else
+        echo "[SKIP] Could not remove $dropin (no sudo available)"
+    fi
+}
+
+remove_lid_switch
+
 echo ""
 echo "=== Restarting Waybar ==="
 if command -v omarchy-restart-waybar &> /dev/null; then
@@ -84,6 +102,23 @@ if command -v ags &> /dev/null; then
     nohup ags run -d "$HOME_DIR/.config/ags" >/dev/null 2>&1 &
 else
     echo "Warning: ags not found. Please start ags manually."
+fi
+
+echo ""
+echo "=== Reloading Hyprland ==="
+if command -v hyprctl &> /dev/null; then
+    hyprctl reload || true
+else
+    echo "Warning: hyprctl not found. Please reload Hyprland manually."
+fi
+
+echo ""
+echo "=== Restarting hypridle ==="
+if command -v hypridle &> /dev/null; then
+    pkill -x hypridle 2>/dev/null || true
+    nohup hypridle >/dev/null 2>&1 &
+else
+    echo "Warning: hypridle not found. Please restart hypridle manually."
 fi
 
 echo ""
