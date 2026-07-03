@@ -22,20 +22,14 @@
     "network",
     "pulseaudio",
     "cpu",
-    "memory",
-    "disk",
-    "battery"
+    "battery",
+    "custom/notification"
   ],
-  "memory": {
-    "interval": 10,
-    "format": "\udb81\ude1a",
-    "tooltip-format": "Memory: {used:0.1f}G/{total:0.1f}G"
-  },
-  "disk": {
-    "interval": 30,
-    "format": "\udb80\udeca",
-    "path": "/",
-    "tooltip-format": "Disk: {used}/{total}"
+  "custom/notification": {
+    "format": "",
+    "tooltip-format": "Notifications",
+    "on-click": "ags toggle notification-center",
+    "on-click-right": "omarchy-toggle-notification-silencing"
   },
   "hyprland/workspaces": {
     "on-click": "activate",
@@ -84,12 +78,13 @@
     "interval": 5,
     "format": "\udb80\udf5b",
     "on-click": "omarchy-launch-or-focus-tui btop",
-    "on-click-right": "alacritty"
+    "on-click-middle": "alacritty",
+    "on-click-right": "ags toggle sys-monitor"
   },
   "clock": {
     "format": "{:L%A %d %B %H:%M}",
-    "format-alt": "{:L%d %B W%V %Y}",
     "tooltip": false,
+    "on-click": "ags toggle quick-settings",
     "on-click-right": "omarchy-launch-floating-terminal-with-presentation omarchy-tz-select"
   },
   "network": {
@@ -109,7 +104,8 @@
     "tooltip-format-disconnected": "Disconnected",
     "interval": 3,
     "spacing": 1,
-    "on-click": "omarchy-launch-wifi"
+    "on-click": "omarchy-launch-wifi",
+    "on-click-right": "ags toggle quick-settings"
   },
   "battery": {
     "format": "{capacity}% {icon}",
@@ -159,7 +155,8 @@
     "format-connected": "\udb80\udcb1",
     "format-no-controller": "",
     "tooltip-format": "Devices connected: {num_connections}",
-    "on-click": "omarchy-launch-bluetooth"
+    "on-click": "omarchy-launch-bluetooth",
+    "on-click-right": "ags toggle quick-settings"
   },
   "pulseaudio": {
     "format": "{icon}",
