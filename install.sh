@@ -146,6 +146,7 @@ check_file "$SCRIPT_DIR/ags/widget/Notifications.tsx" "$HOME_DIR/.config/ags/wid
 check_file "$SCRIPT_DIR/ags/widget/QuickSettings.tsx" "$HOME_DIR/.config/ags/widget/QuickSettings.tsx" "ags/widget/QuickSettings.tsx" || check_status=1
 check_file "$SCRIPT_DIR/ags/widget/SysMonitor.tsx" "$HOME_DIR/.config/ags/widget/SysMonitor.tsx" "ags/widget/SysMonitor.tsx" || check_status=1
 check_file "$SCRIPT_DIR/ags/widget/WallPicker.tsx" "$HOME_DIR/.config/ags/widget/WallPicker.tsx" "ags/widget/WallPicker.tsx" || check_status=1
+check_file "$SCRIPT_DIR/ags/widget/WidgetCard.tsx" "$HOME_DIR/.config/ags/widget/WidgetCard.tsx" "ags/widget/WidgetCard.tsx" || check_status=1
 check_file "$SCRIPT_DIR/waybar/style.css" "$HOME_DIR/.config/waybar/style.css" "waybar/style.css" || check_status=1
 check_file "$SCRIPT_DIR/elephant/menus/blob_background_selector.lua" "$HOME_DIR/.config/elephant/menus/blob_background_selector.lua" "elephant/menus/blob_background_selector.lua" || check_status=1
 check_file "$SCRIPT_DIR/branding/about.txt" "$HOME_DIR/.config/omarchy/branding/about.txt" "branding/about.txt" || check_status=1

@@ -4,6 +4,7 @@ import { createState } from "ags"
 import { createPoll, interval } from "ags/time"
 import { sh, shell } from "../lib/utils"
 import { ClaudeUsageCard } from "./ClaudeUsage"
+import { CardHeader, StatRow } from "./WidgetCard"
 
 export const QUICKSETTINGS_WINDOW = "quick-settings"
 
@@ -91,6 +92,9 @@ function Header() {
         <label class="cc-clock" label={clock} xalign={0} halign={Gtk.Align.START} />
         <label class="cc-date" label={today} xalign={0} halign={Gtk.Align.START} />
       </box>
+      <button class="panel-icon-btn" tooltipText="Change wallpaper" onClicked={() => { closePanel(); sh("blob_wallpaper") }}>
+        <label label={""} />
+      </button>
       <button class="panel-icon-btn" tooltipText="Lock" onClicked={() => { closePanel(); sh("omarchy-system-lock") }}>
         <label label={""} />
       </button>
@@ -313,28 +317,50 @@ const uptime = createPoll("", 60000, shell("uptime -p"), (stdout) =>
 
 function UptimeCard() {
   return (
-    <box class="panel widget-card" vertical spacing={6}>
-      <box spacing={8}>
-        <label class="widget-card-icon" label={""} />
-        <label class="widget-card-title" label="Uptime" xalign={0} halign={Gtk.Align.START} hexpand />
-      </box>
-      <label class="widget-card-value" label={uptime} xalign={0} halign={Gtk.Align.START} wrap />
+    <box class="panel widget-card" vertical spacing={10}>
+      <CardHeader icon={""} title="Uptime" />
+      <label class="widget-hero-value" label={uptime} xalign={0} halign={Gtk.Align.START} wrap />
     </box>
   )
 }
 
-const weather = createPoll("Loading...", 600000, shell("omarchy-weather-status"), (stdout) =>
-  stdout.trim(),
+type Weather = { ok: boolean; icon: string; place: string; temp: string; wind: string }
+
+function parseWeather(raw: string): Weather {
+  const parts = raw.split("  ·  ")
+  if (parts.length < 3) return { ok: false, icon: "", place: raw, temp: "", wind: "" }
+  const match = parts[0].match(/^(\S+)\s*(.*)$/)
+  return {
+    ok: true,
+    icon: match ? match[1] : "",
+    place: match ? match[2].trim() : parts[0].trim(),
+    temp: parts[1].replace(/^Temp\s*/, ""),
+    wind: parts[2].replace(/^Wind\s*/, ""),
+  }
+}
+
+const weather = createPoll<Weather>(
+  { ok: false, icon: "", place: "Loading...", temp: "", wind: "" },
+  600000,
+  shell("omarchy-weather-status"),
+  (stdout) => parseWeather(stdout.trim()),
 )
 
 function WeatherCard() {
   return (
-    <box class="panel widget-card" vertical spacing={6}>
-      <box spacing={8}>
-        <label class="widget-card-icon" label={""} />
-        <label class="widget-card-title" label="Weather" xalign={0} halign={Gtk.Align.START} hexpand />
+    <box class="panel widget-card" vertical spacing={10}>
+      <CardHeader icon={weather.as((w) => w.icon)} title={weather.as((w) => w.place)} />
+      <label
+        class="widget-card-empty"
+        label="Weather unavailable"
+        xalign={0}
+        halign={Gtk.Align.START}
+        visible={weather.as((w) => !w.ok)}
+      />
+      <box vertical spacing={8} visible={weather.as((w) => w.ok)}>
+        <StatRow icon={""} label="Temperature" value={weather.as((w) => w.temp)} />
+        <StatRow icon={""} label="Wind" value={weather.as((w) => w.wind)} />
       </box>
-      <label class="widget-card-value" label={weather} xalign={0} halign={Gtk.Align.START} wrap />
     </box>
   )
 }

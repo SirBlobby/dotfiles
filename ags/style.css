@@ -350,20 +350,27 @@
 }
 
 .qs-side-panel {
-  min-width: 170px;
+  min-width: 240px;
 }
 
 .widget-card {
-  padding: 10px;
+  padding: 12px;
 }
 
-.widget-card-icon {
+.widget-card-header {
+  margin-bottom: 2px;
+}
+
+.widget-icon-badge {
+  background-color: alpha(@accent, 0.18);
+  border-radius: 8px;
+  padding: 5px 8px;
   color: @accent;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .widget-card-title {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: bold;
   color: @foreground;
 }
@@ -382,6 +389,37 @@
 .widget-card-empty {
   font-size: 12px;
   opacity: 0.6;
+}
+
+.widget-hero-value {
+  font-size: 20px;
+  font-weight: bold;
+  color: @foreground;
+}
+
+.widget-stat-row {
+  padding: 1px 0;
+}
+
+.widget-stat-icon {
+  color: @color5;
+  font-size: 13px;
+  min-width: 18px;
+}
+
+.widget-level-bar {
+  min-height: 6px;
+}
+
+.widget-level-bar trough {
+  min-height: 6px;
+  border-radius: 6px;
+  background-color: alpha(@foreground, 0.15);
+}
+
+.widget-level-bar block.filled {
+  border-radius: 6px;
+  background-color: @accent;
 }
 
 .control-center {
