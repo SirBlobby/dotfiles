@@ -1,6 +1,6 @@
 #!/bin/bash
 
-KEY_FILE="$HOME/.config/ags/secrets/anthropic_admin_key"
+KEY_FILE="$HOME/.config/ags/secrets/ANTHROPIC_ADMIN_KEY"
 
 if [ ! -f "$KEY_FILE" ]; then
     echo '{"available":false,"tokens":0,"costUsd":0}'
