@@ -144,8 +144,6 @@ function Toggles() {
             sh("omarchy-launch-bluetooth")
           }}
         />
-      </box>
-      <box class="qs-tiles" spacing={8} homogeneous>
         <Tile
           icon={""}
           label="Wallpaper"
@@ -154,6 +152,8 @@ function Toggles() {
             sh("blob_wallpaper")
           }}
         />
+      </box>
+      <box class="qs-tiles" spacing={8} homogeneous>
         <Tile
           icon={""}
           label="Silence"
@@ -163,8 +163,6 @@ function Toggles() {
             sh("makoctl mode -t do-not-disturb")
           }}
         />
-      </box>
-      <box class="qs-tiles" spacing={8} homogeneous>
         <Tile
           icon={""}
           label="Night Light"
@@ -175,6 +173,8 @@ function Toggles() {
           }}
         />
         <Tile icon={""} label="Record" onClicked={() => { closePanel(); sh("omarchy-capture-screenrecording") }} />
+      </box>
+      <box class="qs-tiles" spacing={8} homogeneous>
         <Tile icon={""} label="Pick Color" onClicked={() => { closePanel(); sh("hyprpicker -a") }} />
       </box>
     </box>
@@ -318,19 +318,6 @@ function CalendarSection() {
   )
 }
 
-const uptime = createPoll("", 60000, shell("uptime -p"), (stdout) =>
-  stdout.trim().replace(/^up /, ""),
-)
-
-function UptimeCard() {
-  return (
-    <box class="panel widget-card" vertical spacing={10}>
-      <CardHeader icon={""} title="Uptime" />
-      <label class="widget-hero-value" label={uptime} xalign={0} halign={Gtk.Align.START} wrap />
-    </box>
-  )
-}
-
 type Weather = { ok: boolean; icon: string; place: string; temp: string; wind: string }
 
 function parseWeather(raw: string): Weather {
@@ -349,7 +336,7 @@ function parseWeather(raw: string): Weather {
 const weather = createPoll<Weather>(
   { ok: false, icon: "", place: "Loading...", temp: "", wind: "" },
   600000,
-  shell("omarchy-weather-status"),
+  shell("bash $HOME/.config/ags/lib/weather.sh"),
   (stdout) => parseWeather(stdout.trim()),
 )
 
@@ -375,7 +362,6 @@ function WeatherCard() {
 function LeftPanel() {
   return (
     <box class="qs-side-panel" vertical spacing={12}>
-      <UptimeCard />
       <WeatherCard />
     </box>
   )

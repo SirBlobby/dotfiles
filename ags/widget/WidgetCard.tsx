@@ -3,8 +3,8 @@ import { Gtk } from "ags/gtk3"
 export function CardHeader({ icon, title }: { icon: any; title: any }) {
   return (
     <box class="widget-card-header" spacing={10}>
-      <box class="widget-icon-badge" halign={Gtk.Align.CENTER} valign={Gtk.Align.CENTER}>
-        <label label={icon} xalign={0.5} yalign={0.5} halign={Gtk.Align.CENTER} valign={Gtk.Align.CENTER} />
+      <box class="widget-icon-badge">
+        <label label={icon} hexpand vexpand halign={Gtk.Align.CENTER} valign={Gtk.Align.CENTER} />
       </box>
       <label class="widget-card-title" label={title} xalign={0} halign={Gtk.Align.START} hexpand />
     </box>

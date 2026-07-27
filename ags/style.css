@@ -396,12 +396,6 @@
   opacity: 0.6;
 }
 
-.widget-hero-value {
-  font-size: 20px;
-  font-weight: bold;
-  color: @foreground;
-}
-
 .widget-stat-row {
   padding: 2px 0;
 }
