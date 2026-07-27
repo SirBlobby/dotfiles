@@ -92,9 +92,6 @@ function Header() {
         <label class="cc-clock" label={clock} xalign={0} halign={Gtk.Align.START} />
         <label class="cc-date" label={today} xalign={0} halign={Gtk.Align.START} />
       </box>
-      <button class="panel-icon-btn" tooltipText="Change wallpaper" onClicked={() => { closePanel(); sh("blob_wallpaper") }}>
-        <label label={""} />
-      </button>
       <button class="panel-icon-btn" tooltipText="Lock" onClicked={() => { closePanel(); sh("omarchy-system-lock") }}>
         <label label={""} />
       </button>
@@ -145,6 +142,14 @@ function Toggles() {
           onClicked={() => {
             closePanel()
             sh("omarchy-launch-bluetooth")
+          }}
+        />
+        <Tile
+          icon={""}
+          label="Wallpaper"
+          onClicked={() => {
+            closePanel()
+            sh("blob_wallpaper")
           }}
         />
         <Tile
