@@ -32,7 +32,7 @@ function formatTokens(tokens: number) {
 export function ClaudeUsageCard() {
   return (
     <box class="panel widget-card" vertical spacing={10}>
-      <CardHeader icon={""} title="Claude Code" />
+      <CardHeader icon={""} title="Claude Code" />
       <label
         class="widget-card-empty"
         label="No usage logs found"
@@ -41,8 +41,8 @@ export function ClaudeUsageCard() {
         visible={usage.as((u) => !u.available)}
       />
       <box vertical spacing={8} visible={usage.as((u) => u.available)}>
-        <StatRow icon={""} label="Tokens today" value={usage.as((u) => formatTokens(u.tokens))} />
-        <StatRow icon={""} label="Messages today" value={usage.as((u) => `${u.messages}`)} />
+        <StatRow icon={""} label="Tokens today" value={usage.as((u) => formatTokens(u.tokens))} />
+        <StatRow icon={""} label="Messages today" value={usage.as((u) => `${u.messages}`)} />
         <box vertical spacing={4}>
           <box spacing={8}>
             <label class="widget-card-label" label="Cache hit rate" xalign={0} halign={Gtk.Align.START} hexpand />

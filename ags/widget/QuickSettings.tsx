@@ -93,7 +93,7 @@ function Header() {
         <label class="cc-date" label={today} xalign={0} halign={Gtk.Align.START} />
       </box>
       <button class="panel-icon-btn" tooltipText="Change wallpaper" onClicked={() => { closePanel(); sh("blob_wallpaper") }}>
-        <label label={""} />
+        <label label={""} />
       </button>
       <button class="panel-icon-btn" tooltipText="Lock" onClicked={() => { closePanel(); sh("omarchy-system-lock") }}>
         <label label={""} />
@@ -318,7 +318,7 @@ const uptime = createPoll("", 60000, shell("uptime -p"), (stdout) =>
 function UptimeCard() {
   return (
     <box class="panel widget-card" vertical spacing={10}>
-      <CardHeader icon={""} title="Uptime" />
+      <CardHeader icon={""} title="Uptime" />
       <label class="widget-hero-value" label={uptime} xalign={0} halign={Gtk.Align.START} wrap />
     </box>
   )
@@ -358,8 +358,8 @@ function WeatherCard() {
         visible={weather.as((w) => !w.ok)}
       />
       <box vertical spacing={8} visible={weather.as((w) => w.ok)}>
-        <StatRow icon={""} label="Temperature" value={weather.as((w) => w.temp)} />
-        <StatRow icon={""} label="Wind" value={weather.as((w) => w.wind)} />
+        <StatRow icon={""} label="Temperature" value={weather.as((w) => w.temp)} />
+        <StatRow icon={""} label="Wind" value={weather.as((w) => w.wind)} />
       </box>
     </box>
   )
