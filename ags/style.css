@@ -349,44 +349,37 @@
   font-size: 13px;
 }
 
-.qs-divider {
-  min-width: 1px;
-  background-color: alpha(@foreground, 0.15);
-}
-
 .qs-side-panel {
-  min-width: 160px;
+  min-width: 170px;
 }
 
-.side-card {
-  background-color: alpha(@color0, 0.6);
-  border-radius: 10px;
+.widget-card {
   padding: 10px;
 }
 
-.side-card-icon {
+.widget-card-icon {
   color: @accent;
   font-size: 14px;
 }
 
-.side-card-title {
+.widget-card-title {
   font-size: 12px;
   font-weight: bold;
   color: @foreground;
 }
 
-.side-card-label {
+.widget-card-label {
   font-size: 12px;
   opacity: 0.8;
 }
 
-.side-card-value {
+.widget-card-value {
   font-size: 13px;
   font-weight: bold;
   color: @foreground;
 }
 
-.side-card-empty {
+.widget-card-empty {
   font-size: 12px;
   opacity: 0.6;
 }

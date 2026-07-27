@@ -313,12 +313,12 @@ const uptime = createPoll("", 60000, shell("uptime -p"), (stdout) =>
 
 function UptimeCard() {
   return (
-    <box class="side-card" vertical spacing={6}>
+    <box class="panel widget-card" vertical spacing={6}>
       <box spacing={8}>
-        <label class="side-card-icon" label={""} />
-        <label class="side-card-title" label="Uptime" xalign={0} halign={Gtk.Align.START} hexpand />
+        <label class="widget-card-icon" label={""} />
+        <label class="widget-card-title" label="Uptime" xalign={0} halign={Gtk.Align.START} hexpand />
       </box>
-      <label class="side-card-value" label={uptime} xalign={0} halign={Gtk.Align.START} wrap />
+      <label class="widget-card-value" label={uptime} xalign={0} halign={Gtk.Align.START} wrap />
     </box>
   )
 }
@@ -329,19 +329,19 @@ const weather = createPoll("Loading...", 600000, shell("omarchy-weather-status")
 
 function WeatherCard() {
   return (
-    <box class="side-card" vertical spacing={6}>
+    <box class="panel widget-card" vertical spacing={6}>
       <box spacing={8}>
-        <label class="side-card-icon" label={""} />
-        <label class="side-card-title" label="Weather" xalign={0} halign={Gtk.Align.START} hexpand />
+        <label class="widget-card-icon" label={""} />
+        <label class="widget-card-title" label="Weather" xalign={0} halign={Gtk.Align.START} hexpand />
       </box>
-      <label class="side-card-value" label={weather} xalign={0} halign={Gtk.Align.START} wrap />
+      <label class="widget-card-value" label={weather} xalign={0} halign={Gtk.Align.START} wrap />
     </box>
   )
 }
 
 function LeftPanel() {
   return (
-    <box class="qs-side-panel" vertical spacing={10}>
+    <box class="qs-side-panel" vertical spacing={12}>
       <UptimeCard />
       <WeatherCard />
     </box>
@@ -350,7 +350,7 @@ function LeftPanel() {
 
 function RightPanel() {
   return (
-    <box class="qs-side-panel" vertical spacing={10}>
+    <box class="qs-side-panel" vertical spacing={12}>
       <ClaudeUsageCard />
     </box>
   )
@@ -371,10 +371,9 @@ export default function QuickSettings() {
       visible={false}
       application={app}
     >
-      <box class="panel quick-settings-shell" spacing={12}>
+      <box spacing={12}>
         <LeftPanel />
-        <box class="qs-divider" vexpand />
-        <box class="quick-settings control-center" vertical spacing={12}>
+        <box class="panel quick-settings control-center" vertical spacing={12}>
           <Header />
           <CalendarSection />
           <Toggles />
@@ -382,7 +381,6 @@ export default function QuickSettings() {
           <BrightnessSlider />
           <MediaPlayer />
         </box>
-        <box class="qs-divider" vexpand />
         <RightPanel />
       </box>
     </window>
