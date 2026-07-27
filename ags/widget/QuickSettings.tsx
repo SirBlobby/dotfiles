@@ -3,6 +3,7 @@ import { Astal, Gtk } from "ags/gtk3"
 import { createState } from "ags"
 import { createPoll, interval } from "ags/time"
 import { sh, shell } from "../lib/utils"
+import { ClaudeUsageCard } from "./ClaudeUsage"
 
 export const QUICKSETTINGS_WINDOW = "quick-settings"
 
@@ -306,6 +307,55 @@ function CalendarSection() {
   )
 }
 
+const uptime = createPoll("", 60000, shell("uptime -p"), (stdout) =>
+  stdout.trim().replace(/^up /, ""),
+)
+
+function UptimeCard() {
+  return (
+    <box class="side-card" vertical spacing={6}>
+      <box spacing={8}>
+        <label class="side-card-icon" label={""} />
+        <label class="side-card-title" label="Uptime" xalign={0} halign={Gtk.Align.START} hexpand />
+      </box>
+      <label class="side-card-value" label={uptime} xalign={0} halign={Gtk.Align.START} wrap />
+    </box>
+  )
+}
+
+const weather = createPoll("Loading...", 600000, shell("omarchy-weather-status"), (stdout) =>
+  stdout.trim(),
+)
+
+function WeatherCard() {
+  return (
+    <box class="side-card" vertical spacing={6}>
+      <box spacing={8}>
+        <label class="side-card-icon" label={""} />
+        <label class="side-card-title" label="Weather" xalign={0} halign={Gtk.Align.START} hexpand />
+      </box>
+      <label class="side-card-value" label={weather} xalign={0} halign={Gtk.Align.START} wrap />
+    </box>
+  )
+}
+
+function LeftPanel() {
+  return (
+    <box class="qs-side-panel" vertical spacing={10}>
+      <UptimeCard />
+      <WeatherCard />
+    </box>
+  )
+}
+
+function RightPanel() {
+  return (
+    <box class="qs-side-panel" vertical spacing={10}>
+      <ClaudeUsageCard />
+    </box>
+  )
+}
+
 export default function QuickSettings() {
   const { TOP } = Astal.WindowAnchor
 
@@ -321,13 +371,19 @@ export default function QuickSettings() {
       visible={false}
       application={app}
     >
-      <box class="panel quick-settings control-center" vertical spacing={12}>
-        <Header />
-        <CalendarSection />
-        <Toggles />
-        <VolumeSlider />
-        <BrightnessSlider />
-        <MediaPlayer />
+      <box class="panel quick-settings-shell" spacing={12}>
+        <LeftPanel />
+        <box class="qs-divider" vexpand />
+        <box class="quick-settings control-center" vertical spacing={12}>
+          <Header />
+          <CalendarSection />
+          <Toggles />
+          <VolumeSlider />
+          <BrightnessSlider />
+          <MediaPlayer />
+        </box>
+        <box class="qs-divider" vexpand />
+        <RightPanel />
       </box>
     </window>
   )

@@ -38,6 +38,7 @@ The installer automatically exposes scripts from the `scripts/` directory as glo
 - **`blob_glass [on|off|toggle]`**: A quick toggle to enable or disable window transparency on the fly.
 - **`blob_boot [path]`**: Safely updates your Plymouth boot splash image (defaults to `branding/boot_flash.png`) and rebuilds the `initramfs` (GRUB compatible via `mkinitcpio`).
 - **`blob_wifi`**: A streamlined script to connect to the GMU Eduroam Wi-Fi network using `iwd` and `systemd-resolved` (replaces NetworkManager).
+- **`blob_claude_key <set|show|clear>`**: Stores your Claude Console Admin API key (`sk-ant-admin01-...`), used by the Claude Code Usage card in the quick settings panel to pull daily token and cost stats.
 
 ## Installation
 

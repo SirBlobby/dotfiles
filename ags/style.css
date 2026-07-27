@@ -349,21 +349,54 @@
   font-size: 13px;
 }
 
+.qs-divider {
+  min-width: 1px;
+  background-color: alpha(@foreground, 0.15);
+}
+
+.qs-side-panel {
+  min-width: 160px;
+}
+
+.side-card {
+  background-color: alpha(@color0, 0.6);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.side-card-icon {
+  color: @accent;
+  font-size: 14px;
+}
+
+.side-card-title {
+  font-size: 12px;
+  font-weight: bold;
+  color: @foreground;
+}
+
+.side-card-label {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.side-card-value {
+  font-size: 13px;
+  font-weight: bold;
+  color: @foreground;
+}
+
+.side-card-empty {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
 .control-center {
   min-width: 360px;
 }
 
 .cc-header {
   margin-bottom: 2px;
-}
-
-.cc-uptime {
-  font-size: 13px;
-  color: @foreground;
-}
-
-.cc-uptime-icon {
-  color: @accent;
 }
 
 .cc-clock {

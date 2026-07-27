@@ -139,6 +139,8 @@ check_file "$SCRIPT_DIR/omarchy/hooks/theme-set" "$HOME_DIR/.config/omarchy/hook
 check_file "$SCRIPT_DIR/ags/app.ts" "$HOME_DIR/.config/ags/app.ts" "ags/app.ts" || check_status=1
 check_file "$SCRIPT_DIR/ags/style.css" "$HOME_DIR/.config/ags/style.css" "ags/style.css" || check_status=1
 check_file "$SCRIPT_DIR/ags/lib/utils.ts" "$HOME_DIR/.config/ags/lib/utils.ts" "ags/lib/utils.ts" || check_status=1
+check_file "$SCRIPT_DIR/ags/lib/claude-usage.sh" "$HOME_DIR/.config/ags/lib/claude-usage.sh" "ags/lib/claude-usage.sh" || check_status=1
+check_file "$SCRIPT_DIR/ags/widget/ClaudeUsage.tsx" "$HOME_DIR/.config/ags/widget/ClaudeUsage.tsx" "ags/widget/ClaudeUsage.tsx" || check_status=1
 check_file "$SCRIPT_DIR/ags/widget/Media.tsx" "$HOME_DIR/.config/ags/widget/Media.tsx" "ags/widget/Media.tsx" || check_status=1
 check_file "$SCRIPT_DIR/ags/widget/Notifications.tsx" "$HOME_DIR/.config/ags/widget/Notifications.tsx" "ags/widget/Notifications.tsx" || check_status=1
 check_file "$SCRIPT_DIR/ags/widget/QuickSettings.tsx" "$HOME_DIR/.config/ags/widget/QuickSettings.tsx" "ags/widget/QuickSettings.tsx" || check_status=1
