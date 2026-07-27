@@ -361,7 +361,7 @@ function WeatherCard() {
 
 function LeftPanel() {
   return (
-    <box class="qs-side-panel" vertical spacing={12}>
+    <box class="qs-side-panel" vertical spacing={12} valign={Gtk.Align.START}>
       <WeatherCard />
     </box>
   )
@@ -369,7 +369,7 @@ function LeftPanel() {
 
 function RightPanel() {
   return (
-    <box class="qs-side-panel" vertical spacing={12}>
+    <box class="qs-side-panel" vertical spacing={12} valign={Gtk.Align.START}>
       <ClaudeUsageCard />
     </box>
   )
