@@ -144,6 +144,8 @@ function Toggles() {
             sh("omarchy-launch-bluetooth")
           }}
         />
+      </box>
+      <box class="qs-tiles" spacing={8} homogeneous>
         <Tile
           icon={""}
           label="Wallpaper"

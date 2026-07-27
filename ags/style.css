@@ -364,9 +364,14 @@
 .widget-icon-badge {
   background-color: alpha(@accent, 0.18);
   border-radius: 8px;
-  padding: 8px 11px;
+  min-width: 32px;
+  min-height: 32px;
   color: @accent;
   font-size: 16px;
+}
+
+.widget-icon-badge label {
+  padding: 0;
 }
 
 .widget-card-title {
