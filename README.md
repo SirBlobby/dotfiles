@@ -31,7 +31,7 @@ My current setup is built around these core components:
 
 ## Docs
 
-- [Wallpaper Gallery](wallpaper-gallery/index.md) — preview of every wallpaper in `wallpapers/`, split alphabetically across [A-D](wallpaper-gallery/a-d.md), [E-M](wallpaper-gallery/e-m.md), [N-R](wallpaper-gallery/n-r.md), [S-Z](wallpaper-gallery/s-z.md).
+- [Wallpaper Gallery](wallpaper-gallery/index.md) — preview of every wallpaper in `wallpapers/`, split alphabetically across [0-9, A-D](wallpaper-gallery/a-d.md), [E-M](wallpaper-gallery/e-m.md), [M-R](wallpaper-gallery/m-r.md), [R-Y](wallpaper-gallery/r-z.md).
 - [Keybinds](hypr/keybinds.md) — custom Hyprland keybindings on top of Omarchy's defaults.
 - [Commands](commands.md) — custom `blob_*` CLI commands exposed by the installer.
 
