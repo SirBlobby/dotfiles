@@ -7,6 +7,14 @@ THEME_DIR="$HOME/.config/omarchy/themes/blob-dynamic"
 mkdir -p "$WALLPAPER_DIR"
 mkdir -p "$THEME_DIR/backgrounds"
 
+{
+    echo "=== $(date '+%F %T') invoked with: $* ==="
+    echo "WAYLAND_DISPLAY=$WAYLAND_DISPLAY"
+    echo "XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR"
+    echo "DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS"
+    echo "PATH=$PATH"
+} >> "$HOME/.cache/blob-wallpaper.log"
+
 if [ -z "$1" ]; then
     # Open the AGS wallpaper selector widget
     ags toggle wall-picker
@@ -77,27 +85,37 @@ return {
 }
 EOF
 
-# Apply the Blob-Dynamic theme
-# omarchy-theme-set manages the background and reloads waybar and AGS
-omarchy-theme-set "blob-dynamic"
+# Apply the Blob-Dynamic theme, but skip its own background step: it
+# launches swaybg asynchronously, which races with the gif handling
+# below and can leave a static swaybg frame on top of an animated gif.
+OMARCHY_THEME_SKIP_BACKGROUND=1 omarchy-theme-set "blob-dynamic"
 
-# If it's a GIF, override swaybg with awww (swww replacement)
+CURRENT_BACKGROUND_LINK="$HOME/.config/omarchy/current/background"
+ln -nsf "$THEME_DIR/backgrounds/$(basename "$IMAGE_PATH")" "$CURRENT_BACKGROUND_LINK"
+
+# Stop whichever daemon was previously rendering the background before
+# starting the one this wallpaper needs. `awww kill` shuts the daemon down
+# via its own IPC so it cleans up its socket, unlike a raw `pkill`.
+pkill -x swaybg 2>/dev/null
+awww kill --all >/dev/null 2>&1
+pkill -x awww-daemon 2>/dev/null
+
 if [[ "${IMAGE_PATH,,}" == *.gif ]]; then
-    echo "GIF detected, switching to awww..."
-    pkill -x swaybg
-    
-    # Start awww daemon if not running
-    if ! pgrep -x awww-daemon >/dev/null; then
-        awww-daemon >/dev/null 2>&1 &
-        sleep 1
+    echo "GIF detected, using awww for animation..."
+    setsid uwsm-app -- awww-daemon >>"$HOME/.cache/awww-daemon.log" 2>&1 &
+
+    # Poll until the daemon's IPC socket is ready instead of guessing a fixed sleep
+    IMG_ERROR=""
+    for _ in {1..15}; do
+        IMG_ERROR=$(awww img "$CURRENT_BACKGROUND_LINK" 2>&1) && break
+        sleep 0.3
+    done
+    if [[ -n "$IMG_ERROR" ]]; then
+        echo "awww failed to set the wallpaper: $IMG_ERROR"
+        echo "See $HOME/.cache/awww-daemon.log for daemon output."
     fi
-    
-    awww img "$IMAGE_PATH"
 else
-    # Ensure awww is stopped for static wallpapers so swaybg can render them
-    if pgrep -x awww-daemon >/dev/null; then
-        pkill -x awww-daemon
-    fi
+    setsid uwsm-app -- swaybg -i "$CURRENT_BACKGROUND_LINK" -m fill >/dev/null 2>&1 &
 fi
 
 echo "Wallpaper and dynamic theme applied successfully: $IMAGE_PATH"
