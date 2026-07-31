@@ -25,13 +25,13 @@ My current setup is built around these core components:
 - **`waybar/`**: Status bar layout, CSS styling, and custom interactive modules.
 - **`ags/`**: Custom desktop widgets built with TypeScript and GTK — media player, notification hub, quick settings, system monitor, and wallpaper picker.
 - **`scripts/`**: Global utility scripts seamlessly exposed as commands by the installer. See [`commands.md`](commands.md).
-- **`wallpapers/`**: A collection of local custom wallpapers for dynamic theming. See [`wallpaper.md`](wallpaper.md) for the full gallery.
+- **`wallpapers/`**: A collection of local custom wallpapers for dynamic theming. See [`wallpaper-gallery/`](wallpaper-gallery/index.md) for the full gallery (split alphabetically across multiple pages).
 - **`omarchy/hooks/`**: Event hooks for the Omarchy system (e.g. automatically applying dynamic themes when changing wallpapers).
 - **`branding/`**: Custom ASCII art and system branding assets.
 
 ## Docs
 
-- [Wallpaper Gallery](wallpaper.md) — preview of every wallpaper in `wallpapers/`.
+- [Wallpaper Gallery](wallpaper-gallery/index.md) — preview of every wallpaper in `wallpapers/`, split alphabetically across [A-D](wallpaper-gallery/a-d.md), [E-M](wallpaper-gallery/e-m.md), [N-R](wallpaper-gallery/n-r.md), [S-Z](wallpaper-gallery/s-z.md).
 - [Keybinds](hypr/keybinds.md) — custom Hyprland keybindings on top of Omarchy's defaults.
 - [Commands](commands.md) — custom `blob_*` CLI commands exposed by the installer.
 
