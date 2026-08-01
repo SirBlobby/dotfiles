@@ -84,7 +84,8 @@
 .QuickSettings,
 .SysMonitor,
 .Calendar,
-.WallPicker {
+.WallPicker,
+.ThemePicker {
   background-color: transparent;
 }
 
@@ -347,6 +348,64 @@
 
 .wall-empty-text {
   font-size: 13px;
+}
+
+.theme-picker {
+  min-width: 680px;
+  min-height: 460px;
+}
+
+.theme-scroll {
+  min-height: 360px;
+}
+
+.theme-chip {
+  padding: 8px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-color: alpha(@color0, 0.6);
+  transition: all 0.2s;
+  min-width: 200px;
+}
+
+.theme-chip:hover {
+  border: 2px solid alpha(@accent, 0.6);
+}
+
+.theme-chip.active {
+  border: 2px solid @accent;
+}
+
+.theme-chip-dynamic {
+  background-color: alpha(@accent, 0.15);
+}
+
+.theme-chip-dynamic.active {
+  background-color: @accent;
+}
+
+.theme-chip-dynamic.active .theme-chip-label,
+.theme-chip-dynamic.active .theme-chip-icon {
+  color: @background;
+}
+
+.theme-chip-icon {
+  font-size: 16px;
+  color: @accent;
+}
+
+.theme-swatches {
+  min-height: 36px;
+  border-radius: 6px;
+}
+
+.theme-swatch {
+  min-width: 10px;
+}
+
+.theme-chip-label {
+  font-size: 12px;
+  color: @foreground;
 }
 
 .qs-side-panel {

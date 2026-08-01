@@ -69,7 +69,7 @@ backup_and_copy() {
     
     if [ ! -e "$dest" ]; then
         echo "[COPY] $name: New directory (creating)"
-        mkdir -p "$(dirname "$dest")"
+        mkdir -p "$dest"
         cp -r "$src"/* "$dest"/
         return
     fi
@@ -87,8 +87,42 @@ backup_and_copy() {
         rm -rf "$dest.bak"
         mkdir -p "$dest.bak"
         cp -r "$dest"/* "$dest.bak/" 2>/dev/null || true
-        
+
         echo "[COPY] $name: Overwriting (--force)"
+        cp -r "$src"/* "$dest"/
+    else
+        echo "[SKIP] $name: Has local changes (use --force to overwrite)"
+    fi
+}
+
+# Like backup_and_copy, but for destinations that are pure git-tracked
+# mirrors with no local state worth protecting (wallpapers, themes).
+# No .bak sibling is created — a stale one would otherwise show up
+# alongside the real thing (e.g. in the theme picker's directory scan).
+replace_and_copy() {
+    local src="$1"
+    local dest="$2"
+    local name="$3"
+
+    if [ ! -e "$dest" ]; then
+        echo "[COPY] $name: New directory (creating)"
+        mkdir -p "$dest"
+        cp -r "$src"/* "$dest"/
+        return
+    fi
+
+    local src_hash=$(compute_hash "$src")
+    local dest_hash=$(compute_hash "$dest")
+
+    if [ "$src_hash" = "$dest_hash" ]; then
+        echo "[SKIP] $name: Up to date"
+        return
+    fi
+
+    if [ "$FORCE" = true ]; then
+        echo "[COPY] $name: Replacing (--force)"
+        rm -rf "$dest"
+        mkdir -p "$dest"
         cp -r "$src"/* "$dest"/
     else
         echo "[SKIP] $name: Has local changes (use --force to overwrite)"
@@ -146,10 +180,12 @@ check_file "$SCRIPT_DIR/ags/widget/Media.tsx" "$HOME_DIR/.config/ags/widget/Medi
 check_file "$SCRIPT_DIR/ags/widget/Notifications.tsx" "$HOME_DIR/.config/ags/widget/Notifications.tsx" "ags/widget/Notifications.tsx" || check_status=1
 check_file "$SCRIPT_DIR/ags/widget/QuickSettings.tsx" "$HOME_DIR/.config/ags/widget/QuickSettings.tsx" "ags/widget/QuickSettings.tsx" || check_status=1
 check_file "$SCRIPT_DIR/ags/widget/SysMonitor.tsx" "$HOME_DIR/.config/ags/widget/SysMonitor.tsx" "ags/widget/SysMonitor.tsx" || check_status=1
+check_file "$SCRIPT_DIR/ags/widget/ThemePicker.tsx" "$HOME_DIR/.config/ags/widget/ThemePicker.tsx" "ags/widget/ThemePicker.tsx" || check_status=1
 check_file "$SCRIPT_DIR/ags/widget/WallPicker.tsx" "$HOME_DIR/.config/ags/widget/WallPicker.tsx" "ags/widget/WallPicker.tsx" || check_status=1
 check_file "$SCRIPT_DIR/ags/widget/WidgetCard.tsx" "$HOME_DIR/.config/ags/widget/WidgetCard.tsx" "ags/widget/WidgetCard.tsx" || check_status=1
 check_file "$SCRIPT_DIR/waybar/style.css" "$HOME_DIR/.config/waybar/style.css" "waybar/style.css" || check_status=1
 check_file "$SCRIPT_DIR/elephant/menus/blob_background_selector.lua" "$HOME_DIR/.config/elephant/menus/blob_background_selector.lua" "elephant/menus/blob_background_selector.lua" || check_status=1
+check_file "$SCRIPT_DIR/elephant/menus/blob_theme_selector.lua" "$HOME_DIR/.config/elephant/menus/blob_theme_selector.lua" "elephant/menus/blob_theme_selector.lua" || check_status=1
 check_file "$SCRIPT_DIR/branding/about.txt" "$HOME_DIR/.config/omarchy/branding/about.txt" "branding/about.txt" || check_status=1
 check_file "$SCRIPT_DIR/branding/screensaver.txt" "$HOME_DIR/.config/omarchy/branding/screensaver.txt" "branding/screensaver.txt" || check_status=1
 
@@ -164,6 +200,14 @@ for script in "$SCRIPT_DIR/scripts"/*.sh; do
         check_file "$script" "$HOME_DIR/scripts/$base_name.sh" "scripts/$base_name.sh" || check_status=1
     fi
 done
+
+if [ -d "$SCRIPT_DIR/themes" ]; then
+    for theme_dir in "$SCRIPT_DIR/themes"/*/; do
+        [ -d "$theme_dir" ] || continue
+        theme_name=$(basename "$theme_dir")
+        check_file "$theme_dir/colors.toml" "$HOME_DIR/.config/omarchy/themes/$theme_name/colors.toml" "themes/$theme_name/colors.toml" || check_status=1
+    done
+fi
 
 echo ""
 
@@ -191,7 +235,15 @@ backup_and_copy "$SCRIPT_DIR/hypr" "$HOME_DIR/.config/hypr" "Hyprland config"
 backup_and_copy "$SCRIPT_DIR/branding" "$HOME_DIR/.config/omarchy/branding" "Branding files"
 backup_and_copy "$SCRIPT_DIR/elephant" "$HOME_DIR/.config/elephant" "Elephant configs"
 backup_and_copy "$SCRIPT_DIR/omarchy/hooks" "$HOME_DIR/.config/omarchy/hooks" "Omarchy hooks"
-backup_and_copy "$SCRIPT_DIR/wallpapers" "$HOME_DIR/wallpapers" "Custom wallpapers"
+replace_and_copy "$SCRIPT_DIR/wallpapers" "$HOME_DIR/wallpapers" "Custom wallpapers"
+
+if [ -d "$SCRIPT_DIR/themes" ]; then
+    for theme_dir in "$SCRIPT_DIR/themes"/*/; do
+        [ -d "$theme_dir" ] || continue
+        theme_name=$(basename "$theme_dir")
+        replace_and_copy "$theme_dir" "$HOME_DIR/.config/omarchy/themes/$theme_name" "Theme: $theme_name"
+    done
+fi
 
 zen_profile=$(find "$HOME_DIR/.config/zen" -maxdepth 1 -type d -name "*.Default (release)*" 2>/dev/null | head -n 1)
 if [ -n "$zen_profile" ]; then

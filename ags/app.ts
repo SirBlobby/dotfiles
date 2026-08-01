@@ -4,6 +4,7 @@ import Media from "./widget/Media"
 import NotificationCenter from "./widget/Notifications"
 import QuickSettings from "./widget/QuickSettings"
 import SysMonitor from "./widget/SysMonitor"
+import ThemePicker from "./widget/ThemePicker"
 import WallPicker from "./widget/WallPicker"
 
 const SHOW_DESKTOP_MEDIA = false
@@ -25,6 +26,7 @@ app.start({
     start("notification-center", NotificationCenter)
     start("quick-settings", QuickSettings)
     start("sys-monitor", SysMonitor)
+    start("theme-picker", ThemePicker)
     start("wall-picker", WallPicker)
   },
 })

@@ -176,6 +176,14 @@ function Toggles() {
       </box>
       <box class="qs-tiles" spacing={8} homogeneous>
         <Tile icon={""} label="Pick Color" onClicked={() => { closePanel(); sh("hyprpicker -a") }} />
+        <Tile
+          icon={""}
+          label="Theme"
+          onClicked={() => {
+            closePanel()
+            sh("blob_theme")
+          }}
+        />
       </box>
     </box>
   )

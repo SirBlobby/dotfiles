@@ -85,10 +85,19 @@ return {
 }
 EOF
 
-# Apply the Blob-Dynamic theme, but skip its own background step: it
+# Only switch the active color theme to blob-dynamic if you're already
+# in dynamic mode. The palette above and the background below are kept
+# up to date regardless, so `blob_theme --dynamic` always reflects the
+# latest wallpaper — but picking a wallpaper while on a static theme
+# should change the wallpaper, not silently pull you out of it.
+#
+# When it does apply, skip omarchy-theme-set's own background step: it
 # launches swaybg asynchronously, which races with the gif handling
 # below and can leave a static swaybg frame on top of an animated gif.
-OMARCHY_THEME_SKIP_BACKGROUND=1 omarchy-theme-set "blob-dynamic"
+CURRENT_THEME_NAME=$(cat "$HOME/.config/omarchy/current/theme.name" 2>/dev/null)
+if [ "$CURRENT_THEME_NAME" = "blob-dynamic" ]; then
+    OMARCHY_THEME_SKIP_BACKGROUND=1 omarchy-theme-set "blob-dynamic"
+fi
 
 CURRENT_BACKGROUND_LINK="$HOME/.config/omarchy/current/background"
 ln -nsf "$THEME_DIR/backgrounds/$(basename "$IMAGE_PATH")" "$CURRENT_BACKGROUND_LINK"
