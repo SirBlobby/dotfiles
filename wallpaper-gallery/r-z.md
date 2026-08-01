@@ -1,6 +1,6 @@
 # Wallpapers: R - Y
 
-22 of 88 wallpapers in [`wallpapers/`](../wallpapers/). Sorted alphabetically.
+23 of 93 wallpapers in [`wallpapers/`](../wallpapers/). Sorted alphabetically.
 
 [<< M - R](m-r.md) | [All wallpapers](index.md)
 
@@ -38,51 +38,51 @@
 <tr>
   <td align="center"><img src="../wallpapers/swords.jpg" width="280"/></td>
   <td align="center"><img src="../wallpapers/tabs.jpg" width="280"/></td>
-  <td align="center"><img src="../wallpapers/train_tokyo.gif" width="280"/></td>
+  <td align="center"><img src="../wallpapers/think.png" width="280"/></td>
 </tr>
 <tr>
   <td align="center"><sub><code>swords.jpg</code></sub></td>
   <td align="center"><sub><code>tabs.jpg</code></sub></td>
-  <td align="center"><sub><code>train_tokyo.gif</code></sub></td>
+  <td align="center"><sub><code>think.png</code></sub></td>
 </tr>
 <tr>
+  <td align="center"><img src="../wallpapers/train_tokyo.gif" width="280"/></td>
   <td align="center"><img src="../wallpapers/two-astronauts.png" width="280"/></td>
   <td align="center"><img src="../wallpapers/underwater.png" width="280"/></td>
-  <td align="center"><img src="../wallpapers/vintage-ascent.jpg" width="280"/></td>
 </tr>
 <tr>
+  <td align="center"><sub><code>train_tokyo.gif</code></sub></td>
   <td align="center"><sub><code>two-astronauts.png</code></sub></td>
   <td align="center"><sub><code>underwater.png</code></sub></td>
-  <td align="center"><sub><code>vintage-ascent.jpg</code></sub></td>
 </tr>
 <tr>
+  <td align="center"><img src="../wallpapers/vintage-ascent.jpg" width="280"/></td>
   <td align="center"><img src="../wallpapers/windows-black.png" width="280"/></td>
   <td align="center"><img src="../wallpapers/windows-magenta-blue.png" width="280"/></td>
-  <td align="center"><img src="../wallpapers/windows-magenta-pink.png" width="280"/></td>
 </tr>
 <tr>
+  <td align="center"><sub><code>vintage-ascent.jpg</code></sub></td>
   <td align="center"><sub><code>windows-black.png</code></sub></td>
   <td align="center"><sub><code>windows-magenta-blue.png</code></sub></td>
-  <td align="center"><sub><code>windows-magenta-pink.png</code></sub></td>
 </tr>
 <tr>
+  <td align="center"><img src="../wallpapers/windows-magenta-pink.png" width="280"/></td>
   <td align="center"><img src="../wallpapers/windows-xp.png" width="280"/></td>
   <td align="center"><img src="../wallpapers/xavier-cuenca-w4-3.jpg" width="280"/></td>
-  <td align="center"><img src="../wallpapers/yosemite-color-block.png" width="280"/></td>
 </tr>
 <tr>
+  <td align="center"><sub><code>windows-magenta-pink.png</code></sub></td>
   <td align="center"><sub><code>windows-xp.png</code></sub></td>
   <td align="center"><sub><code>xavier-cuenca-w4-3.jpg</code></sub></td>
-  <td align="center"><sub><code>yosemite-color-block.png</code></sub></td>
 </tr>
 <tr>
+  <td align="center"><img src="../wallpapers/yosemite-color-block.png" width="280"/></td>
   <td align="center"><img src="../wallpapers/yosemite-lowpoly.jpg" width="280"/></td>
   <td></td>
-  <td></td>
 </tr>
 <tr>
+  <td align="center"><sub><code>yosemite-color-block.png</code></sub></td>
   <td align="center"><sub><code>yosemite-lowpoly.jpg</code></sub></td>
-  <td></td>
   <td></td>
 </tr>
 </table>
