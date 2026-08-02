@@ -1,6 +1,6 @@
-# Wallpapers: 0-9, A-D
+# Wallpapers: 0-9, A-E
 
-23 of 93 wallpapers in [`wallpapers/`](../wallpapers/). Sorted alphabetically.
+26 of 102 wallpapers in [`wallpapers/`](../wallpapers/). Sorted alphabetically.
 
 [All wallpapers](index.md) | [E - M >>](e-m.md)
 
@@ -76,13 +76,23 @@
   <td align="center"><sub><code>deer-forest.jpg</code></sub></td>
 </tr>
 <tr>
+  <td align="center"><img src="../wallpapers/delorean.png" width="280"/></td>
   <td align="center"><img src="../wallpapers/delorean_pastel.png" width="280"/></td>
+  <td align="center"><img src="../wallpapers/doom-slayer.png" width="280"/></td>
+</tr>
+<tr>
+  <td align="center"><sub><code>delorean.png</code></sub></td>
+  <td align="center"><sub><code>delorean_pastel.png</code></sub></td>
+  <td align="center"><sub><code>doom-slayer.png</code></sub></td>
+</tr>
+<tr>
   <td align="center"><img src="../wallpapers/ds_giyu.png" width="280"/></td>
+  <td align="center"><img src="../wallpapers/evangelion.png" width="280"/></td>
   <td></td>
 </tr>
 <tr>
-  <td align="center"><sub><code>delorean_pastel.png</code></sub></td>
   <td align="center"><sub><code>ds_giyu.png</code></sub></td>
+  <td align="center"><sub><code>evangelion.png</code></sub></td>
   <td></td>
 </tr>
 </table>
