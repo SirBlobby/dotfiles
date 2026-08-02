@@ -170,6 +170,7 @@ check_file "$SCRIPT_DIR/hypr/looknfeel.conf" "$HOME_DIR/.config/hypr/looknfeel.c
 check_file "$SCRIPT_DIR/hypr/bindings.conf" "$HOME_DIR/.config/hypr/bindings.conf" "hypr/bindings.conf" || check_status=1
 check_file "$SCRIPT_DIR/hypr/hypridle.conf" "$HOME_DIR/.config/hypr/hypridle.conf" "hypr/hypridle.conf" || check_status=1
 check_file "$SCRIPT_DIR/omarchy/hooks/theme-set" "$HOME_DIR/.config/omarchy/hooks/theme-set" "omarchy/hooks/theme-set" || check_status=1
+check_file "$SCRIPT_DIR/omarchy/themed/zen.css.tpl" "$HOME_DIR/.config/omarchy/themed/zen.css.tpl" "omarchy/themed/zen.css.tpl" || check_status=1
 check_file "$SCRIPT_DIR/ags/app.ts" "$HOME_DIR/.config/ags/app.ts" "ags/app.ts" || check_status=1
 check_file "$SCRIPT_DIR/ags/style.css" "$HOME_DIR/.config/ags/style.css" "ags/style.css" || check_status=1
 check_file "$SCRIPT_DIR/ags/lib/utils.ts" "$HOME_DIR/.config/ags/lib/utils.ts" "ags/lib/utils.ts" || check_status=1
@@ -235,6 +236,7 @@ backup_and_copy "$SCRIPT_DIR/hypr" "$HOME_DIR/.config/hypr" "Hyprland config"
 backup_and_copy "$SCRIPT_DIR/branding" "$HOME_DIR/.config/omarchy/branding" "Branding files"
 backup_and_copy "$SCRIPT_DIR/elephant" "$HOME_DIR/.config/elephant" "Elephant configs"
 backup_and_copy "$SCRIPT_DIR/omarchy/hooks" "$HOME_DIR/.config/omarchy/hooks" "Omarchy hooks"
+backup_and_copy "$SCRIPT_DIR/omarchy/themed" "$HOME_DIR/.config/omarchy/themed" "Omarchy custom templates"
 replace_and_copy "$SCRIPT_DIR/wallpapers" "$HOME_DIR/wallpapers" "Custom wallpapers"
 
 if [ -d "$SCRIPT_DIR/themes" ]; then
@@ -379,6 +381,15 @@ if command -v hypridle &> /dev/null; then
     nohup hypridle >/dev/null 2>&1 &
 else
     echo "Warning: hypridle not found. Please restart hypridle manually."
+fi
+
+echo ""
+echo "=== Reapplying current theme (to pick up new templates) ==="
+current_theme_name=$(cat "$HOME_DIR/.config/omarchy/current/theme.name" 2>/dev/null)
+if [ -n "$current_theme_name" ] && command -v omarchy-theme-set &> /dev/null; then
+    OMARCHY_THEME_SKIP_BACKGROUND=1 omarchy-theme-set "$current_theme_name" || true
+else
+    echo "Warning: no active theme found. Run blob_theme to generate zen.css."
 fi
 
 echo ""
