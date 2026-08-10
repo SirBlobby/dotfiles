@@ -18,6 +18,7 @@ My current setup is built around these core components:
 - **[Waybar](https://github.com/Alexays/Waybar):** A customizable, modular status bar.
 - **[AGS](https://github.com/Aylur/ags):** Aylur's Gtk Shell, used for creating custom, scriptable desktop widgets.
 - **Dynamic Theming:** Seamlessly integrated with Pywal to extract color palettes from wallpapers and apply them instantly across the entire system (widgets, terminal, status bar).
+- **[kitty](https://sw.kovidgoyal.net/kitty/):** The terminal, with its own checked-in color theme — see [`kitty/`](kitty/README.md).
 
 ### Directory Structure
 
@@ -29,17 +30,19 @@ My current setup is built around these core components:
 - **`themes/`**: Drop-in local color themes (one `colors.toml` per theme) that `install.sh` deploys into Omarchy's theme directory. See [`themes/README.md`](themes/README.md).
 - **`omarchy/hooks/`**: Event hooks for the Omarchy system (e.g. automatically applying dynamic themes when changing wallpapers).
 - **`branding/`**: Custom ASCII art and system branding assets.
+- **`kitty/`**: kitty terminal config and its color theme, applied by hand rather than by `install.sh`. See [`kitty/README.md`](kitty/README.md).
 
 ## Docs
 
 - [Wallpaper Gallery](wallpaper-gallery/index.md) — preview of every wallpaper in `wallpapers/`, split alphabetically across [0-9, A-E](wallpaper-gallery/a-d.md), [E-M](wallpaper-gallery/e-m.md), [M-R](wallpaper-gallery/m-r.md), [R-Y](wallpaper-gallery/r-z.md).
 - [Themes](themes/README.md) — how to add a local color theme.
+- [kitty](kitty/README.md) — terminal config, and how to port a theme to it.
 - [Keybinds](hypr/keybinds.md) — custom Hyprland keybindings on top of Omarchy's defaults.
 - [Commands](commands.md) — custom `blob_*` CLI commands exposed by the installer.
 
 ## Installation
 
-An automated installer script (`install.sh`) is provided to safely apply these configurations to your system.
+An automated installer script (`install.sh`) is provided to safely apply these configurations to your system. It targets Arch — `kitty/` is applied by hand, see [`kitty/README.md`](kitty/README.md).
 
 ```bash
 # Run the standard installer

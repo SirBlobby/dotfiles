@@ -58,3 +58,11 @@ Any theme already installed under `~/.config/omarchy/themes/` or
 bundled with Omarchy itself (`$OMARCHY_PATH/themes/`) shows up
 automatically too — this directory is just for ones you want tracked
 in dotfiles.
+
+## kitty
+
+`omarchy-theme-set` and its app-config templates only run under Omarchy,
+so themes do not propagate to the standalone kitty config in
+[`kitty/`](../kitty/README.md). It carries its own hand-translated copy
+of one palette at `kitty/current-theme.conf` — currently **flats** —
+which changing a theme's `colors.toml` here does not update.
