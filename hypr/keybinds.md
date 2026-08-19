@@ -55,3 +55,8 @@ Print the live list at any time with `omarchy menu keybindings --print`.
 | `Super+Ctrl+L` | Lock |
 | `Super+Ctrl+I` | Toggle locking on idle |
 | `Super+Ctrl+N` | Toggle nightlight |
+| `Super+Ctrl+A` | Audio panel (includes the per-app mixer that replaced pavucontrol) |
+| `Super+Ctrl+W` | Network panel |
+| `Super+Ctrl+B` | Bluetooth panel |
+| `Super+Ctrl+D` | Display and brightness panel |
+| `Super+Ctrl+1` | AI agent usage panel (first panel in the bar's right section) |

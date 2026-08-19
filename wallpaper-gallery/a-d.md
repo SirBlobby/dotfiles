@@ -1,6 +1,6 @@
 # Wallpapers: 0-9, A-E
 
-26 of 102 wallpapers in [`wallpapers/`](../wallpapers/). Sorted alphabetically.
+26 of 103 wallpapers in [`wallpapers/`](../wallpapers/). Sorted alphabetically.
 
 [All wallpapers](index.md) | [E - M >>](e-m.md)
 

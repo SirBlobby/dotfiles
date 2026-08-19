@@ -1,6 +1,6 @@
 # Wallpapers: R - Y
 
-25 of 102 wallpapers in [`wallpapers/`](../wallpapers/). Sorted alphabetically.
+25 of 103 wallpapers in [`wallpapers/`](../wallpapers/). Sorted alphabetically.
 
 [<< M - R](m-r.md) | [All wallpapers](index.md)
 

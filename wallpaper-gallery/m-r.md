@@ -1,6 +1,6 @@
 # Wallpapers: M - R
 
-25 of 102 wallpapers in [`wallpapers/`](../wallpapers/). Sorted alphabetically.
+26 of 103 wallpapers in [`wallpapers/`](../wallpapers/). Sorted alphabetically.
 
 [<< E - M](e-m.md) | [All wallpapers](index.md) | [R - Y >>](r-z.md)
 
@@ -76,23 +76,23 @@
   <td align="center"><sub><code>planet_minimal.png</code></sub></td>
 </tr>
 <tr>
+  <td align="center"><img src="../wallpapers/PlanetRed.png" width="280"/></td>
   <td align="center"><img src="../wallpapers/pokemon-legends-arceus-wallpapers.jpg" width="280"/></td>
   <td align="center"><img src="../wallpapers/rain_world1.png" width="280"/></td>
-  <td align="center"><img src="../wallpapers/rain_world2.png" width="280"/></td>
 </tr>
 <tr>
+  <td align="center"><sub><code>PlanetRed.png</code></sub></td>
   <td align="center"><sub><code>pokemon-legends-arceus-wallpapers.jpg</code></sub></td>
   <td align="center"><sub><code>rain_world1.png</code></sub></td>
-  <td align="center"><sub><code>rain_world2.png</code></sub></td>
 </tr>
 <tr>
+  <td align="center"><img src="../wallpapers/rain_world2.png" width="280"/></td>
   <td align="center"><img src="../wallpapers/rm-rf.jpg" width="280"/></td>
   <td></td>
-  <td></td>
 </tr>
 <tr>
+  <td align="center"><sub><code>rain_world2.png</code></sub></td>
   <td align="center"><sub><code>rm-rf.jpg</code></sub></td>
-  <td></td>
   <td></td>
 </tr>
 </table>
