@@ -203,6 +203,7 @@ check_file "$SCRIPT_DIR/hypr/hyprsunset.conf" "$HOME_DIR/.config/hypr/hyprsunset
 check_file "$SCRIPT_DIR/hypr/xdph.conf" "$HOME_DIR/.config/hypr/xdph.conf" "hypr/xdph.conf" || check_status=1
 check_file "$SCRIPT_DIR/omarchy/shell.json" "$HOME_DIR/.config/omarchy/shell.json" "omarchy/shell.json" || check_status=1
 check_file "$SCRIPT_DIR/omarchy/extensions/omarchy-menu.jsonc" "$HOME_DIR/.config/omarchy/extensions/omarchy-menu.jsonc" "omarchy/extensions/omarchy-menu.jsonc" || check_status=1
+check_file "$SCRIPT_DIR/omarchy/plugins/blob.workspaces/Workspaces.qml" "$HOME_DIR/.config/omarchy/plugins/blob.workspaces/Workspaces.qml" "omarchy/plugins/blob.workspaces" || check_status=1
 check_file "$SCRIPT_DIR/omarchy/hooks/theme-set" "$HOME_DIR/.config/omarchy/hooks/theme-set" "omarchy/hooks/theme-set" || check_status=1
 check_file "$SCRIPT_DIR/omarchy/themed/zen.css.tpl" "$HOME_DIR/.config/omarchy/themed/zen.css.tpl" "omarchy/themed/zen.css.tpl" || check_status=1
 check_file "$SCRIPT_DIR/ags/app.ts" "$HOME_DIR/.config/ags/app.ts" "ags/app.ts" || check_status=1
@@ -267,6 +268,7 @@ backup_and_copy "$SCRIPT_DIR/branding" "$HOME_DIR/.config/omarchy/branding" "Bra
 backup_and_copy "$SCRIPT_DIR/omarchy/hooks" "$HOME_DIR/.config/omarchy/hooks" "Omarchy hooks"
 backup_and_copy "$SCRIPT_DIR/omarchy/themed" "$HOME_DIR/.config/omarchy/themed" "Omarchy custom templates"
 backup_and_copy "$SCRIPT_DIR/omarchy/extensions" "$HOME_DIR/.config/omarchy/extensions" "Omarchy menu extensions"
+backup_and_copy "$SCRIPT_DIR/omarchy/plugins" "$HOME_DIR/.config/omarchy/plugins" "Omarchy shell plugins"
 backup_and_copy_file "$SCRIPT_DIR/omarchy/shell.json" "$HOME_DIR/.config/omarchy/shell.json" "Omarchy shell config"
 replace_and_copy "$SCRIPT_DIR/wallpapers" "$HOME_DIR/wallpapers" "Custom wallpapers"
 

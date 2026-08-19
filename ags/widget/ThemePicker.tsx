@@ -10,6 +10,15 @@ const COLUMNS = 3
 
 type Theme = { slug: string; name: string; swatches: string[] }
 
+const swatchProgram =
+  "{ key=$1; value=$2; gsub(/[ \\t]/, \"\", key); gsub(/[ \"\\t]/, \"\", value); " +
+  "if (value ~ /^#/) palette[key] = value } " +
+  "END { split(\"color1 color2 color3 color4 color5 color6\", legacy, \" \"); " +
+  "split(\"red green yellow blue magenta cyan\", named, \" \"); " +
+  "for (i = 1; i <= 6; i++) { " +
+  "value = (legacy[i] in palette) ? palette[legacy[i]] : ((named[i] in palette) ? palette[named[i]] : \"\"); " +
+  "if (value != \"\") out = (out == \"\" ? value : out \",\" value) } print out }"
+
 const listCommand =
   "{ find \"$HOME/.config/omarchy/themes\" -mindepth 1 -maxdepth 1 -type d 2>/dev/null; " +
   "find \"$OMARCHY_PATH/themes\" -mindepth 1 -maxdepth 1 -type d 2>/dev/null; } | " +
@@ -17,7 +26,7 @@ const listCommand =
   "[ -f \"$d/colors.toml\" ] || continue; " +
   "n=$(basename \"$d\"); " +
   "[ \"$n\" = blob-dynamic ] && continue; " +
-  "c=$(grep -E '^color[1-6] *=' \"$d/colors.toml\" | sed -E 's/^color[0-9]+ *= *\"?([^\"]*)\"?.*/\\1/' | paste -sd,); " +
+  "c=$(awk -F'=' '" + swatchProgram + "' \"$d/colors.toml\"); " +
   "p=$(echo \"$n\" | sed -E 's/(^|-)([a-z])/\\1\\u\\2/g; s/-/ /g'); " +
   "echo \"$n|$p|$c\"; " +
   "done | awk -F'|' '!seen[$1]++' | sort -t'|' -k2,2"

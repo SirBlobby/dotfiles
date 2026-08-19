@@ -11,7 +11,7 @@ Ported from the old `waybar/config.jsonc`, section for section:
 | Old waybar module | shell.json widget |
 | --- | --- |
 | `custom/omarchy` | `omarchy.menu` |
-| `hyprland/workspaces` | `omarchy.workspaces` |
+| `hyprland/workspaces` | `blob.workspaces` (cloned plugin) |
 | `clock` | `blob.clock` (custom module) |
 | `custom/update` | `omarchy.system-update` |
 | `custom/voxtype` | `omarchy.indicators` -> `Dictation` |
@@ -47,6 +47,18 @@ AGS entry points survive the move off waybar:
 
 A command module with no `exec` key is a static icon; add `exec` and
 `interval` for one that refreshes its own text.
+
+## Cloned plugins
+
+`plugins/blob.workspaces/` is a clone of `omarchy.workspaces`, made with
+`omarchy plugin clone`. The stock widget hardcodes workspaces 1-5 as always
+visible and has no setting for it, so the clone changes that list to 1-9 to
+match the old waybar `persistent-workspaces`. Cloning also switches the bar
+to the cloned id, which is why `shell.json` says `blob.workspaces`.
+
+Re-clone after an Omarchy update if the upstream widget gains something worth
+picking up: `omarchy plugin clone omarchy.workspaces`, then re-apply the
+one-line `workspaceIds()` change.
 
 ## Editing
 

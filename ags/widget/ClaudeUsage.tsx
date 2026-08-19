@@ -51,9 +51,11 @@ const EMPTY_USAGE: AgentUsage = {
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
+const MARK_PATH = "/usr/share/omarchy/shell/plugins/agents/assets/claude.svg"
+
 function formatTokens(tokens: number) {
-  if (tokens >= 1000000000) return `${(tokens / 1000000000).toFixed(2)}B`
-  if (tokens >= 1000000) return `${(tokens / 1000000).toFixed(2)}M`
+  if (tokens >= 1000000000) return `${(tokens / 1000000000).toFixed(1)}B`
+  if (tokens >= 1000000) return `${(tokens / 1000000).toFixed(1)}M`
   if (tokens >= 1000) return `${(tokens / 1000).toFixed(1)}K`
   return `${Math.round(tokens)}`
 }
@@ -87,20 +89,20 @@ function formatModelName(model: string) {
     .replace(/(^| )(\w)/g, (_match, space, letter) => `${space}${letter.toUpperCase()}`)
 }
 
-function formatPercent(percent: number) {
-  if (percent > 0 && percent < 1) return "<1%"
-  return `${Math.round(percent)}%`
+function formatPercent(usedFraction: number) {
+  if (usedFraction > 0 && usedFraction < 0.01) return "<1%"
+  return `${Math.round(usedFraction * 100)}%`
 }
 
 function parseLimits(record: any): Limit[] {
   if (!Array.isArray(record.limits)) return []
 
   return record.limits.map((limit: any) => {
-    const percent = Number(limit.percent) || 0
+    const usedFraction = Number(limit.percent) || 0
     return {
       label: String(limit.label ?? "").replace(/\s*\(.*\)$/, ""),
-      percent,
-      fraction: Math.min(1, Math.max(0, percent / 100)),
+      percent: usedFraction,
+      fraction: Math.min(1, Math.max(0, usedFraction)),
       resetsIn: formatResetsIn(String(limit.resetsAt ?? "")),
     }
   })
@@ -253,7 +255,7 @@ export function ClaudeUsageCard() {
   return (
     <box class="panel widget-card" vertical spacing={10}>
       <box spacing={10}>
-        <label class="agent-mark" label={""} valign={Gtk.Align.CENTER} />
+        <box class="agent-mark" valign={Gtk.Align.CENTER} css={`background-image: url('${MARK_PATH}');`} />
         <box vertical valign={Gtk.Align.CENTER}>
           <label
             class="agent-name"

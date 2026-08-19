@@ -491,9 +491,11 @@
 }
 
 .agent-mark {
-  color: @accent;
-  font-size: 20px;
   min-width: 26px;
+  min-height: 26px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .agent-name {
@@ -541,12 +543,25 @@
 .agent-limit-bar trough,
 .agent-day-bar trough {
   min-height: 3px;
+  border-radius: 0;
   background-color: alpha(@foreground, 0.14);
+}
+
+.agent-limit-bar block,
+.agent-day-bar block {
+  min-height: 3px;
+  min-width: 0;
+  border-radius: 0;
 }
 
 .agent-limit-bar block.filled,
 .agent-day-bar block.filled {
   background-color: @foreground;
+}
+
+.agent-limit-bar block.empty,
+.agent-day-bar block.empty {
+  background-color: transparent;
 }
 
 .agent-day-row {
@@ -578,11 +593,22 @@
 
 .agent-model-bar trough {
   min-height: 22px;
+  border-radius: 0;
   background-color: alpha(@foreground, 0.08);
+}
+
+.agent-model-bar block {
+  min-height: 22px;
+  min-width: 0;
+  border-radius: 0;
 }
 
 .agent-model-bar block.filled {
   background-color: alpha(@foreground, 0.18);
+}
+
+.agent-model-bar block.empty {
+  background-color: transparent;
 }
 
 .agent-model-text {
