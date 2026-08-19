@@ -395,7 +395,7 @@ function CalendarSection() {
             tooltipText="Scroll to change month"
           />
           <button class="cc-calendar-nav" tooltipText="Previous month" onClicked={() => shiftMonth(-1)}>
-            <label label={""} />
+            <label label={"<"} />
           </button>
           <button
             class="cc-calendar-nav"
@@ -403,10 +403,10 @@ function CalendarSection() {
             visible={monthOffset.as((offset) => offset !== 0)}
             onClicked={resetMonth}
           >
-            <label label={""} />
+            <label label={"Today"} />
           </button>
           <button class="cc-calendar-nav" tooltipText="Next month" onClicked={() => shiftMonth(1)}>
-            <label label={""} />
+            <label label={">"} />
           </button>
         </box>
         <label class="cc-calendar-grid" label={monthGrid} halign={Gtk.Align.CENTER} />

@@ -11,8 +11,10 @@ const COLUMNS = 3
 type Theme = { slug: string; name: string; swatches: string[] }
 
 const swatchProgram =
-  "{ key=$1; value=$2; gsub(/[ \\t]/, \"\", key); gsub(/[ \"\\t]/, \"\", value); " +
-  "if (value ~ /^#/) palette[key] = value } " +
+  "{ key=$1; value=$2; gsub(/[ \\t]/, \"\", key); " +
+  "if (match(value, /\"[^\"]*\"/)) value = substr(value, RSTART + 1, RLENGTH - 2); " +
+  "else { sub(/#.*$/, \"\", value); gsub(/[ \\t]/, \"\", value) } " +
+  "if (value ~ /^#[0-9A-Fa-f]+$/) palette[key] = value } " +
   "END { split(\"color1 color2 color3 color4 color5 color6\", legacy, \" \"); " +
   "split(\"red green yellow blue magenta cyan\", named, \" \"); " +
   "for (i = 1; i <= 6; i++) { " +
@@ -41,7 +43,10 @@ const themes = createPoll<Theme[]>(
       .filter((line) => line.length > 0)
       .map((line) => {
         const [slug, name, swatchStr] = line.split("|")
-        return { slug, name: name ?? slug, swatches: (swatchStr ?? "").split(",").filter(Boolean) }
+        const swatches = (swatchStr ?? "")
+          .split(",")
+          .filter((color) => /^#[0-9A-Fa-f]{3,8}$/.test(color))
+        return { slug, name: name ?? slug, swatches }
       }),
 )
 

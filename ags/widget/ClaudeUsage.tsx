@@ -1,6 +1,6 @@
 import { Gtk } from "ags/gtk3"
 import { createPoll } from "ags/time"
-import { For } from "ags"
+import { For, createState } from "ags"
 import { shell } from "../lib/utils"
 
 type Limit = {
@@ -198,8 +198,33 @@ const usage = createPoll<AgentUsage>(
   (stdout) => parseUsage(stdout),
 )
 
-function SectionTitle({ title }: { title: string }) {
-  return <label class="widget-section-title" label={title} xalign={0} halign={Gtk.Align.START} />
+const [limitsExpanded, setLimitsExpanded] = createState(true)
+const [daysExpanded, setDaysExpanded] = createState(true)
+const [modelsExpanded, setModelsExpanded] = createState(true)
+
+function Section({ title, expanded, onToggle, content }: {
+  title: string
+  expanded: any
+  onToggle: () => void
+  content: any
+}) {
+  return (
+    <box vertical spacing={6}>
+      <button
+        class="widget-section-toggle"
+        tooltipText={expanded.as((open: boolean) => (open ? `Collapse ${title}` : `Expand ${title}`))}
+        onClicked={onToggle}
+      >
+        <box spacing={6}>
+          <label class="widget-section-title" label={title} xalign={0} halign={Gtk.Align.START} hexpand />
+          <label class="widget-section-caret" label={expanded.as((open: boolean) => (open ? "-" : "+"))} />
+        </box>
+      </button>
+      <revealer revealChild={expanded} transitionDuration={150}>
+        {content}
+      </revealer>
+    </box>
+  )
 }
 
 function LimitRow({ limit }: { limit: Limit }) {
@@ -289,25 +314,49 @@ export function ClaudeUsageCard() {
         />
       </box>
 
-      <box vertical spacing={10} visible={usage.as((u) => u.limits.length > 0)}>
-        <SectionTitle title="LIMITS" />
-        <For each={usage.as((u) => u.limits)} id={(limit: Limit) => limit.label}>
-          {(limit: Limit) => <LimitRow limit={limit} />}
-        </For>
+      <box vertical visible={usage.as((u) => u.limits.length > 0)}>
+        <Section
+          title="LIMITS"
+          expanded={limitsExpanded}
+          onToggle={() => setLimitsExpanded(!limitsExpanded.get())}
+          content={
+            <box vertical spacing={10}>
+              <For each={usage.as((u) => u.limits)} id={(limit: Limit) => limit.label}>
+                {(limit: Limit) => <LimitRow limit={limit} />}
+              </For>
+            </box>
+          }
+        />
       </box>
 
-      <box vertical spacing={6} visible={usage.as((u) => u.days.length > 0)}>
-        <SectionTitle title="TOKENS BY DAY" />
-        <For each={usage.as((u) => u.days)} id={(day: DayUsage) => day.key}>
-          {(day: DayUsage) => <DayRow day={day} />}
-        </For>
+      <box vertical visible={usage.as((u) => u.days.length > 0)}>
+        <Section
+          title="TOKENS BY DAY"
+          expanded={daysExpanded}
+          onToggle={() => setDaysExpanded(!daysExpanded.get())}
+          content={
+            <box vertical spacing={6}>
+              <For each={usage.as((u) => u.days)} id={(day: DayUsage) => day.key}>
+                {(day: DayUsage) => <DayRow day={day} />}
+              </For>
+            </box>
+          }
+        />
       </box>
 
-      <box vertical spacing={4} visible={usage.as((u) => u.models.length > 0)}>
-        <SectionTitle title="TOKENS BY MODEL" />
-        <For each={usage.as((u) => u.models)} id={(model: ModelUsage) => model.key}>
-          {(model: ModelUsage) => <ModelRow model={model} />}
-        </For>
+      <box vertical visible={usage.as((u) => u.models.length > 0)}>
+        <Section
+          title="TOKENS BY MODEL"
+          expanded={modelsExpanded}
+          onToggle={() => setModelsExpanded(!modelsExpanded.get())}
+          content={
+            <box vertical spacing={4}>
+              <For each={usage.as((u) => u.models)} id={(model: ModelUsage) => model.key}>
+                {(model: ModelUsage) => <ModelRow model={model} />}
+              </For>
+            </box>
+          }
+        />
       </box>
     </box>
   )
