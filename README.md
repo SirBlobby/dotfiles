@@ -23,7 +23,7 @@ My current setup is built around these core components:
 ### Directory Structure
 
 - **`hypr/`**: Hyprland configurations (keybindings, window rules, animations, monitor layout, lid-close display handling, and autostart). See [`hypr/keybinds.md`](hypr/keybinds.md) for custom keybindings.
-- **`omarchy/`**: Omarchy 4 configuration — `shell.json` (bar layout and idle/lock timings), `extensions/` (entries added to the Omarchy menu), `hooks/` (event hooks such as retinting AGS on theme change), and `themed/` (extra theme templates).
+- **`omarchy/`**: Omarchy 4 configuration — `shell.json` (bar layout, custom bar modules, and idle/lock timings), `extensions/` (entries added to the Omarchy menu), `hooks/` (event hooks such as retinting AGS on theme change), and `themed/` (extra theme templates). See [`omarchy/README.md`](omarchy/README.md) for the bar layout.
 - **`ags/`**: Custom desktop widgets built with TypeScript and GTK — media player, notification hub, quick settings, system monitor, wallpaper picker, and theme picker.
 - **`scripts/`**: Global utility scripts seamlessly exposed as commands by the installer. See [`commands.md`](commands.md).
 - **`wallpapers/`**: A collection of local custom wallpapers for dynamic theming. See [`wallpaper-gallery/`](wallpaper-gallery/index.md) for the full gallery (split alphabetically across multiple pages).
