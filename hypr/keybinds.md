@@ -11,6 +11,8 @@ Print the live list at any time with `omarchy menu keybindings --print`.
 | Keybind | Action |
 | --- | --- |
 | `Super+Alt+W` | Wallpaper picker (AGS widget) |
+| `Super+Space` | Apps menu (Omarchy 4 binds the root menu here by default) |
+| `Super+Alt+Space` | Omarchy menu (Omarchy 4 binds the apps menu here by default) |
 
 ## Omarchy defaults worth remembering
 
@@ -46,7 +48,6 @@ Print the live list at any time with `omarchy menu keybindings --print`.
 
 | Keybind | Action |
 | --- | --- |
-| `Super+Space` | Omarchy menu |
 | `Super+Ctrl+Space` | Background switcher |
 | `Super+Shift+Ctrl+Space` | Theme menu |
 | `Super+Shift+Space` | Toggle the top bar |
