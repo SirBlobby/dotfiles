@@ -53,11 +53,20 @@ A command module with no `exec` key is a static icon; add `exec` and
 
 ## Cloned plugins
 
-`plugins/blob.workspaces/` is a clone of `omarchy.workspaces`, made with
-`omarchy plugin clone`. The stock widget hardcodes workspaces 1-5 as always
-visible and has no setting for it, so the clone changes that list to 1-9 to
-match the old waybar `persistent-workspaces`. Cloning also switches the bar
-to the cloned id, which is why `shell.json` says `blob.workspaces`.
+Both were made with `omarchy plugin clone`, which copies a built-in plugin,
+disables the original, and points the bar at the copy - hence the `blob.` ids
+in `shell.json`.
+
+`plugins/blob.workspaces/` clones `omarchy.workspaces`. The stock widget
+hardcodes workspaces 1-5 as always visible and has no setting for it, so the
+clone changes that list to 1-9 to match the old waybar `persistent-workspaces`.
+
+`plugins/blob.menu/` clones `omarchy.menu` to widen it. `cardWidth` in
+`Menu.qml` is hardcoded at `Style.space(300)`; the clone raises it to 440, so
+the apps menu (Super + Space) and the root menu (Super + Alt + Space) are both
+wider. The two oversized menus (screen recording, font picker) keep their own
+520 and are untouched. `omarchy-menu` still targets `omarchy.menu` on the CLI -
+the manifest records `clonedFrom`, and the shell routes those calls here.
 
 Re-clone after an Omarchy update if the upstream widget gains something worth
 picking up: `omarchy plugin clone omarchy.workspaces`, then re-apply the

@@ -8,6 +8,10 @@
 
 -- Monitor 1 - C24 curved, DisplayPort via DP->HDMI adapter.
 -- NOTE: the DP2HDMI adapter caps this panel at 1920x1080@60 (no 75Hz mode).
+-- Both externals stay at scale 1. Hyprland's fractional scaling works in
+-- 1/120 steps and needs whole pixels on both axes, so 1.0 and 1.2 are
+-- adjacent valid scales on a 1920x1080 panel - nothing sits between them.
+-- Apparent size is tuned with `omarchy display text size` instead.
 hl.monitor({ output = "DP-1", mode = "1920x1080@60", position = "0x0", scale = 1 })
 
 -- Monitor 2 - Sceptre F24, HDMI, native 75Hz.
