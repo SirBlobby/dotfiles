@@ -205,6 +205,7 @@ check_file "$SCRIPT_DIR/omarchy/shell.json" "$HOME_DIR/.config/omarchy/shell.jso
 check_file "$SCRIPT_DIR/omarchy/extensions/omarchy-menu.jsonc" "$HOME_DIR/.config/omarchy/extensions/omarchy-menu.jsonc" "omarchy/extensions/omarchy-menu.jsonc" || check_status=1
 check_file "$SCRIPT_DIR/omarchy/plugins/blob.workspaces/Workspaces.qml" "$HOME_DIR/.config/omarchy/plugins/blob.workspaces/Workspaces.qml" "omarchy/plugins/blob.workspaces" || check_status=1
 check_file "$SCRIPT_DIR/omarchy/plugins/blob.menu/Menu.qml" "$HOME_DIR/.config/omarchy/plugins/blob.menu/Menu.qml" "omarchy/plugins/blob.menu" || check_status=1
+check_file "$SCRIPT_DIR/omarchy/plugins/blob.bar/Bar.qml" "$HOME_DIR/.config/omarchy/plugins/blob.bar/Bar.qml" "omarchy/plugins/blob.bar" || check_status=1
 check_file "$SCRIPT_DIR/omarchy/hooks/theme-set" "$HOME_DIR/.config/omarchy/hooks/theme-set" "omarchy/hooks/theme-set" || check_status=1
 check_file "$SCRIPT_DIR/omarchy/themed/zen.css.tpl" "$HOME_DIR/.config/omarchy/themed/zen.css.tpl" "omarchy/themed/zen.css.tpl" || check_status=1
 check_file "$SCRIPT_DIR/ags/app.ts" "$HOME_DIR/.config/ags/app.ts" "ags/app.ts" || check_status=1

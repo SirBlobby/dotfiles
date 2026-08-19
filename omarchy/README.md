@@ -53,9 +53,10 @@ A command module with no `exec` key is a static icon; add `exec` and
 
 ## Cloned plugins
 
-Both were made with `omarchy plugin clone`, which copies a built-in plugin,
-disables the original, and points the bar at the copy - hence the `blob.` ids
-in `shell.json`.
+`blob.workspaces` and `blob.menu` were made with `omarchy plugin clone`, which
+copies a built-in plugin, disables the original, and points the bar at the copy
+- hence the `blob.` ids in `shell.json`. `blob.bar` was copied by hand; see
+below for why.
 
 `plugins/blob.workspaces/` clones `omarchy.workspaces`. The stock widget
 hardcodes workspaces 1-5 as always visible and has no setting for it, so the
@@ -68,9 +69,27 @@ wider. The two oversized menus (screen recording, font picker) keep their own
 520 and are untouched. `omarchy-menu` still targets `omarchy.menu` on the CLI -
 the manifest records `clonedFrom`, and the shell routes those calls here.
 
-Re-clone after an Omarchy update if the upstream widget gains something worth
-picking up: `omarchy plugin clone omarchy.workspaces`, then re-apply the
-one-line `workspaceIds()` change.
+`plugins/blob.bar/` replaces the whole bar so the clock cannot be dragged out
+of the center. Omarchy 4 puts a drag-to-reorder handler on every bar module and
+persists the drop into `bar.layout`; once `blob.clock` leaves the center list,
+`centerAnchor` matches nothing and the center renders as a plain group. The bar
+config has no setting for this, so the only lever is `canReorder` in `Bar.qml`.
+The copy is two lines away from stock: a `anchored` property on `ModuleSlot`,
+and `canReorder` gated on it, which locks only the module named by
+`centerAnchor`. Every other widget still drags.
+
+Do not run `omarchy plugin clone omarchy.bar` to refresh it. That command copies
+the whole directory, including `widgets/`, whose manifests re-declare
+`omarchy.workspaces`, `omarchy.tray`, and four more ids that already exist.
+`Bar.qml` needs only `BarModel.js` - its widgets come from the host registry -
+so the copy is just `manifest.json`, `Bar.qml`, and `BarModel.js`. A bar is
+selected by `bar.id` in `shell.json` rather than by the enabled-plugin list, and
+it has no disabled state: you leave one bar by naming another.
+
+Re-copy after an Omarchy update if the upstream widget or bar gains something
+worth picking up: `omarchy plugin clone omarchy.workspaces` then re-apply the
+one-line `workspaceIds()` change, or copy `Bar.qml` and `BarModel.js` from
+`/usr/share/omarchy/shell/plugins/bar/` and re-apply the two `canReorder` lines.
 
 ## Editing
 

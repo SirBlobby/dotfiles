@@ -5,6 +5,7 @@
     "lock": 301
   },
   "bar": {
+    "id": "blob.bar",
     "position": "top",
     "transparent": false,
     "centerAnchor": "blob.clock",
