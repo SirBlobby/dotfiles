@@ -14,7 +14,7 @@ Ported from the old `waybar/config.jsonc`, section for section:
 | `hyprland/workspaces` | `blob.workspaces` (cloned plugin) |
 | `clock` | `blob.clock` (custom module) |
 | `custom/update` | `omarchy.system-update` |
-| `custom/voxtype` | AGS quick settings -> Dictate tile |
+| `custom/voxtype` | dropped (voxtype is not installed) |
 | `custom/screenrecording-indicator` | AGS quick settings -> Record tile |
 | `custom/idle-indicator` | AGS quick settings -> Stay Awake tile |
 | `custom/notification-silencing-indicator` | AGS quick settings -> Silence tile |

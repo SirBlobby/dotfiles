@@ -57,11 +57,6 @@ const [stayAwake, setStayAwake] = pollBool(
   2000,
 )
 
-const [dictating] = pollBool(
-  "omarchy-voxtype-status 2>/dev/null | grep -q recording && echo on || echo off",
-  2000,
-)
-
 const [recording] = pollBool(
   "pgrep -f '^gpu-screen-recorder' >/dev/null && echo on || echo off",
   2000,
@@ -213,13 +208,6 @@ function Toggles() {
             setStayAwake(!stayAwake.get())
             sh("omarchy-toggle-idle toggle")
           }}
-        />
-        <Tile
-          icon={"󰍬"}
-          label="Dictate"
-          active={dictating}
-          tooltip={dictating.as((on: boolean) => (on ? "Stop dictation" : "Start voxtype dictation"))}
-          onClicked={() => sh("voxtype record toggle")}
         />
         <Tile icon={""} label="Pick Color" onClicked={() => { closePanel(); sh("hyprpicker -a") }} />
         <Tile

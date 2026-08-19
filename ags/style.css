@@ -408,6 +408,22 @@
   color: @foreground;
 }
 
+tooltip,
+tooltip.background {
+  background-color: #000000;
+  border: 1px solid alpha(@foreground, 0.25);
+  border-radius: 0;
+  color: @foreground;
+}
+
+tooltip label,
+tooltip.background label {
+  color: @foreground;
+  background-color: transparent;
+  font-size: 12px;
+  padding: 4px 6px;
+}
+
 .qs-side-panel {
   min-width: 280px;
 }
