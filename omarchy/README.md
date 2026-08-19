@@ -74,9 +74,26 @@ of the center. Omarchy 4 puts a drag-to-reorder handler on every bar module and
 persists the drop into `bar.layout`; once `blob.clock` leaves the center list,
 `centerAnchor` matches nothing and the center renders as a plain group. The bar
 config has no setting for this, so the only lever is `canReorder` in `Bar.qml`.
-The copy is two lines away from stock: a `anchored` property on `ModuleSlot`,
-and `canReorder` gated on it, which locks only the module named by
-`centerAnchor`. Every other widget still drags.
+The lock itself is two lines: an `anchored` property on `ModuleSlot`, and
+`canReorder` gated on it, so only the module named by `centerAnchor` is pinned.
+Every other widget still drags.
+
+Three more lines are needed just to make the file loadable outside the packaged
+slot. Stock `Bar.qml` declares `omarchyPath`, `barWidgetRegistry`, and
+`barConfig` as `required`, which only works for the built-in bar because the
+host instantiates it from an inline `Component` that sets them. A plugin bar is
+loaded by URL and configured in the loader's `onLoaded`, so the required
+properties are still unset at construction and the whole bar fails to build.
+The copy declares them as ordinary properties defaulting to `""`/`null`, and
+guards the one `barWidgetRegistry.widgets` read; `applyBarConfig` already falls
+back to an empty layout, so nothing renders until the host injects the real
+config a moment later.
+
+When this happens the bar does not fall back to the stock one, it simply does
+not appear: the host's `Loader.Error` branch calls a nonexistent `errorString`,
+throws, and never sets `failedBarId`. If the bar ever vanishes after editing
+this plugin, that is the first thing to check - `journalctl --user` will name
+the offending property.
 
 Do not run `omarchy plugin clone omarchy.bar` to refresh it. That command copies
 the whole directory, including `widgets/`, whose manifests re-declare
