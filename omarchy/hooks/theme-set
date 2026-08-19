@@ -2,10 +2,18 @@
 THEME_NAME=$1
 echo "Theme changed to: $THEME_NAME"
 
-# Generate AGS colors from Omarchy theme colors.toml
-awk -F '=' 'NF==2 { gsub(/"/,"",$2); gsub(/ /,"",$1); gsub(/ /,"",$2); print "@define-color " $1 " " $2 ";" }' ~/.local/state/omarchy/current/theme/colors.toml > ~/.config/ags/colors.css
+COLORS_FILE="$HOME/.local/state/omarchy/current/theme/colors.toml"
+AGS_COLORS_FILE="$HOME/.config/ags/colors.css"
 
-# Restart AGS to apply new theme colors
+# Only hex values become GTK colors: colors.toml also carries non-color keys
+# such as `mode`, and @define-color rejects them. omarchy-theme-color resolves
+# the legacy color0..color15 aliases that ags/style.css still uses.
+if command -v omarchy-theme-color &> /dev/null; then
+    omarchy-theme-color --file "$COLORS_FILE" --all
+else
+    awk -F '=' 'NF==2 { gsub(/"/,"",$2); gsub(/ /,"",$1); gsub(/ /,"",$2); print $1 "\t" $2 }' "$COLORS_FILE"
+fi | awk -F '\t' '$2 ~ /^#/ { print "@define-color " $1 " " $2 ";" }' > "$AGS_COLORS_FILE"
+
 if command -v ags &> /dev/null; then
     ags quit >/dev/null 2>&1 || true
     sleep 0.5
