@@ -26,6 +26,7 @@ Ported from the old `waybar/config.jsonc`, section for section:
 | `cpu` | `blob.cpu` (custom module) |
 | `custom/notification` | `blob.notifications` (custom module) |
 | (new in Omarchy 4) | `omarchy.agents` - AI agent usage |
+| (new in Omarchy 4) | `omarchy.monitor` - brightness and display controls |
 
 Drop the `items` list from `omarchy.indicators` to show all six indicators
 (adds `NightLight` and `Reminder`).
