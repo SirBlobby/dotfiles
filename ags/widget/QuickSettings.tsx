@@ -1,5 +1,5 @@
 import app from "ags/gtk3/app"
-import { Astal, Gtk } from "ags/gtk3"
+import { Astal, Gdk, Gtk } from "ags/gtk3"
 import { createState } from "ags"
 import { createPoll, interval } from "ags/time"
 import { sh, shell } from "../lib/utils"
@@ -49,6 +49,21 @@ const [doNotDisturb, setDoNotDisturb] = pollBool(
 
 const [nightLight, setNightLight] = pollBool(
   "omarchy-toggle-nightlight --status 2>/dev/null | grep -q '\"enabled\":true' && echo on || echo off",
+  2000,
+)
+
+const [stayAwake, setStayAwake] = pollBool(
+  "omarchy-toggle-idle status 2>/dev/null | grep -q '\"enabled\":true' && echo on || echo off",
+  2000,
+)
+
+const [dictating] = pollBool(
+  "omarchy-voxtype-status 2>/dev/null | grep -q recording && echo on || echo off",
+  2000,
+)
+
+const [recording] = pollBool(
+  "pgrep -f '^gpu-screen-recorder' >/dev/null && echo on || echo off",
   2000,
 )
 
@@ -109,16 +124,19 @@ function Tile({
   icon,
   label,
   active,
+  tooltip,
   onClicked,
 }: {
   icon: string
   label: string
   active?: any
+  tooltip?: any
   onClicked: () => void
 }) {
   return (
     <button
       class={active ? active.as((on: boolean) => (on ? "qs-tile active" : "qs-tile")) : "qs-tile"}
+      tooltipText={tooltip ?? label}
       onClicked={onClicked}
       hexpand
     >
@@ -172,9 +190,37 @@ function Toggles() {
             sh("omarchy-toggle-nightlight")
           }}
         />
-        <Tile icon={""} label="Record" onClicked={() => { closePanel(); sh("omarchy-capture-screenrecording") }} />
+        <Tile
+          icon={""}
+          label="Record"
+          active={recording}
+          tooltip={recording.as((on: boolean) => (on ? "Stop screen recording" : "Start a screen recording"))}
+          onClicked={() => {
+            closePanel()
+            sh(recording.get()
+              ? "omarchy-capture-screenrecording --stop-recording"
+              : "omarchy-menu toggle trigger.capture.screenrecord")
+          }}
+        />
       </box>
       <box class="qs-tiles" spacing={8} homogeneous>
+        <Tile
+          icon={"󰅶"}
+          label="Stay Awake"
+          active={stayAwake}
+          tooltip={stayAwake.as((on: boolean) => (on ? "Allow idle lock and screensaver" : "Keep the screen awake"))}
+          onClicked={() => {
+            setStayAwake(!stayAwake.get())
+            sh("omarchy-toggle-idle toggle")
+          }}
+        />
+        <Tile
+          icon={"󰍬"}
+          label="Dictate"
+          active={dictating}
+          tooltip={dictating.as((on: boolean) => (on ? "Stop dictation" : "Start voxtype dictation"))}
+          onClicked={() => sh("voxtype record toggle")}
+        />
         <Tile icon={""} label="Pick Color" onClicked={() => { closePanel(); sh("hyprpicker -a") }} />
         <Tile
           icon={""}
@@ -204,6 +250,7 @@ function VolumeSlider() {
       </button>
       <slider
         class="qs-slider"
+        tooltipText={volume.as((level: number) => `Volume ${Math.round(level)}%`)}
         hexpand
         min={0}
         max={100}
@@ -227,6 +274,7 @@ function BrightnessSlider() {
       <label class="qs-slider-icon" label={""} />
       <slider
         class="qs-slider"
+        tooltipText={brightness.as((level: number) => `Brightness ${Math.round(level)}%`)}
         hexpand
         min={1}
         max={100}
@@ -292,13 +340,13 @@ function MediaPlayer() {
           }}
         />
         <box class="cc-media-controls" spacing={14} halign={Gtk.Align.CENTER}>
-          <button onClicked={() => sh("playerctl previous")}>
+          <button tooltipText="Previous track" onClicked={() => sh("playerctl previous")}>
             <label label={""} />
           </button>
-          <button onClicked={() => sh("playerctl play-pause")}>
+          <button tooltipText="Play / pause" onClicked={() => sh("playerctl play-pause")}>
             <label label={media.as((m) => (m.status === "Playing" ? "" : ""))} />
           </button>
-          <button onClicked={() => sh("playerctl next")}>
+          <button tooltipText="Next track" onClicked={() => sh("playerctl next")}>
             <label label={""} />
           </button>
         </box>
@@ -307,22 +355,75 @@ function MediaPlayer() {
   )
 }
 
-const monthName = createPoll("", 60000, shell("date '+%B %Y'"), (stdout) => stdout.trim())
-const monthGrid = createPoll(
-  "",
-  60000,
-  shell("cal | sed '1d'"),
-  (stdout) => stdout.replace(/\s+$/, ""),
-)
+const [monthOffset, setMonthOffset] = createState(0)
+const [monthName, setMonthName] = createState("")
+const [monthGrid, setMonthGrid] = createState("")
+
+const loadMonth = (offset: number) => {
+  const firstOfMonth = `$(date +%Y-%m-01) ${offset} months`
+  const command =
+    `date -d "${firstOfMonth}" '+%B %Y'; ` +
+    `cal $(date -d "${firstOfMonth}" '+%m %Y') | sed '1d'`
+
+  sh(command).then((stdout) => {
+    const lines = String(stdout).replace(/\s+$/, "").split("\n")
+    setMonthName(lines[0]?.trim() ?? "")
+    setMonthGrid(lines.slice(1).join("\n"))
+  })
+}
+
+const shiftMonth = (delta: number) => {
+  const next = monthOffset.get() + delta
+  setMonthOffset(next)
+  loadMonth(next)
+}
+
+const resetMonth = () => {
+  setMonthOffset(0)
+  loadMonth(0)
+}
+
+loadMonth(0)
+interval(3600000, () => { if (monthOffset.get() === 0) loadMonth(0) })
 
 function CalendarSection() {
   return (
-    <box class="cc-calendar" vertical spacing={6}>
-      <box class="cc-calendar-head" spacing={8}>
-        <label class="cc-calendar-month" label={monthName} xalign={0} hexpand halign={Gtk.Align.START} />
+    <eventbox
+      onScroll={(_self: any, event: any) => {
+        const direction = event?.direction
+        const deltaY = Number(event?.delta_y ?? 0)
+        if (direction === Gdk.ScrollDirection.UP || deltaY < 0) shiftMonth(-1)
+        else if (direction === Gdk.ScrollDirection.DOWN || deltaY > 0) shiftMonth(1)
+      }}
+    >
+      <box class="cc-calendar" vertical spacing={6}>
+        <box class="cc-calendar-head" spacing={8}>
+          <label
+            class="cc-calendar-month"
+            label={monthName}
+            xalign={0}
+            hexpand
+            halign={Gtk.Align.START}
+            tooltipText="Scroll to change month"
+          />
+          <button class="cc-calendar-nav" tooltipText="Previous month" onClicked={() => shiftMonth(-1)}>
+            <label label={""} />
+          </button>
+          <button
+            class="cc-calendar-nav"
+            tooltipText="Back to this month"
+            visible={monthOffset.as((offset) => offset !== 0)}
+            onClicked={resetMonth}
+          >
+            <label label={""} />
+          </button>
+          <button class="cc-calendar-nav" tooltipText="Next month" onClicked={() => shiftMonth(1)}>
+            <label label={""} />
+          </button>
+        </box>
+        <label class="cc-calendar-grid" label={monthGrid} halign={Gtk.Align.CENTER} />
       </box>
-      <label class="cc-calendar-grid" label={monthGrid} halign={Gtk.Align.CENTER} />
-    </box>
+    </eventbox>
   )
 }
 

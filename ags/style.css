@@ -587,32 +587,9 @@
   color: @foreground;
 }
 
-.agent-model-bar {
+.agent-model-row {
   min-height: 22px;
-}
-
-.agent-model-bar trough {
-  min-height: 22px;
-  border-radius: 0;
-  background-color: alpha(@foreground, 0.08);
-}
-
-.agent-model-bar block {
-  min-height: 22px;
-  min-width: 0;
-  border-radius: 0;
-}
-
-.agent-model-bar block.filled {
-  background-color: alpha(@foreground, 0.18);
-}
-
-.agent-model-bar block.empty {
-  background-color: transparent;
-}
-
-.agent-model-text {
-  padding: 0 8px;
+  padding: 3px 8px;
 }
 
 .agent-model-label {
@@ -713,9 +690,23 @@
 }
 
 .cc-calendar-month {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: bold;
   color: @accent;
+}
+
+.cc-calendar-nav {
+  color: @foreground;
+  font-size: 13px;
+  min-width: 24px;
+  padding: 2px 4px;
+  background-color: transparent;
+  border: none;
+}
+
+.cc-calendar-nav:hover {
+  color: @accent;
+  background-color: alpha(@foreground, 0.1);
 }
 
 .cc-calendar-time {
@@ -725,6 +716,7 @@
 
 .cc-calendar-grid {
   font-family: "JetBrainsMono Nerd Font", monospace;
-  font-size: 13px;
+  font-size: 17px;
   color: @foreground;
+  padding: 4px 2px;
 }

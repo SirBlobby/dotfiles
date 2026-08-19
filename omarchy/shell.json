@@ -29,15 +29,6 @@
         },
         {
           "id": "omarchy.system-update"
-        },
-        {
-          "id": "omarchy.indicators",
-          "items": [
-            "Dictation",
-            "ScreenRecording",
-            "StayAwake",
-            "Dnd"
-          ]
         }
       ],
       "right": [

@@ -236,18 +236,14 @@ function DayRow({ day }: { day: DayUsage }) {
 }
 
 function ModelRow({ model }: { model: ModelUsage }) {
+  const fillPercent = Math.round(model.fraction * 100)
+  const fill = `linear-gradient(to right, alpha(@foreground, 0.18) ${fillPercent}%, alpha(@foreground, 0.06) ${fillPercent}%)`
+
   return (
-    <overlay
-      tooltipText={model.detail}
-      overlays={[
-        <box class="agent-model-text" spacing={8}>
-          <label class="agent-model-label" label={model.label} xalign={0} halign={Gtk.Align.START} hexpand />
-          <label class="agent-model-value" label={model.tokens} xalign={1} halign={Gtk.Align.END} />
-        </box>,
-      ]}
-    >
-      <levelbar class="agent-model-bar" value={model.fraction} />
-    </overlay>
+    <box class="agent-model-row" spacing={8} tooltipText={model.detail} css={`background-image: ${fill};`}>
+      <label class="agent-model-label" label={model.label} xalign={0} halign={Gtk.Align.START} hexpand />
+      <label class="agent-model-value" label={model.tokens} xalign={1} halign={Gtk.Align.END} />
+    </box>
   )
 }
 

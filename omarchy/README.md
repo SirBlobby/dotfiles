@@ -14,10 +14,10 @@ Ported from the old `waybar/config.jsonc`, section for section:
 | `hyprland/workspaces` | `blob.workspaces` (cloned plugin) |
 | `clock` | `blob.clock` (custom module) |
 | `custom/update` | `omarchy.system-update` |
-| `custom/voxtype` | `omarchy.indicators` -> `Dictation` |
-| `custom/screenrecording-indicator` | `omarchy.indicators` -> `ScreenRecording` |
-| `custom/idle-indicator` | `omarchy.indicators` -> `StayAwake` |
-| `custom/notification-silencing-indicator` | `omarchy.indicators` -> `Dnd` |
+| `custom/voxtype` | AGS quick settings -> Dictate tile |
+| `custom/screenrecording-indicator` | AGS quick settings -> Record tile |
+| `custom/idle-indicator` | AGS quick settings -> Stay Awake tile |
+| `custom/notification-silencing-indicator` | AGS quick settings -> Silence tile |
 | `group/tray-expander` | `omarchy.tray` |
 | `bluetooth` | `omarchy.bluetooth` |
 | `network` | `omarchy.network` |
@@ -28,8 +28,11 @@ Ported from the old `waybar/config.jsonc`, section for section:
 | (new in Omarchy 4) | `omarchy.agents` - AI agent usage |
 | (new in Omarchy 4) | `omarchy.monitor` - brightness and display controls |
 
-Drop the `items` list from `omarchy.indicators` to show all six indicators
-(adds `NightLight` and `Reminder`).
+The bar carries no `omarchy.indicators` widget: those four toggles live in the
+AGS quick settings panel instead, so the bar keeps only the clock and the
+update indicator in its center. Add `{ "id": "omarchy.indicators" }` back to
+`center` to restore them (omit `items` for all six, which adds `NightLight`
+and `Reminder`).
 
 ## Custom modules
 

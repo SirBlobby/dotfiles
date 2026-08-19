@@ -75,7 +75,12 @@ function Metric({
   detail: any
 }) {
   return (
-    <box class="sys-metric" vertical spacing={4}>
+    <box
+      class="sys-metric"
+      vertical
+      spacing={4}
+      tooltipText={detail.as((value: string) => `${name}: ${value}`)}
+    >
       <box spacing={8}>
         <label class="sys-metric-icon" label={icon} />
         <label class="sys-metric-name" label={name} xalign={0} halign={Gtk.Align.START} hexpand />
