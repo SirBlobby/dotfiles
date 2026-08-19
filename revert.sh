@@ -112,7 +112,8 @@ fi
 echo ""
 echo "=== Restarting AGS ==="
 if command -v ags &> /dev/null; then
-    ags quit || true
+    ags quit >/dev/null 2>&1 || true
+    sleep 0.5
     nohup ags run -d "$HOME_DIR/.config/ags" >/dev/null 2>&1 &
 else
     echo "Warning: ags not found. Please start ags manually."

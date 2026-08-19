@@ -7,6 +7,7 @@ awk -F '=' 'NF==2 { gsub(/"/,"",$2); gsub(/ /,"",$1); gsub(/ /,"",$2); print "@d
 
 # Restart AGS to apply new theme colors
 if command -v ags &> /dev/null; then
-    ags quit || true
+    ags quit >/dev/null 2>&1 || true
+    sleep 0.5
     nohup ags run -d "$HOME/.config/ags" >/dev/null 2>&1 &
 fi

@@ -389,15 +389,6 @@ else
 fi
 
 echo ""
-echo "=== Restarting AGS ==="
-if command -v ags &> /dev/null; then
-    ags quit || true
-    nohup ags run -d "$HOME_DIR/.config/ags" >/dev/null 2>&1 &
-else
-    echo "Warning: ags not found. Please start ags manually."
-fi
-
-echo ""
 echo "=== Reloading Hyprland ==="
 if command -v hyprctl &> /dev/null; then
     hyprctl reload || true
@@ -412,6 +403,18 @@ if [ -n "$current_theme_name" ] && command -v omarchy-theme-set &> /dev/null; th
     OMARCHY_THEME_SKIP_BACKGROUND=1 omarchy-theme-set "$current_theme_name" || true
 else
     echo "Warning: no active theme found. Run blob_theme to generate zen.css."
+fi
+
+# Started after the theme reapply, because the theme-set hook restarts AGS
+# too. Starting it first only races that hook for the instance name.
+echo ""
+echo "=== Restarting AGS ==="
+if command -v ags &> /dev/null; then
+    ags quit >/dev/null 2>&1 || true
+    sleep 0.5
+    nohup ags run -d "$HOME_DIR/.config/ags" >/dev/null 2>&1 &
+else
+    echo "Warning: ags not found. Please start ags manually."
 fi
 
 echo ""
