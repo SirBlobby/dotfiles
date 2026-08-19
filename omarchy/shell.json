@@ -7,7 +7,7 @@
   "bar": {
     "position": "top",
     "transparent": false,
-    "centerAnchor": "omarchy.clock",
+    "centerAnchor": "blob.clock",
     "layout": {
       "left": [
         {
@@ -19,10 +19,13 @@
       ],
       "center": [
         {
-          "id": "omarchy.clock",
-          "format": "dddd d MMMM HH:mm",
-          "formatAlt": "d MMMM 'W'ww yyyy",
-          "verticalFormat": "HH\n—\nmm"
+          "id": "blob.clock",
+          "type": "command",
+          "exec": "date '+%A %d %B %H:%M'",
+          "interval": 15,
+          "onClick": "ags toggle quick-settings",
+          "onMiddleClick": "omarchy-shell shell toggle omarchy.clock",
+          "onRightClick": "omarchy-menu-timezone"
         },
         {
           "id": "omarchy.system-update"

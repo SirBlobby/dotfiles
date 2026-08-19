@@ -12,7 +12,7 @@ Ported from the old `waybar/config.jsonc`, section for section:
 | --- | --- |
 | `custom/omarchy` | `omarchy.menu` |
 | `hyprland/workspaces` | `omarchy.workspaces` |
-| `clock` | `omarchy.clock` |
+| `clock` | `blob.clock` (custom module) |
 | `custom/update` | `omarchy.system-update` |
 | `custom/voxtype` | `omarchy.indicators` -> `Dictation` |
 | `custom/screenrecording-indicator` | `omarchy.indicators` -> `ScreenRecording` |
@@ -39,6 +39,10 @@ AGS entry points survive the move off waybar:
   system monitor
 - `blob.notifications` - left toggles the AGS notification center, right
   toggles notification silencing
+- `blob.clock` - left toggles AGS quick settings, middle opens the shell's own
+  calendar panel, right opens the timezone selector. `omarchy.clock` hardcodes
+  its click actions, so matching the old waybar behavior needs a command module
+  and `centerAnchor` pointed at it.
 
 A command module with no `exec` key is a static icon; add `exec` and
 `interval` for one that refreshes its own text.
@@ -58,6 +62,6 @@ Run `./install.sh --check` to see whether the two have drifted.
 ## Not portable from waybar
 
 - Bar height: fixed by the shell's style (26px horizontal, 28px vertical).
-- Per-widget click actions on first-party widgets: `omarchy.clock`,
-  `omarchy.network`, and `omarchy.bluetooth` own their popups, so the old
-  right-click-into-AGS bindings only exist on the custom modules above.
+- Per-widget click actions on first-party widgets: `omarchy.network` and
+  `omarchy.bluetooth` own their popups, so the old right-click-into-AGS
+  bindings only exist on the custom modules above.
