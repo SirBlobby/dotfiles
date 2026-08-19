@@ -1,7 +1,7 @@
 # Themes
 
 Drop-in static color themes. Each subdirectory here becomes a theme
-selectable from `blob_theme`, the theme picker widget, and the walker
+selectable from `blob_theme`, the theme picker widget, and the Omarchy
 menu, once `install.sh` copies it into `~/.config/omarchy/themes/`.
 
 ## Adding a theme

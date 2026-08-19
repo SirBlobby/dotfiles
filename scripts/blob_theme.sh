@@ -6,7 +6,7 @@
 
 THEME_DIR="$HOME/.config/omarchy/themes/blob-dynamic"
 USER_THEMES_DIR="$HOME/.config/omarchy/themes"
-CURRENT_DIR="$HOME/.config/omarchy/current"
+CURRENT_DIR="$HOME/.local/state/omarchy/current"
 
 # Used only when a bare id is passed instead of a full share link.
 # Override with: export BLOB_THEME_URL="https://your-deployment.vercel.app"
@@ -14,6 +14,10 @@ BASE_URL="${BLOB_THEME_URL:-https://wall-styles.vercel.app}"
 
 slugify() {
     echo "$1" | tr '[:upper:]' '[:lower:]' | tr ' ' '-'
+}
+
+prettify() {
+    echo "$1" | sed -E 's/(^|-)([a-z])/\1\u\2/g; s/-/ /g'
 }
 
 current_mode() {
@@ -30,6 +34,30 @@ theme_exists_locally() {
     local slug
     slug=$(slugify "$1")
     [ -d "$USER_THEMES_DIR/$slug" ] || [ -d "$OMARCHY_PATH/themes/$slug" ]
+}
+
+# Rows for omarchy-menu-select, as "<label><TAB><slug>". The menu returns the
+# label and the subtext, so the slug comes back as a stable key.
+list_theme_rows() {
+    printf 'Dynamic (from wallpaper)\tblob-dynamic\n'
+
+    {
+        find "$USER_THEMES_DIR" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+        find "$OMARCHY_PATH/themes" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+    } | while read -r theme_dir; do
+        [ -f "$theme_dir/colors.toml" ] || continue
+        slug=$(basename "$theme_dir")
+        [ "$slug" = "blob-dynamic" ] && continue
+        printf '%s\t%s\n' "$(prettify "$slug")" "$slug"
+    done | sort -u -t$'\t' -k2,2
+}
+
+select_theme() {
+    local selection slug
+    selection=$(list_theme_rows | omarchy-menu-select "Select Theme" -- --width 800) || return 1
+    slug=$(printf '%s' "$selection" | cut -f2)
+    [ -n "$slug" ] || return 1
+    echo "$slug"
 }
 
 apply_static() {
@@ -55,7 +83,12 @@ case "$1" in
         ags toggle theme-picker
         ;;
     --menu)
-        omarchy-launch-walker -m menus:blobThemeSelector --width 800 --minheight 400 -p "Select Theme…"
+        selected=$(select_theme) || exit 0
+        if [ "$selected" = "blob-dynamic" ]; then
+            apply_dynamic
+        else
+            apply_static "$selected"
+        fi
         ;;
     --mode)
         current_mode
@@ -69,7 +102,7 @@ case "$1" in
         # awk always terminates the last line with a newline, even if the
         # source file doesn't. Omarchy's template engine reads colors.toml
         # with a bash `while read` loop, which silently drops a final line
-        # missing its newline (e.g. color15) — some built-in themes are
+        # missing its newline (e.g. color15) - some built-in themes are
         # missing it too, so this guards every theme saved via --print.
         awk '1' "$CURRENT_COLORS"
         ;;
@@ -124,7 +157,7 @@ return {
 }
 EOF
 
-            # Apply the Blob-Dynamic theme (reloads waybar, ags, etc.)
+            # Apply the Blob-Dynamic theme (reloads the Omarchy shell, ags, etc.)
             omarchy-theme-set "blob-dynamic"
 
             echo "Applied shared theme to blob-dynamic."

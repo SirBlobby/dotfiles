@@ -1,8 +1,20 @@
-# Custom Keybinds
+# Keybinds
 
-Custom bindings on top of Omarchy's defaults, defined in `bindings.conf`.
+Hyprland is configured in Lua on Omarchy 4. Personal bindings live in
+[`bindings.lua`](bindings.lua); everything else below comes from Omarchy's
+own defaults and is no longer redefined here.
 
-## Apps
+Print the live list at any time with `omarchy menu keybindings --print`.
+
+## Custom
+
+| Keybind | Action |
+| --- | --- |
+| `Super+Alt+W` | Wallpaper picker (AGS widget) |
+
+## Omarchy defaults worth remembering
+
+### Apps
 
 | Keybind | Action |
 | --- | --- |
@@ -19,7 +31,7 @@ Custom bindings on top of Omarchy's defaults, defined in `bindings.conf`.
 | `Super+Shift+G` | Signal |
 | `Super+Shift+O` | Obsidian |
 
-## Web Apps
+### Web Apps
 
 | Keybind | Action |
 | --- | --- |
@@ -30,8 +42,15 @@ Custom bindings on top of Omarchy's defaults, defined in `bindings.conf`.
 | `Super+Shift+Ctrl+G` | Google Messages |
 | `Super+Shift+P` | Google Photos |
 
-## Extras
+### Shell and system
 
 | Keybind | Action |
 | --- | --- |
-| `Super+Alt+W` | Wallpaper picker |
+| `Super+Space` | Omarchy menu |
+| `Super+Ctrl+Space` | Background switcher |
+| `Super+Shift+Ctrl+Space` | Theme menu |
+| `Super+Shift+Space` | Toggle the top bar |
+| `Super+Backspace` | Toggle transparency on the focused window |
+| `Super+Ctrl+L` | Lock |
+| `Super+Ctrl+I` | Toggle locking on idle |
+| `Super+Ctrl+N` | Toggle nightlight |

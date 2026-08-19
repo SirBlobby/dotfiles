@@ -2,6 +2,7 @@
 
 WALLPAPER_DIR="$HOME/wallpapers"
 THEME_DIR="$HOME/.config/omarchy/themes/blob-dynamic"
+CURRENT_DIR="$HOME/.local/state/omarchy/current"
 
 # Create the directory if it doesn't exist
 mkdir -p "$WALLPAPER_DIR"
@@ -15,14 +16,28 @@ mkdir -p "$THEME_DIR/backgrounds"
     echo "PATH=$PATH"
 } >> "$HOME/.cache/blob-wallpaper.log"
 
+# Rows for omarchy-menu-select, as "<label><TAB><path>". The menu returns the
+# label and the subtext, so the full path comes back as a stable key.
+list_wallpaper_rows() {
+    find "$WALLPAPER_DIR" -maxdepth 1 -type f \
+        \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.gif' -o -iname '*.bmp' -o -iname '*.webp' \) \
+        2>/dev/null | sort | while read -r background; do
+        name=$(basename "$background")
+        label=$(echo "${name%.*}" | sed -E 's/^[0-9]+//; s/^[-_]//; s/[-_]/ /g; s/(^| )([a-z])/\1\u\2/g')
+        printf '%s\t%s\n' "$label" "$background"
+    done
+}
+
 if [ -z "$1" ]; then
     # Open the AGS wallpaper selector widget
     ags toggle wall-picker
     exit 0
 elif [ "$1" = "--menu" ]; then
-    # Fallback: walker dmenu selection
-    omarchy-launch-walker -m menus:blobBackgroundSelector --width 800 --minheight 400 -p "Select Wallpaper…"
-    exit 0
+    selection=$(list_wallpaper_rows | omarchy-menu-select "Select Wallpaper" -- --width 800) || exit 0
+    IMAGE_PATH=$(printf '%s' "$selection" | cut -f2)
+    if [ -z "$IMAGE_PATH" ] || [ ! -f "$IMAGE_PATH" ]; then
+        exit 0
+    fi
 else
     # Check if the argument is a file in the wallpapers directory
     if [ -f "$WALLPAPER_DIR/$1" ]; then
@@ -88,43 +103,45 @@ EOF
 # Only switch the active color theme to blob-dynamic if you're already
 # in dynamic mode. The palette above and the background below are kept
 # up to date regardless, so `blob_theme --dynamic` always reflects the
-# latest wallpaper — but picking a wallpaper while on a static theme
+# latest wallpaper - but picking a wallpaper while on a static theme
 # should change the wallpaper, not silently pull you out of it.
 #
 # When it does apply, skip omarchy-theme-set's own background step: it
-# launches swaybg asynchronously, which races with the gif handling
-# below and can leave a static swaybg frame on top of an animated gif.
-CURRENT_THEME_NAME=$(cat "$HOME/.config/omarchy/current/theme.name" 2>/dev/null)
+# picks a background out of the theme folder and runs its own transition,
+# which would race with the background handling below.
+CURRENT_THEME_NAME=$(cat "$CURRENT_DIR/theme.name" 2>/dev/null)
 if [ "$CURRENT_THEME_NAME" = "blob-dynamic" ]; then
     OMARCHY_THEME_SKIP_BACKGROUND=1 omarchy-theme-set "blob-dynamic"
 fi
 
-CURRENT_BACKGROUND_LINK="$HOME/.config/omarchy/current/background"
-ln -nsf "$THEME_DIR/backgrounds/$(basename "$IMAGE_PATH")" "$CURRENT_BACKGROUND_LINK"
+NEW_BACKGROUND="$THEME_DIR/backgrounds/$(basename "$IMAGE_PATH")"
 
-# Stop whichever daemon was previously rendering the background before
-# starting the one this wallpaper needs. `awww kill` shuts the daemon down
-# via its own IPC so it cleans up its socket, unlike a raw `pkill`.
-pkill -x swaybg 2>/dev/null
+# Stop a gif daemon left over from a previous wallpaper. `awww kill` shuts the
+# daemon down via its own IPC so it cleans up its socket, unlike a raw `pkill`.
 awww kill --all >/dev/null 2>&1
 pkill -x awww-daemon 2>/dev/null
 
+# omarchy-theme-bg-set updates ~/.local/state/omarchy/current/background and
+# tells the running Omarchy shell to repaint, which is what draws the desktop
+# background in Omarchy 4 (swaybg is no longer involved).
+omarchy-theme-bg-set "$NEW_BACKGROUND"
+
 if [[ "${IMAGE_PATH,,}" == *.gif ]]; then
+    # The shell renders a still frame from the symlink above; awww layers the
+    # animation on top of it.
     echo "GIF detected, using awww for animation..."
     setsid uwsm-app -- awww-daemon >>"$HOME/.cache/awww-daemon.log" 2>&1 &
 
     # Poll until the daemon's IPC socket is ready instead of guessing a fixed sleep
     IMG_ERROR=""
     for _ in {1..15}; do
-        IMG_ERROR=$(awww img "$CURRENT_BACKGROUND_LINK" 2>&1) && break
+        IMG_ERROR=$(awww img "$NEW_BACKGROUND" 2>&1) && break
         sleep 0.3
     done
     if [[ -n "$IMG_ERROR" ]]; then
         echo "awww failed to set the wallpaper: $IMG_ERROR"
         echo "See $HOME/.cache/awww-daemon.log for daemon output."
     fi
-else
-    setsid uwsm-app -- swaybg -i "$CURRENT_BACKGROUND_LINK" -m fill >/dev/null 2>&1 &
 fi
 
 echo "Wallpaper and dynamic theme applied successfully: $IMAGE_PATH"

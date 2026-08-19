@@ -1,13 +1,10 @@
 #!/bin/bash
 
-# Configuration files to modify
-ACTIVE_CONF="$HOME/.config/hypr/looknfeel.conf"
-REPO_CONF="$HOME/Documents/dotfiles/hypr/looknfeel.conf"
+# Window transparency toggle. Omarchy's toggles directory is loaded after
+# ~/.config/hypr/looknfeel.lua, so dropping a flag file here re-enables the
+# default translucency that looknfeel.lua overrides away.
 
-# The rule to enforce solid opacity
-OVERRIDE_RULE="windowrule = opacity 1.0 override 1.0 override, match:tag default-opacity"
-# A marker comment
-MARKER="# Remove default window transparency"
+FLAG_FILE="$HOME/.local/state/omarchy/toggles/hypr/blob-glass.lua"
 
 ACTION=$1
 
@@ -16,19 +13,16 @@ if [ -z "$ACTION" ]; then
 fi
 
 enable_glass() {
-    # Remove the rules
-    sed -i "/$MARKER/d" "$ACTIVE_CONF" "$REPO_CONF" 2>/dev/null
-    sed -i "/opacity 1.0 override/d" "$ACTIVE_CONF" "$REPO_CONF" 2>/dev/null
+    mkdir -p "$(dirname "$FLAG_FILE")"
+    cat > "$FLAG_FILE" <<'LUA'
+o.window({ tag = "default-opacity" }, { opacity = "0.985 0.96" })
+LUA
     echo "Transparency enabled (glass on)."
     hyprctl reload >/dev/null
 }
 
 disable_glass() {
-    # Add the rules if they don't exist
-    if ! grep -q "opacity 1.0 override" "$ACTIVE_CONF"; then
-        echo -e "\n$MARKER\n$OVERRIDE_RULE" >> "$ACTIVE_CONF"
-        echo -e "\n$MARKER\n$OVERRIDE_RULE" >> "$REPO_CONF"
-    fi
+    rm -f "$FLAG_FILE"
     echo "Transparency disabled (glass off)."
     hyprctl reload >/dev/null
 }
@@ -38,10 +32,10 @@ if [ "$ACTION" == "on" ]; then
 elif [ "$ACTION" == "off" ]; then
     disable_glass
 elif [ "$ACTION" == "toggle" ]; then
-    if grep -q "opacity 1.0 override" "$ACTIVE_CONF"; then
-        enable_glass
-    else
+    if [ -f "$FLAG_FILE" ]; then
         disable_glass
+    else
+        enable_glass
     fi
 else
     echo "Usage: blob_glass [on|off|toggle]"

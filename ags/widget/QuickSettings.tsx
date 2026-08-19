@@ -43,12 +43,12 @@ const [bluetoothOn] = pollBool(
 )
 
 const [doNotDisturb, setDoNotDisturb] = pollBool(
-  "makoctl mode 2>/dev/null | grep -qx do-not-disturb && echo on || echo off",
+  "omarchy-shell notifications dndState 2>/dev/null",
   2000,
 )
 
 const [nightLight, setNightLight] = pollBool(
-  "pgrep -x hyprsunset >/dev/null && echo on || echo off",
+  "omarchy-toggle-nightlight --status 2>/dev/null | grep -q '\"enabled\":true' && echo on || echo off",
   2000,
 )
 
@@ -134,14 +134,14 @@ function Toggles() {
   return (
     <box vertical spacing={8}>
       <box class="qs-tiles" spacing={8} homogeneous>
-        <Tile icon={""} label="Wi-Fi" onClicked={() => { closePanel(); sh("omarchy-launch-wifi") }} />
+        <Tile icon={""} label="Wi-Fi" onClicked={() => { closePanel(); sh("omarchy-shell shell toggle omarchy.network") }} />
         <Tile
           icon={""}
           label="Bluetooth"
           active={bluetoothOn}
           onClicked={() => {
             closePanel()
-            sh("omarchy-launch-bluetooth")
+            sh("omarchy-shell shell toggle omarchy.bluetooth")
           }}
         />
         <Tile
@@ -160,7 +160,7 @@ function Toggles() {
           active={doNotDisturb}
           onClicked={() => {
             setDoNotDisturb(!doNotDisturb.get())
-            sh("makoctl mode -t do-not-disturb")
+            sh("omarchy-shell notifications toggleDnd")
           }}
         />
         <Tile

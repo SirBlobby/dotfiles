@@ -39,7 +39,7 @@ const themes = createPoll<Theme[]>(
 const currentThemeName = createPoll(
   "",
   2000,
-  shell("cat \"$HOME/.config/omarchy/current/theme.name\" 2>/dev/null"),
+  shell("cat \"$HOME/.local/state/omarchy/current/theme.name\" 2>/dev/null"),
   (stdout) => stdout.trim(),
 )
 

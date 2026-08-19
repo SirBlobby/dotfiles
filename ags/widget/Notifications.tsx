@@ -7,44 +7,62 @@ import { sh, shell } from "../lib/utils"
 export const NOTIFICATION_WINDOW = "notification-center"
 
 type Notification = {
-  id: number
+  file: string
   appName: string
   summary: string
   body: string
+  timestamp: number
 }
 
+const NOTIFICATION_DIR = "$HOME/.local/state/omarchy/notifications"
+
+const listCommand =
+  `for file in "${NOTIFICATION_DIR}"/*.json "${NOTIFICATION_DIR}"/history/*.json; do ` +
+  "[ -f \"$file\" ] || continue; " +
+  "printf '%s\\t%s\\n' \"$file\" \"$(head -n 1 \"$file\")\"; " +
+  "done"
+
 function parseNotifications(stdout: string): Notification[] {
-  try {
-    const parsed = JSON.parse(stdout)
-    const group = parsed?.data?.[0] ?? []
-    return group.map((item: any) => ({
-      id: item.id?.value ?? 0,
-      appName: item["app-name"]?.value ?? "",
-      summary: item.summary?.value ?? "",
-      body: item.body?.value ?? "",
-    }))
-  } catch {
-    return []
-  }
+  return stdout
+    .split("\n")
+    .filter((line) => line.includes("\t"))
+    .map((line) => {
+      const separator = line.indexOf("\t")
+      const file = line.slice(0, separator)
+      try {
+        const entry = JSON.parse(line.slice(separator + 1))
+        return {
+          file,
+          appName: String(entry.app ?? ""),
+          summary: String(entry.summary ?? ""),
+          body: String(entry.body ?? ""),
+          timestamp: Number(entry.timestamp ?? 0),
+        }
+      } catch {
+        return null
+      }
+    })
+    .filter((item): item is Notification => item !== null)
+    .sort((left, right) => right.timestamp - left.timestamp)
 }
 
 const notifications = createPoll<Notification[]>(
   [],
   1000,
-  shell("makoctl list -j 2>/dev/null || echo '{}'"),
+  shell(listCommand),
   (stdout) => parseNotifications(stdout),
 )
 
 const doNotDisturb = createPoll(
   false,
   1000,
-  shell("makoctl mode 2>/dev/null"),
-  (stdout) => stdout.split("\n").includes("do-not-disturb"),
+  shell("omarchy-shell notifications dndState 2>/dev/null"),
+  (stdout) => stdout.trim() === "on",
 )
 
-const dismiss = (id: number) => sh(`makoctl dismiss -n ${id}`)
-const clearAll = () => sh("makoctl dismiss -a")
-const toggleDoNotDisturb = () => sh("makoctl mode -t do-not-disturb")
+const dismiss = (file: string) => sh(`rm -f '${file.replace(/'/g, "'\\''")}'`)
+const clearAll = () => sh("omarchy-shell notifications dismissAll; omarchy-shell notifications clear")
+const toggleDoNotDisturb = () => sh("omarchy-shell notifications toggleDnd")
 
 function NotificationItem({ item }: { item: Notification }) {
   return (
@@ -60,7 +78,7 @@ function NotificationItem({ item }: { item: Notification }) {
         <button
           class="notification-item-close"
           halign={Gtk.Align.END}
-          onClicked={() => dismiss(item.id)}
+          onClicked={() => dismiss(item.file)}
         >
           <label label={""} />
         </button>
@@ -126,7 +144,7 @@ export default function NotificationCenter() {
           vscroll={Gtk.PolicyType.AUTOMATIC}
         >
           <box vertical spacing={8}>
-            <For each={notifications} id={(item: Notification) => item.id}>
+            <For each={notifications} id={(item: Notification) => item.file}>
               {(item: Notification) => <NotificationItem item={item} />}
             </For>
           </box>

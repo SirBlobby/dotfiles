@@ -52,15 +52,29 @@ revert_dir() {
     fi
 }
 
+revert_file() {
+    local dest="$1"
+    local name="$2"
+    local bak_file="${dest}.bak"
+
+    if [ -f "$bak_file" ]; then
+        echo "[REVERT] Restoring $name from $bak_file..."
+        cp "$bak_file" "$dest"
+        echo "✓ Restored $name"
+    else
+        echo "[SKIP] No backup found for $name at $bak_file"
+    fi
+}
+
 echo "=== Reverting changes ==="
 echo ""
 
-revert_dir "$HOME_DIR/.config/waybar" "Waybar config"
 revert_dir "$HOME_DIR/.config/ags" "AGS config"
 revert_dir "$HOME_DIR/.config/hypr" "Hyprland config"
 revert_dir "$HOME_DIR/.config/omarchy/branding" "Branding files"
-revert_dir "$HOME_DIR/.config/elephant" "Elephant configs"
 revert_dir "$HOME_DIR/.config/omarchy/hooks" "Omarchy hooks"
+revert_dir "$HOME_DIR/.config/omarchy/extensions" "Omarchy menu extensions"
+revert_file "$HOME_DIR/.config/omarchy/shell.json" "Omarchy shell config"
 revert_dir "$HOME_DIR/wallpapers" "Custom wallpapers"
 revert_dir "$HOME_DIR/scripts" "Custom scripts"
 
@@ -88,11 +102,11 @@ remove_lid_switch() {
 remove_lid_switch
 
 echo ""
-echo "=== Restarting Waybar ==="
-if command -v omarchy-restart-waybar &> /dev/null; then
-    omarchy-restart-waybar
+echo "=== Restarting the Omarchy shell ==="
+if command -v omarchy-restart-shell &> /dev/null; then
+    omarchy-restart-shell
 else
-    echo "Warning: omarchy-restart-waybar not found. Please restart waybar manually."
+    echo "Warning: omarchy-restart-shell not found. Please restart the shell manually."
 fi
 
 echo ""
@@ -110,15 +124,6 @@ if command -v hyprctl &> /dev/null; then
     hyprctl reload || true
 else
     echo "Warning: hyprctl not found. Please reload Hyprland manually."
-fi
-
-echo ""
-echo "=== Restarting hypridle ==="
-if command -v hypridle &> /dev/null; then
-    pkill -x hypridle 2>/dev/null || true
-    nohup hypridle >/dev/null 2>&1 &
-else
-    echo "Warning: hypridle not found. Please restart hypridle manually."
 fi
 
 echo ""

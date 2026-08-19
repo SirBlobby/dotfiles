@@ -1,7 +1,7 @@
 /* Import the active Omarchy theme's colors (regenerated from colors.toml
    on every theme change - static, dynamic, or shared - by
    omarchy-theme-set-templates via omarchy/themed/zen.css.tpl) */
-@import url("file:///home/blob/.config/omarchy/current/theme/zen.css");
+@import url("file:///home/blob/.local/state/omarchy/current/theme/zen.css");
 
 :root {
     /* Map Omarchy colors to Zen variables */

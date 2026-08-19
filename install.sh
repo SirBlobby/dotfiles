@@ -129,6 +129,34 @@ replace_and_copy() {
     fi
 }
 
+backup_and_copy_file() {
+    local src="$1"
+    local dest="$2"
+    local name="$3"
+
+    if [ ! -e "$dest" ]; then
+        echo "[COPY] $name: New file (creating)"
+        mkdir -p "$(dirname "$dest")"
+        cp "$src" "$dest"
+        return
+    fi
+
+    if [ "$(compute_hash "$src")" = "$(compute_hash "$dest")" ]; then
+        echo "[SKIP] $name: Up to date"
+        return
+    fi
+
+    if [ "$FORCE" = true ]; then
+        echo "[BACKUP] $name: Backing up..."
+        cp "$dest" "$dest.bak"
+
+        echo "[COPY] $name: Overwriting (--force)"
+        cp "$src" "$dest"
+    else
+        echo "[SKIP] $name: Has local changes (use --force to overwrite)"
+    fi
+}
+
 install_dependencies() {
     echo "=== Checking Dependencies ==="
     local deps_needed=()
@@ -140,6 +168,9 @@ install_dependencies() {
     fi
     if ! command -v awww &> /dev/null; then
         deps_needed+=("awww")
+    fi
+    if ! command -v playerctl &> /dev/null; then
+        deps_needed+=("playerctl")
     fi
     
     if [ ${#deps_needed[@]} -gt 0 ]; then
@@ -162,13 +193,16 @@ echo ""
 
 check_status=0
 
-check_file "$SCRIPT_DIR/waybar/config.jsonc" "$HOME_DIR/.config/waybar/config.jsonc" "waybar/config.jsonc" || check_status=1
-check_file "$SCRIPT_DIR/hypr/hyprland.conf" "$HOME_DIR/.config/hypr/hyprland.conf" "hypr/hyprland.conf" || check_status=1
-check_file "$SCRIPT_DIR/hypr/monitors.conf" "$HOME_DIR/.config/hypr/monitors.conf" "hypr/monitors.conf" || check_status=1
-check_file "$SCRIPT_DIR/hypr/autostart.conf" "$HOME_DIR/.config/hypr/autostart.conf" "hypr/autostart.conf" || check_status=1
-check_file "$SCRIPT_DIR/hypr/looknfeel.conf" "$HOME_DIR/.config/hypr/looknfeel.conf" "hypr/looknfeel.conf" || check_status=1
-check_file "$SCRIPT_DIR/hypr/bindings.conf" "$HOME_DIR/.config/hypr/bindings.conf" "hypr/bindings.conf" || check_status=1
-check_file "$SCRIPT_DIR/hypr/hypridle.conf" "$HOME_DIR/.config/hypr/hypridle.conf" "hypr/hypridle.conf" || check_status=1
+check_file "$SCRIPT_DIR/hypr/hyprland.lua" "$HOME_DIR/.config/hypr/hyprland.lua" "hypr/hyprland.lua" || check_status=1
+check_file "$SCRIPT_DIR/hypr/monitors.lua" "$HOME_DIR/.config/hypr/monitors.lua" "hypr/monitors.lua" || check_status=1
+check_file "$SCRIPT_DIR/hypr/input.lua" "$HOME_DIR/.config/hypr/input.lua" "hypr/input.lua" || check_status=1
+check_file "$SCRIPT_DIR/hypr/autostart.lua" "$HOME_DIR/.config/hypr/autostart.lua" "hypr/autostart.lua" || check_status=1
+check_file "$SCRIPT_DIR/hypr/looknfeel.lua" "$HOME_DIR/.config/hypr/looknfeel.lua" "hypr/looknfeel.lua" || check_status=1
+check_file "$SCRIPT_DIR/hypr/bindings.lua" "$HOME_DIR/.config/hypr/bindings.lua" "hypr/bindings.lua" || check_status=1
+check_file "$SCRIPT_DIR/hypr/hyprsunset.conf" "$HOME_DIR/.config/hypr/hyprsunset.conf" "hypr/hyprsunset.conf" || check_status=1
+check_file "$SCRIPT_DIR/hypr/xdph.conf" "$HOME_DIR/.config/hypr/xdph.conf" "hypr/xdph.conf" || check_status=1
+check_file "$SCRIPT_DIR/omarchy/shell.json" "$HOME_DIR/.config/omarchy/shell.json" "omarchy/shell.json" || check_status=1
+check_file "$SCRIPT_DIR/omarchy/extensions/omarchy-menu.jsonc" "$HOME_DIR/.config/omarchy/extensions/omarchy-menu.jsonc" "omarchy/extensions/omarchy-menu.jsonc" || check_status=1
 check_file "$SCRIPT_DIR/omarchy/hooks/theme-set" "$HOME_DIR/.config/omarchy/hooks/theme-set" "omarchy/hooks/theme-set" || check_status=1
 check_file "$SCRIPT_DIR/omarchy/themed/zen.css.tpl" "$HOME_DIR/.config/omarchy/themed/zen.css.tpl" "omarchy/themed/zen.css.tpl" || check_status=1
 check_file "$SCRIPT_DIR/ags/app.ts" "$HOME_DIR/.config/ags/app.ts" "ags/app.ts" || check_status=1
@@ -184,9 +218,6 @@ check_file "$SCRIPT_DIR/ags/widget/SysMonitor.tsx" "$HOME_DIR/.config/ags/widget
 check_file "$SCRIPT_DIR/ags/widget/ThemePicker.tsx" "$HOME_DIR/.config/ags/widget/ThemePicker.tsx" "ags/widget/ThemePicker.tsx" || check_status=1
 check_file "$SCRIPT_DIR/ags/widget/WallPicker.tsx" "$HOME_DIR/.config/ags/widget/WallPicker.tsx" "ags/widget/WallPicker.tsx" || check_status=1
 check_file "$SCRIPT_DIR/ags/widget/WidgetCard.tsx" "$HOME_DIR/.config/ags/widget/WidgetCard.tsx" "ags/widget/WidgetCard.tsx" || check_status=1
-check_file "$SCRIPT_DIR/waybar/style.css" "$HOME_DIR/.config/waybar/style.css" "waybar/style.css" || check_status=1
-check_file "$SCRIPT_DIR/elephant/menus/blob_background_selector.lua" "$HOME_DIR/.config/elephant/menus/blob_background_selector.lua" "elephant/menus/blob_background_selector.lua" || check_status=1
-check_file "$SCRIPT_DIR/elephant/menus/blob_theme_selector.lua" "$HOME_DIR/.config/elephant/menus/blob_theme_selector.lua" "elephant/menus/blob_theme_selector.lua" || check_status=1
 check_file "$SCRIPT_DIR/branding/about.txt" "$HOME_DIR/.config/omarchy/branding/about.txt" "branding/about.txt" || check_status=1
 check_file "$SCRIPT_DIR/branding/screensaver.txt" "$HOME_DIR/.config/omarchy/branding/screensaver.txt" "branding/screensaver.txt" || check_status=1
 
@@ -230,13 +261,13 @@ fi
 echo "=== Applying changes ==="
 echo ""
 
-backup_and_copy "$SCRIPT_DIR/waybar" "$HOME_DIR/.config/waybar" "Waybar config"
 backup_and_copy "$SCRIPT_DIR/ags" "$HOME_DIR/.config/ags" "AGS config"
 backup_and_copy "$SCRIPT_DIR/hypr" "$HOME_DIR/.config/hypr" "Hyprland config"
 backup_and_copy "$SCRIPT_DIR/branding" "$HOME_DIR/.config/omarchy/branding" "Branding files"
-backup_and_copy "$SCRIPT_DIR/elephant" "$HOME_DIR/.config/elephant" "Elephant configs"
 backup_and_copy "$SCRIPT_DIR/omarchy/hooks" "$HOME_DIR/.config/omarchy/hooks" "Omarchy hooks"
 backup_and_copy "$SCRIPT_DIR/omarchy/themed" "$HOME_DIR/.config/omarchy/themed" "Omarchy custom templates"
+backup_and_copy "$SCRIPT_DIR/omarchy/extensions" "$HOME_DIR/.config/omarchy/extensions" "Omarchy menu extensions"
+backup_and_copy_file "$SCRIPT_DIR/omarchy/shell.json" "$HOME_DIR/.config/omarchy/shell.json" "Omarchy shell config"
 replace_and_copy "$SCRIPT_DIR/wallpapers" "$HOME_DIR/wallpapers" "Custom wallpapers"
 
 if [ -d "$SCRIPT_DIR/themes" ]; then
@@ -302,8 +333,8 @@ add_system_path() {
 add_system_path
 
 # Keep the laptop awake with the lid closed while docked / on AC, so the two
-# external monitors stay usable. Paired with the lid-switch binds in
-# hypr/bindings.conf, which disable eDP-1 on close so no workspace is stranded.
+# external monitors stay usable. Omarchy's own lid-switch binds disable eDP-1
+# on close so no workspace is stranded.
 configure_lid_switch() {
     local dropin="/etc/systemd/logind.conf.d/10-lid.conf"
     local content="[Login]
@@ -350,11 +381,11 @@ add_path_to_shell "$HOME_DIR/.zshrc"
 chmod +x "$HOME_DIR/scripts/"*.sh 2>/dev/null || true
 
 echo ""
-echo "=== Restarting Waybar ==="
-if command -v omarchy-restart-waybar &> /dev/null; then
-    omarchy-restart-waybar
+echo "=== Restarting the Omarchy shell ==="
+if command -v omarchy-restart-shell &> /dev/null; then
+    omarchy-restart-shell
 else
-    echo "Warning: omarchy-restart-waybar not found. Please restart waybar manually."
+    echo "Warning: omarchy-restart-shell not found. Please restart the shell manually."
 fi
 
 echo ""
@@ -375,17 +406,8 @@ else
 fi
 
 echo ""
-echo "=== Restarting hypridle ==="
-if command -v hypridle &> /dev/null; then
-    pkill -x hypridle 2>/dev/null || true
-    nohup hypridle >/dev/null 2>&1 &
-else
-    echo "Warning: hypridle not found. Please restart hypridle manually."
-fi
-
-echo ""
 echo "=== Reapplying current theme (to pick up new templates) ==="
-current_theme_name=$(cat "$HOME_DIR/.config/omarchy/current/theme.name" 2>/dev/null)
+current_theme_name=$(cat "$HOME_DIR/.local/state/omarchy/current/theme.name" 2>/dev/null)
 if [ -n "$current_theme_name" ] && command -v omarchy-theme-set &> /dev/null; then
     OMARCHY_THEME_SKIP_BACKGROUND=1 omarchy-theme-set "$current_theme_name" || true
 else

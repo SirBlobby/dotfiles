@@ -4,7 +4,7 @@
 
   <img src="https://img.shields.io/badge/Arch_Linux-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white" alt="Arch Linux" />
   <img src="https://img.shields.io/badge/Hyprland-00A86B?style=for-the-badge&logo=hyprland&logoColor=white" alt="Hyprland" />
-  <img src="https://img.shields.io/badge/Waybar-FF6600?style=for-the-badge&logo=linux&logoColor=white" alt="Waybar" />
+  <img src="https://img.shields.io/badge/Omarchy_4-000000?style=for-the-badge&logo=archlinux&logoColor=white" alt="Omarchy 4" />
   <img src="https://img.shields.io/badge/AGS-231F20?style=for-the-badge&logo=gnome&logoColor=white" alt="AGS" />
 </div>
 
@@ -15,7 +15,7 @@
 My current setup is built around these core components:
 
 - **[Hyprland](https://hyprland.org/):** A highly customizable dynamic tiling Wayland compositor.
-- **[Waybar](https://github.com/Alexays/Waybar):** A customizable, modular status bar.
+- **Omarchy shell:** The Quickshell-based bar, notifications, and lock screen that ships with Omarchy 4, configured through `omarchy/shell.json`.
 - **[AGS](https://github.com/Aylur/ags):** Aylur's Gtk Shell, used for creating custom, scriptable desktop widgets.
 - **Dynamic Theming:** Seamlessly integrated with Pywal to extract color palettes from wallpapers and apply them instantly across the entire system (widgets, terminal, status bar).
 - **[kitty](https://sw.kovidgoyal.net/kitty/):** The terminal, with its own checked-in color theme — see [`kitty/`](kitty/README.md).
@@ -23,12 +23,11 @@ My current setup is built around these core components:
 ### Directory Structure
 
 - **`hypr/`**: Hyprland configurations (keybindings, window rules, animations, monitor layout, lid-close display handling, and autostart). See [`hypr/keybinds.md`](hypr/keybinds.md) for custom keybindings.
-- **`waybar/`**: Status bar layout, CSS styling, and custom interactive modules.
+- **`omarchy/`**: Omarchy 4 configuration — `shell.json` (bar layout and idle/lock timings), `extensions/` (entries added to the Omarchy menu), `hooks/` (event hooks such as retinting AGS on theme change), and `themed/` (extra theme templates).
 - **`ags/`**: Custom desktop widgets built with TypeScript and GTK — media player, notification hub, quick settings, system monitor, wallpaper picker, and theme picker.
 - **`scripts/`**: Global utility scripts seamlessly exposed as commands by the installer. See [`commands.md`](commands.md).
 - **`wallpapers/`**: A collection of local custom wallpapers for dynamic theming. See [`wallpaper-gallery/`](wallpaper-gallery/index.md) for the full gallery (split alphabetically across multiple pages).
 - **`themes/`**: Drop-in local color themes (one `colors.toml` per theme) that `install.sh` deploys into Omarchy's theme directory. See [`themes/README.md`](themes/README.md).
-- **`omarchy/hooks/`**: Event hooks for the Omarchy system (e.g. automatically applying dynamic themes when changing wallpapers).
 - **`branding/`**: Custom ASCII art and system branding assets.
 - **`kitty/`**: kitty terminal config and its color theme, applied by hand rather than by `install.sh`. See [`kitty/README.md`](kitty/README.md).
 
@@ -42,7 +41,7 @@ My current setup is built around these core components:
 
 ## Installation
 
-An automated installer script (`install.sh`) is provided to safely apply these configurations to your system. It targets Arch — `kitty/` is applied by hand, see [`kitty/README.md`](kitty/README.md).
+An automated installer script (`install.sh`) is provided to safely apply these configurations to your system. It targets Arch running Omarchy 4 — `kitty/` is applied by hand, see [`kitty/README.md`](kitty/README.md).
 
 ```bash
 # Run the standard installer
