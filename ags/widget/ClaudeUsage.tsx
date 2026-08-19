@@ -2,7 +2,6 @@ import { Gtk } from "ags/gtk3"
 import { createPoll } from "ags/time"
 import { For } from "ags"
 import { shell } from "../lib/utils"
-import { StatRow } from "./WidgetCard"
 
 type Limit = {
   label: string
@@ -34,9 +33,6 @@ type AgentUsage = {
   plan: string
   statusText: string
   helpText: string
-  todayPrompts: number
-  todaySessions: number
-  todayTokens: string
   limits: Limit[]
   days: DayUsage[]
   models: ModelUsage[]
@@ -48,9 +44,6 @@ const EMPTY_USAGE: AgentUsage = {
   plan: "",
   statusText: "",
   helpText: "",
-  todayPrompts: 0,
-  todaySessions: 0,
-  todayTokens: "0",
   limits: [],
   days: [],
   models: [],
@@ -82,9 +75,9 @@ function formatResetsIn(resetsAt: string) {
   const hours = Math.floor((minutesLeft % 1440) / 60)
   const minutes = minutesLeft % 60
 
-  if (days > 0) return `resets in ${days}d ${hours}h`
-  if (hours > 0) return `resets in ${hours}h ${minutes}m`
-  return `resets in ${minutes}m`
+  if (days > 0) return `Resets in ${days}d ${hours}h`
+  if (hours > 0) return `Resets in ${hours}h ${minutes}m`
+  return `Resets in ${minutes}m`
 }
 
 function formatModelName(model: string) {
@@ -94,13 +87,18 @@ function formatModelName(model: string) {
     .replace(/(^| )(\w)/g, (_match, space, letter) => `${space}${letter.toUpperCase()}`)
 }
 
+function formatPercent(percent: number) {
+  if (percent > 0 && percent < 1) return "<1%"
+  return `${Math.round(percent)}%`
+}
+
 function parseLimits(record: any): Limit[] {
   if (!Array.isArray(record.limits)) return []
 
   return record.limits.map((limit: any) => {
     const percent = Number(limit.percent) || 0
     return {
-      label: String(limit.label ?? ""),
+      label: String(limit.label ?? "").replace(/\s*\(.*\)$/, ""),
       percent,
       fraction: Math.min(1, Math.max(0, percent / 100)),
       resetsIn: formatResetsIn(String(limit.resetsAt ?? "")),
@@ -121,6 +119,8 @@ function parseDays(record: any): DayUsage[] {
     const isToday = date === todayKey
     const parsedDate = new Date(`${date}T00:00:00`)
     const weekday = WEEKDAYS[parsedDate.getDay()] ?? date
+    const shortDate = `${parsedDate.getMonth() + 1}/${parsedDate.getDate()}`
+    const detail = `${weekday} ${shortDate} - ${formatTokens(tokens)} tokens`
 
     return {
       key: date,
@@ -129,8 +129,8 @@ function parseDays(record: any): DayUsage[] {
       fraction: tokens / busiestDay,
       isToday,
       detail: isToday
-        ? `${record.todayPrompts ?? 0} prompts across ${record.todaySessions ?? 0} sessions`
-        : date,
+        ? `${detail} - ${record.todayPrompts ?? 0} prompts, ${record.todaySessions ?? 0} sessions`
+        : detail,
     }
   })
 }
@@ -180,9 +180,6 @@ function parseUsage(stdout: string): AgentUsage {
       plan: String(record.tierLabel ?? ""),
       statusText: String(record.usageStatusText ?? ""),
       helpText: String(record.authHelpText ?? ""),
-      todayPrompts: Number(record.todayPrompts) || 0,
-      todaySessions: Number(record.todaySessions) || 0,
-      todayTokens: formatTokens(Number(record.todayTotalTokens) || 0),
       limits: parseLimits(record),
       days: parseDays(record),
       models: parseModels(record),
@@ -205,36 +202,30 @@ function SectionTitle({ title }: { title: string }) {
 
 function LimitRow({ limit }: { limit: Limit }) {
   return (
-    <box class="agent-limit" vertical spacing={4}>
+    <box vertical spacing={4}>
       <box spacing={8}>
-        <label class="widget-card-label" label={limit.label} xalign={0} halign={Gtk.Align.START} hexpand />
-        <label class="widget-card-value" label={`${limit.percent.toFixed(1)}%`} />
+        <label class="agent-limit-name" label={limit.label} xalign={0} halign={Gtk.Align.START} hexpand />
+        <label class="agent-limit-percent" label={formatPercent(limit.percent)} />
       </box>
-      <levelbar class="widget-level-bar" value={limit.fraction} />
+      <levelbar class="agent-limit-bar" value={limit.fraction} />
       <label class="agent-limit-reset" label={limit.resetsIn} xalign={0} halign={Gtk.Align.START} />
     </box>
   )
 }
 
-function BarRow({ label, tokens, fraction, detail, emphasized }: {
-  label: string
-  tokens: string
-  fraction: number
-  detail: string
-  emphasized: boolean
-}) {
+function DayRow({ day }: { day: DayUsage }) {
   return (
-    <box class="agent-bar-row" spacing={8} tooltipText={detail}>
+    <box class="agent-day-row" spacing={8} tooltipText={day.detail}>
       <label
-        class={emphasized ? "agent-bar-label emphasized" : "agent-bar-label"}
-        label={label}
+        class={day.isToday ? "agent-day-label emphasized" : "agent-day-label"}
+        label={day.label}
         xalign={0}
         halign={Gtk.Align.START}
       />
-      <levelbar class="widget-level-bar agent-bar" value={fraction} hexpand />
+      <levelbar class="agent-day-bar" value={day.fraction} hexpand />
       <label
-        class={emphasized ? "agent-bar-value emphasized" : "agent-bar-value"}
-        label={tokens}
+        class={day.isToday ? "agent-day-value emphasized" : "agent-day-value"}
+        label={day.tokens}
         xalign={1}
         halign={Gtk.Align.END}
       />
@@ -242,23 +233,37 @@ function BarRow({ label, tokens, fraction, detail, emphasized }: {
   )
 }
 
+function ModelRow({ model }: { model: ModelUsage }) {
+  return (
+    <overlay
+      tooltipText={model.detail}
+      overlays={[
+        <box class="agent-model-text" spacing={8}>
+          <label class="agent-model-label" label={model.label} xalign={0} halign={Gtk.Align.START} hexpand />
+          <label class="agent-model-value" label={model.tokens} xalign={1} halign={Gtk.Align.END} />
+        </box>,
+      ]}
+    >
+      <levelbar class="agent-model-bar" value={model.fraction} />
+    </overlay>
+  )
+}
+
 export function ClaudeUsageCard() {
   return (
     <box class="panel widget-card" vertical spacing={10}>
-      <box class="widget-card-header" spacing={10}>
-        <box class="widget-icon-badge">
-          <label label={""} hexpand vexpand halign={Gtk.Align.CENTER} valign={Gtk.Align.CENTER} />
-        </box>
-        <box vertical hexpand>
+      <box spacing={10}>
+        <label class="agent-mark" label={""} valign={Gtk.Align.CENTER} />
+        <box vertical valign={Gtk.Align.CENTER}>
           <label
-            class="widget-card-title"
+            class="agent-name"
             label={usage.as((u) => u.name)}
             xalign={0}
             halign={Gtk.Align.START}
           />
           <label
             class="agent-plan"
-            label={usage.as((u) => u.plan)}
+            label={usage.as((u) => u.plan.toUpperCase())}
             visible={usage.as((u) => u.plan.length > 0)}
             xalign={0}
             halign={Gtk.Align.START}
@@ -286,47 +291,24 @@ export function ClaudeUsageCard() {
         />
       </box>
 
-      <box vertical spacing={8} visible={usage.as((u) => u.limits.length > 0)}>
-        <SectionTitle title="Limits" />
+      <box vertical spacing={10} visible={usage.as((u) => u.limits.length > 0)}>
+        <SectionTitle title="LIMITS" />
         <For each={usage.as((u) => u.limits)} id={(limit: Limit) => limit.label}>
           {(limit: Limit) => <LimitRow limit={limit} />}
         </For>
       </box>
 
-      <box vertical spacing={8} visible={usage.as((u) => u.ready)}>
-        <SectionTitle title="Today" />
-        <StatRow icon={""} label="Tokens" value={usage.as((u) => u.todayTokens)} />
-        <StatRow icon={""} label="Prompts" value={usage.as((u) => `${u.todayPrompts}`)} />
-        <StatRow icon={""} label="Sessions" value={usage.as((u) => `${u.todaySessions}`)} />
-      </box>
-
       <box vertical spacing={6} visible={usage.as((u) => u.days.length > 0)}>
-        <SectionTitle title="Tokens by day" />
+        <SectionTitle title="TOKENS BY DAY" />
         <For each={usage.as((u) => u.days)} id={(day: DayUsage) => day.key}>
-          {(day: DayUsage) => (
-            <BarRow
-              label={day.label}
-              tokens={day.tokens}
-              fraction={day.fraction}
-              detail={day.detail}
-              emphasized={day.isToday}
-            />
-          )}
+          {(day: DayUsage) => <DayRow day={day} />}
         </For>
       </box>
 
-      <box vertical spacing={6} visible={usage.as((u) => u.models.length > 0)}>
-        <SectionTitle title="Tokens by model" />
+      <box vertical spacing={4} visible={usage.as((u) => u.models.length > 0)}>
+        <SectionTitle title="TOKENS BY MODEL" />
         <For each={usage.as((u) => u.models)} id={(model: ModelUsage) => model.key}>
-          {(model: ModelUsage) => (
-            <BarRow
-              label={model.label}
-              tokens={model.tokens}
-              fraction={model.fraction}
-              detail={model.detail}
-              emphasized={false}
-            />
-          )}
+          {(model: ModelUsage) => <ModelRow model={model} />}
         </For>
       </box>
     </box>

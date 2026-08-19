@@ -10,7 +10,7 @@
 
 .media-container {
   background-color: alpha(@background, 0.85);
-  border-radius: 8px;
+  border-radius: 0;
   border: 2px solid alpha(@color4, 0.5);
   padding: 8px 15px;
   min-width: 300px;
@@ -20,7 +20,7 @@
 .media-cover {
   min-width: 64px;
   min-height: 64px;
-  border-radius: 4px;
+  border-radius: 0;
   background-size: cover;
   background-position: center;
 }
@@ -64,12 +64,12 @@
 .media-progress trough {
   min-height: 4px;
   background-color: alpha(@foreground, 0.2);
-  border-radius: 4px;
+  border-radius: 0;
 }
 
 .media-progress highlight {
   background-color: @accent;
-  border-radius: 4px;
+  border-radius: 0;
 }
 
 .media-progress slider {
@@ -91,7 +91,7 @@
 
 .panel {
   background-color: alpha(@background, 0.92);
-  border-radius: 12px;
+  border-radius: 0;
   border: 2px solid alpha(@color4, 0.5);
   padding: 14px;
   font-family: "JetBrainsMono Nerd Font", sans-serif;
@@ -112,7 +112,7 @@
   color: @color5;
   font-size: 13px;
   padding: 3px 6px;
-  border-radius: 8px;
+  border-radius: 0;
   transition: all 0.2s;
 }
 
@@ -137,7 +137,7 @@
 
 .notification-item {
   background-color: alpha(@color0, 0.6);
-  border-radius: 10px;
+  border-radius: 0;
   border-left: 3px solid @accent;
   padding: 10px 12px;
 }
@@ -194,7 +194,7 @@
 
 .qs-tile {
   background-color: alpha(@color0, 0.6);
-  border-radius: 10px;
+  border-radius: 0;
   padding: 8px 4px;
   transition: all 0.2s;
 }
@@ -228,18 +228,18 @@
 
 .qs-slider trough {
   min-height: 8px;
-  border-radius: 8px;
+  border-radius: 0;
   background-color: alpha(@foreground, 0.2);
 }
 
 .qs-slider highlight {
-  border-radius: 8px;
+  border-radius: 0;
   background-color: @accent;
 }
 
 .qs-slider slider {
   background-color: @foreground;
-  border-radius: 50%;
+  border-radius: 0;
   min-width: 14px;
   min-height: 14px;
   margin: -4px;
@@ -271,12 +271,12 @@
 
 .sys-metric-bar trough {
   min-height: 8px;
-  border-radius: 8px;
+  border-radius: 0;
   background-color: alpha(@foreground, 0.2);
 }
 
 .sys-metric-bar block.filled {
-  border-radius: 8px;
+  border-radius: 0;
   background-color: @accent;
 }
 
@@ -318,7 +318,7 @@
 
 .wall-thumb {
   padding: 0;
-  border-radius: 10px;
+  border-radius: 0;
   border: 2px solid transparent;
   transition: all 0.2s;
 }
@@ -330,7 +330,7 @@
 .wall-thumb-image {
   min-width: 200px;
   min-height: 112px;
-  border-radius: 8px;
+  border-radius: 0;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -361,7 +361,7 @@
 
 .theme-chip {
   padding: 8px;
-  border-radius: 10px;
+  border-radius: 0;
   border: 2px solid transparent;
   background-color: alpha(@color0, 0.6);
   transition: all 0.2s;
@@ -396,7 +396,7 @@
 
 .theme-swatches {
   min-height: 36px;
-  border-radius: 6px;
+  border-radius: 0;
 }
 
 .theme-swatch {
@@ -422,7 +422,7 @@
 
 .widget-icon-badge {
   background-color: alpha(@accent, 0.18);
-  border-radius: 8px;
+  border-radius: 0;
   min-width: 32px;
   min-height: 32px;
   color: @accent;
@@ -472,25 +472,39 @@
 
 .widget-level-bar trough {
   min-height: 6px;
-  border-radius: 6px;
+  border-radius: 0;
   background-color: alpha(@foreground, 0.15);
 }
 
 .widget-level-bar block.filled {
-  border-radius: 6px;
+  border-radius: 0;
   background-color: @accent;
 }
 
 .widget-section-title {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: bold;
-  opacity: 0.55;
-  margin-top: 2px;
+  opacity: 0.45;
+  border-top: 1px solid alpha(@foreground, 0.12);
+  padding-top: 10px;
+  margin-top: 4px;
+}
+
+.agent-mark {
+  color: @accent;
+  font-size: 20px;
+  min-width: 26px;
+}
+
+.agent-name {
+  font-size: 15px;
+  font-weight: bold;
+  color: @foreground;
 }
 
 .agent-plan {
-  font-size: 11px;
-  color: @accent;
+  font-size: 10px;
+  opacity: 0.5;
 }
 
 .agent-status {
@@ -504,40 +518,85 @@
   opacity: 0.7;
 }
 
-.agent-limit-reset {
-  font-size: 10px;
-  opacity: 0.55;
+.agent-limit-name {
+  font-size: 14px;
+  color: @foreground;
 }
 
-.agent-bar-row {
+.agent-limit-percent {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.agent-limit-reset {
+  font-size: 10px;
+  opacity: 0.45;
+}
+
+.agent-limit-bar,
+.agent-day-bar {
+  min-height: 3px;
+}
+
+.agent-limit-bar trough,
+.agent-day-bar trough {
+  min-height: 3px;
+  background-color: alpha(@foreground, 0.14);
+}
+
+.agent-limit-bar block.filled,
+.agent-day-bar block.filled {
+  background-color: @foreground;
+}
+
+.agent-day-row {
   padding: 1px 0;
 }
 
-.agent-bar-label {
+.agent-day-label {
   font-size: 11px;
-  opacity: 0.8;
+  opacity: 0.6;
   min-width: 44px;
 }
 
-.agent-bar-value {
+.agent-day-value {
   font-size: 11px;
-  opacity: 0.8;
-  min-width: 54px;
+  opacity: 0.6;
+  min-width: 58px;
 }
 
-.agent-bar-label.emphasized,
-.agent-bar-value.emphasized {
+.agent-day-label.emphasized,
+.agent-day-value.emphasized {
   font-weight: bold;
   opacity: 1;
   color: @foreground;
 }
 
-.agent-bar {
-  min-height: 4px;
+.agent-model-bar {
+  min-height: 22px;
 }
 
-.agent-bar trough {
-  min-height: 4px;
+.agent-model-bar trough {
+  min-height: 22px;
+  background-color: alpha(@foreground, 0.08);
+}
+
+.agent-model-bar block.filled {
+  background-color: alpha(@foreground, 0.18);
+}
+
+.agent-model-text {
+  padding: 0 8px;
+}
+
+.agent-model-label {
+  font-size: 11px;
+  color: @foreground;
+}
+
+.agent-model-value {
+  font-size: 11px;
+  opacity: 0.6;
 }
 
 .control-center {
@@ -561,14 +620,14 @@
 
 .cc-media {
   background-color: alpha(@color0, 0.6);
-  border-radius: 10px;
+  border-radius: 0;
   padding: 10px;
 }
 
 .cc-media-cover {
   min-width: 84px;
   min-height: 84px;
-  border-radius: 8px;
+  border-radius: 0;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -595,12 +654,12 @@
 
 .cc-media-seek trough {
   min-height: 4px;
-  border-radius: 4px;
+  border-radius: 0;
   background-color: alpha(@foreground, 0.2);
 }
 
 .cc-media-seek highlight {
-  border-radius: 4px;
+  border-radius: 0;
   background-color: @accent;
 }
 
