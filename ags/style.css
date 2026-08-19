@@ -13,7 +13,7 @@
   border-radius: 0;
   border: 2px solid alpha(@color4, 0.5);
   padding: 8px 15px;
-  min-width: 300px;
+  min-width: 380px;
   font-family: "JetBrainsMono Nerd Font", sans-serif;
 }
 
@@ -127,7 +127,7 @@
 }
 
 .notification-center {
-  min-width: 360px;
+  min-width: 440px;
   min-height: 420px;
 }
 
@@ -189,7 +189,7 @@
 }
 
 .quick-settings {
-  min-width: 320px;
+  min-width: 400px;
 }
 
 .qs-tile {
@@ -246,7 +246,7 @@
 }
 
 .sys-monitor {
-  min-width: 320px;
+  min-width: 400px;
 }
 
 .sys-metric-icon {
@@ -281,7 +281,7 @@
 }
 
 .calendar {
-  min-width: 280px;
+  min-width: 340px;
 }
 
 .calendar-time {
@@ -308,7 +308,7 @@
 }
 
 .wall-picker {
-  min-width: 680px;
+  min-width: 840px;
   min-height: 460px;
 }
 
@@ -351,7 +351,7 @@
 }
 
 .theme-picker {
-  min-width: 680px;
+  min-width: 840px;
   min-height: 460px;
 }
 
@@ -425,7 +425,7 @@ tooltip.background label {
 }
 
 .qs-side-panel {
-  min-width: 280px;
+  min-width: 340px;
 }
 
 .widget-card {
@@ -619,7 +619,7 @@ tooltip.background label {
 }
 
 .control-center {
-  min-width: 360px;
+  min-width: 440px;
 }
 
 .cc-header {
