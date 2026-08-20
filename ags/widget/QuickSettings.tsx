@@ -450,7 +450,7 @@ function WeatherCard() {
       />
       <box vertical spacing={8} visible={weather.as((w) => w.ok)}>
         <StatRow icon={""} label="Temperature" value={weather.as((w) => w.temp)} />
-        <StatRow icon={""} label="Wind" value={weather.as((w) => w.wind)} />
+        <StatRow icon={""} label="Wind" value={weather.as((w) => w.wind)} />
       </box>
     </box>
   )
