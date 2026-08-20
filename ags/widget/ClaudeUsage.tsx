@@ -66,6 +66,14 @@ function localDateKey(date: Date) {
   return `${date.getFullYear()}-${month}-${day}`
 }
 
+function formatClockTime(date: Date) {
+  const hourOfDay = date.getHours()
+  const minutes = `${date.getMinutes()}`.padStart(2, "0")
+  const hour12 = hourOfDay % 12 === 0 ? 12 : hourOfDay % 12
+  const suffix = hourOfDay < 12 ? "AM" : "PM"
+  return `${hour12}:${minutes}${suffix}`
+}
+
 function formatResetsIn(resetsAt: string) {
   const resetTime = Date.parse(resetsAt)
   if (!resetTime) return ""
@@ -76,10 +84,11 @@ function formatResetsIn(resetsAt: string) {
   const days = Math.floor(minutesLeft / 1440)
   const hours = Math.floor((minutesLeft % 1440) / 60)
   const minutes = minutesLeft % 60
+  const clockTime = formatClockTime(new Date(resetTime))
 
-  if (days > 0) return `Resets in ${days}d ${hours}h`
-  if (hours > 0) return `Resets in ${hours}h ${minutes}m`
-  return `Resets in ${minutes}m`
+  if (days > 0) return `Resets in ${days}d ${hours}h (${clockTime})`
+  if (hours > 0) return `Resets in ${hours}h ${minutes}m (${clockTime})`
+  return `Resets in ${minutes}m (${clockTime})`
 }
 
 function formatModelName(model: string) {
