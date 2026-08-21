@@ -2,7 +2,7 @@
   "version": 1,
   "idle": {
     "screensaver": 300,
-    "lock": 301
+    "lock": 900
   },
   "bar": {
     "id": "blob.bar",
