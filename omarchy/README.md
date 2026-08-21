@@ -34,6 +34,15 @@ update indicator in its center. Add `{ "id": "omarchy.indicators" }` back to
 `center` to restore them (omit `items` for all six, which adds `NightLight`
 and `Reminder`).
 
+## Idle timings
+
+`idle.screensaver` and `idle.lock` are both counted from the moment the session
+goes idle, not from each other. The screensaver is what paints
+`branding/screensaver.txt` across every monitor, so the two values need a real
+gap between them or the lock screen covers the branding as soon as it appears.
+Screensaver at 300 and lock at 900 leaves ten minutes of branding before the
+session locks.
+
 ## Custom modules
 
 The bar accepts arbitrary ids with `type: "command"`, which is how the two
@@ -62,12 +71,21 @@ below for why.
 hardcodes workspaces 1-5 as always visible and has no setting for it, so the
 clone changes that list to 1-9 to match the old waybar `persistent-workspaces`.
 
-`plugins/blob.menu/` clones `omarchy.menu` to widen it. `cardWidth` in
-`Menu.qml` is hardcoded at `Style.space(300)`; the clone raises it to 440, so
-the apps menu (Super + Space) and the root menu (Super + Alt + Space) are both
-wider. The two oversized menus (screen recording, font picker) keep their own
-520 and are untouched. `omarchy-menu` still targets `omarchy.menu` on the CLI -
-the manifest records `clonedFrom`, and the shell routes those calls here.
+`plugins/blob.menu/` clones `omarchy.menu` to widen it and to let a menu row
+choose where it sits. `cardWidth` in `Menu.qml` is hardcoded at
+`Style.space(300)`; the clone raises it to 440, so the apps menu (Super + Space)
+and the root menu (Super + Alt + Space) are both wider. The two oversized menus
+(screen recording, font picker) keep their own 520 and are untouched.
+`omarchy-menu` still targets `omarchy.menu` on the CLI - the manifest records
+`clonedFrom`, and the shell routes those calls here.
+
+`mergeMenuSources` in `MenuModel.js` reads the default menu first and the user
+extension second, so a row that only exists in `extensions/omarchy-menu.jsonc`
+lands at the bottom of its menu with no way to move it. The clone adds a
+`before:` key naming another row's id, and `applyBeforeHints` moves the row
+ahead of it once both sources are merged - which is how `Blob` sits directly
+under `Apps` instead of below `System`. A `before:` that names an unknown id is
+ignored, and a row without one keeps its file order.
 
 `plugins/blob.bar/` replaces the whole bar so the clock cannot be dragged out
 of the center. Omarchy 4 puts a drag-to-reorder handler on every bar module and
