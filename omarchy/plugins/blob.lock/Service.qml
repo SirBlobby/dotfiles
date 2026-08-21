@@ -15,8 +15,6 @@ Item {
   readonly property string stateHome: home + "/.local/state"
   readonly property string userName: Quickshell.env("USER") || Quickshell.env("LOGNAME")
   readonly property string currentBackgroundLink: stateHome + "/omarchy/current/background"
-  readonly property string brandingPath: home + "/.config/omarchy/branding/screensaver.txt"
-  readonly property string currentThemePath: stateHome + "/omarchy/current/theme"
 
   property bool lockRequested: false
   property bool pendingSessionLock: false
@@ -31,8 +29,6 @@ Item {
   property int failedAttempts: 0
   property string backgroundPath: ""
   property int backgroundVersion: 0
-  property string brandingText: ""
-  property string paletteColor4: ""
   property string lastEvent: "init"
   property string lastEventAt: ""
   property bool strandedLock: false
@@ -274,8 +270,8 @@ Item {
         anchors.fill: parent
         backgroundPath: root.backgroundPath
         backgroundVersion: root.backgroundVersion
-        brandingText: root.brandingText
-        paletteColor4: root.paletteColor4
+        brandingText: brandingSource.brandingText
+        paletteColor4: brandingSource.paletteColor4
         fingerprintConfigured: root.fingerprintConfigured
         authenticatingPassword: root.authenticatingPassword
         failureMessage: root.failureMessage
@@ -306,8 +302,8 @@ Item {
       anchors.fill: parent
       backgroundPath: root.backgroundPath
       backgroundVersion: root.backgroundVersion
-      brandingText: root.brandingText
-      paletteColor4: root.paletteColor4
+      brandingText: brandingSource.brandingText
+      paletteColor4: brandingSource.paletteColor4
       fingerprintConfigured: root.fingerprintConfigured
       authenticatingPassword: false
       failureMessage: ""
@@ -489,39 +485,8 @@ Item {
     else armBlankTimer()
   }
 
-  // The Color singleton exposes only foreground, background, accent, urgent,
-  // and muted, so the raw color4 slot the AGS stylesheet borders with has to
-  // be read here. Same file and same shape Color itself parses; the current
-  // theme directory is a real directory rewritten in place on every theme
-  // change, so watching the file is enough to follow a theme switch.
-  function readPaletteColor4(raw) {
-    var lines = String(raw || "").split("\n")
-    for (var i = 0; i < lines.length; i++) {
-      var match = lines[i].match(/^\s*color4\s*=\s*["']?(#[0-9A-Fa-f]{6})/)
-      if (match) return match[1]
-    }
-    return ""
-  }
-
-  FileView {
-    path: root.currentThemePath + "/colors.toml"
-    watchChanges: true
-    printErrors: false
-    onLoaded: root.paletteColor4 = root.readPaletteColor4(text())
-    onLoadFailed: root.paletteColor4 = ""
-    onFileChanged: reload()
-  }
-
-  // The same file the screensaver paints. Watched so an edit through
-  // `omarchy branding screensaver text` shows up on the next lock without a
-  // shell restart. A missing file simply leaves the lock screen unbranded.
-  FileView {
-    path: root.brandingPath
-    watchChanges: true
-    printErrors: false
-    onLoaded: root.brandingText = text()
-    onLoadFailed: root.brandingText = ""
-    onFileChanged: reload()
+  BrandingSource {
+    id: brandingSource
   }
 
   FileView {

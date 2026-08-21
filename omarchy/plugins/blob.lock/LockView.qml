@@ -22,8 +22,6 @@ Item {
   readonly property string placeholderText: "Enter Password"
   readonly property int fieldWidth: 381
   readonly property int fieldHeight: 67
-  // AGS draws every surface with a 2px border and square corners; see the
-  // 2px/border-radius: 0 pairs throughout ags/style.css.
   readonly property int outlineThickness: 2
   readonly property int fieldRadius: 0
   readonly property int fieldFontSize: Math.round(Style.font.heading * 1.125)
@@ -37,22 +35,12 @@ Item {
   readonly property real passwordDotScale: dotMetrics.advanceWidth > 0
     ? Math.min(1, (passwordInput.width - 4) / dotMetrics.advanceWidth)
     : 1
-  // Gap between the branding and the password field, and the share of the
-  // screen the art may claim. Text.Fit needs a bounded width and height to
-  // scale into, so both are given explicitly below.
   readonly property int brandingGap: Style.space(48)
   readonly property int brandingMaxWidth: 1100
   readonly property int brandingMaxFontSize: Math.round(Style.font.heading * 1.5)
 
   readonly property bool showPasswordCursor: inputEnabled && !authenticatingPassword && failureMessage.length === 0
   readonly property bool errorState: failureMessage.length > 0
-  // The AGS border pair: containers rest on alpha(@color4, 0.5) and go to a
-  // solid @accent once in use. An empty field reads as resting and a filled
-  // one as active. The spec is built here rather than read from the [lock]
-  // theme tokens, since those carry the shell's own heavier look; the colors
-  // themselves still come from the active theme, so this follows a theme
-  // change exactly like the AGS widgets do. color4 falls back to the accent
-  // for a palette that does not define one.
   readonly property bool inputActive: passwordText.length > 0 || authenticatingPassword
   readonly property color inputRestingBorder: paletteColor4.length > 0 ? paletteColor4 : Color.accent
   readonly property color inputBorderColor: errorState
@@ -142,10 +130,6 @@ Item {
       onPositionChanged: root.wakeRequested()
     }
 
-    // Sits above the password field rather than replacing anything, so the
-    // input keeps the position and size it has upstream. Text.Fit shrinks the
-    // art to whatever room is left above the field, which keeps a tall or wide
-    // screensaver.txt from running off the top of a small screen.
     Text {
       id: branding
       anchors.horizontalCenter: parent.horizontalCenter

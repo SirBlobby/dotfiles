@@ -63,9 +63,6 @@ function parseMenuJsonc(raw) {
   return out
 }
 
-// A row may name a sibling's id in `before:` to sit ahead of it. User rows are
-// appended after every default row, so without this a new top-level entry can
-// only land at the bottom of the root menu.
 function applyBeforeHints(items, itemOrder) {
   var order = itemOrder.slice()
 

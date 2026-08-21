@@ -95,36 +95,33 @@ under `Apps` instead of below `System`. A `before:` that names an unknown id is
 ignored, and a row without one keeps its file order.
 
 `plugins/blob.lock/` clones `omarchy.lock` to put `branding/screensaver.txt` on
-the lock screen. Stock `LockView.qml` draws a blurred wallpaper, the password
-field, and a fingerprint hint - there is no branding element and no config key
-for one, so the only way to get the art behind the password prompt is a fork.
-`Service.qml` gains a watched `FileView` on the branding file and passes the
-text to both `LockView` instances (the real lock surface and the theme
-preview); `LockView.qml` gains one `Text` above the input field. The field
-itself keeps the position and size it has upstream. `Text.Fit` scales the art
-down to whatever room is left above the field, so a wider or taller
-`screensaver.txt` cannot run off the screen, and an unreadable or missing file
-leaves the lock unbranded rather than broken.
+the lock screen and to restyle the password field like the AGS widgets. Stock
+`LockView.qml` draws a blurred wallpaper, the field, and a fingerprint hint -
+there is no branding element and no config key for one, so a fork is the only
+way in.
 
-The password field is restyled to match the AGS widgets: a 2px border and
-square corners in place of the shell's 3px rounded outline, an
-`alpha(background, 0.6)` fill matching `.qs-tile`, and the AGS border pair -
-`alpha(color4, 0.5)` while the field is empty, going to a solid `accent` once
-there is something in it, with `urgent` on a failed attempt. Only the geometry
-and the alphas are fixed; the colors come from the active theme, so the field
-follows a theme change the way the AGS widgets do. The `[lock]` tokens in a
-theme's `shell.toml` no longer reach the border or the fill.
-
-`color4` needs reading from disk. The `Color` singleton resolves the palette
-down to `foreground`, `background`, `accent`, `urgent`, and `muted`, and uses
-`color4` only as the fallback when a theme declares no separate `accent` - so
-the raw slot the AGS stylesheet borders with is not exposed anywhere. The
-service parses it out of the active theme's `colors.toml` with the same regex
-`Color.loadColors` uses. Stock `Color` reads that file once at startup and
-takes runtime theme switches over IPC instead, but
+The fork is three small changes. `BrandingSource.qml` is new and holds both
+file reads: the branding text, and the `color4` slot parsed out of the active
+theme's `colors.toml`. `Color` resolves a palette down to `foreground`,
+`background`, `accent`, `urgent`, and `muted` and never exposes `color4`, which
+is the color AGS borders with. Stock `Color` reads that file once at startup
+and takes theme switches over IPC, but
 `~/.local/state/omarchy/current/theme` is a real directory rewritten in place
-rather than a swapped symlink, so watching the file is enough here. A palette
-with no `color4` falls back to the accent.
+rather than a swapped symlink, so watching the file is enough here.
+`Service.qml` gains only that component and two bindings on each of its two
+`LockView` instances (the lock surface and the theme preview). `LockView.qml`
+gains a `Text` above the field, and the field's own skin.
+
+The styling follows `ags/style.css`: a 2px border and square corners in place
+of the shell's 3px rounded outline, an `alpha(background, 0.6)` fill matching
+`.qs-tile`, and the AGS border pair - `alpha(color4, 0.5)` while the field is
+empty, going to a solid `accent` once there is something in it, and `urgent` on
+a failed attempt. Only the geometry and the alphas are fixed; the colors come
+from the active theme, so the field follows a theme change the way the AGS
+widgets do. The `[lock]` tokens in a theme's `shell.toml` no longer reach the
+border or the fill. `Text.Fit` scales the branding into whatever room is left
+above the field, so a wider or taller `screensaver.txt` cannot run off the
+screen, and a missing file leaves the lock unbranded rather than broken.
 
 Unlike the other clones this one is load-bearing for security. The lock is a
 `service` plugin, so it is enabled by its id appearing in `plugins[]` and the
@@ -140,7 +137,8 @@ removed through `omarchy plugin remove`.
 
 Re-copy `LockView.qml` and `Service.qml` from
 `/usr/share/omarchy/shell/plugins/lock/` after an Omarchy update that touches
-the lock, then re-apply the branding property, the `FileView`, and the `Text`.
+the lock, then re-apply the two blocks above. `BrandingSource.qml` is wholly
+ours and carries over untouched.
 
 `plugins/blob.bar/` replaces the whole bar so the clock cannot be dragged out
 of the center. Omarchy 4 puts a drag-to-reorder handler on every bar module and
