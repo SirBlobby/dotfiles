@@ -87,11 +87,14 @@ and the root menu (Super + Alt + Space) are both wider. The two oversized menus
 `clonedFrom`, and the shell routes those calls here.
 
 `BarWidget.qml` swaps the stock `\ue900` glyph from the `omarchy` icon font for
-`branding/blob_icon.svg`. Qt renders SVG through `qt6-svg`, but an `Image`
-cannot be recolored, so the icon is used as an alpha mask over a rectangle
-filled with the bar foreground. That keeps it following the theme and the bar's
-own color animation the way a glyph did, and it means the black fill in the
-source file never matters.
+`branding/blob_icon.svg`. An SVG is text, so the fill is rewritten to the bar
+foreground in QML and the result handed to `Image` as a base64 `data:` URL -
+the same trick the `theme-set` hook uses with `sed` for the fastfetch logo, so
+both consumers of the icon work the same way. The color is read off
+`button.foreground` rather than the theme, which keeps the icon on the bar's own
+foreground animation, and rebuilding the URL is what reloads the image, so there
+is no image cache to bust. The glyph stays as the `text` fallback and is shown
+whenever the SVG cannot be read or decoded, so the button is never blank.
 
 `mergeMenuSources` in `MenuModel.js` reads the default menu first and the user
 extension second, so a row that only exists in `extensions/omarchy-menu.jsonc`
