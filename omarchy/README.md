@@ -108,13 +108,23 @@ leaves the lock unbranded rather than broken.
 
 The password field is restyled to match the AGS widgets: a 2px border and
 square corners in place of the shell's 3px rounded outline, an
-`alpha(background, 0.6)` fill matching `.qs-tile`, and the `.theme-chip`
-accent treatment - a translucent accent border while the field is empty that
-goes solid once there is something in it, with `urgent` on a failed attempt.
-Those come from `Color.accent`, `Color.background`, and `Color.urgent`, so the
-field still follows a theme change; only the geometry and the alphas are fixed,
-exactly as they are in `ags/style.css`. The `[lock]` tokens in a theme's
-`shell.toml` no longer reach the border or the fill.
+`alpha(background, 0.6)` fill matching `.qs-tile`, and the AGS border pair -
+`alpha(color4, 0.5)` while the field is empty, going to a solid `accent` once
+there is something in it, with `urgent` on a failed attempt. Only the geometry
+and the alphas are fixed; the colors come from the active theme, so the field
+follows a theme change the way the AGS widgets do. The `[lock]` tokens in a
+theme's `shell.toml` no longer reach the border or the fill.
+
+`color4` needs reading from disk. The `Color` singleton resolves the palette
+down to `foreground`, `background`, `accent`, `urgent`, and `muted`, and uses
+`color4` only as the fallback when a theme declares no separate `accent` - so
+the raw slot the AGS stylesheet borders with is not exposed anywhere. The
+service parses it out of the active theme's `colors.toml` with the same regex
+`Color.loadColors` uses. Stock `Color` reads that file once at startup and
+takes runtime theme switches over IPC instead, but
+`~/.local/state/omarchy/current/theme` is a real directory rewritten in place
+rather than a swapped symlink, so watching the file is enough here. A palette
+with no `color4` falls back to the accent.
 
 Unlike the other clones this one is load-bearing for security. The lock is a
 `service` plugin, so it is enabled by its id appearing in `plugins[]` and the

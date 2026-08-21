@@ -9,6 +9,7 @@ Item {
   property string backgroundPath: ""
   property int backgroundVersion: 0
   property string brandingText: ""
+  property string paletteColor4: ""
   property bool fingerprintConfigured: false
   property bool authenticatingPassword: false
   property string failureMessage: ""
@@ -45,16 +46,18 @@ Item {
 
   readonly property bool showPasswordCursor: inputEnabled && !authenticatingPassword && failureMessage.length === 0
   readonly property bool errorState: failureMessage.length > 0
-  // An empty field reads as resting and a filled one as active, which is the
-  // .theme-chip treatment in ags/style.css: a translucent accent border that
-  // goes solid once the tile is in use. The spec is built here rather than
-  // read from the [lock] theme tokens, since those carry the shell's own
-  // heavier look. Color.accent and Color.background still follow the theme,
-  // so this tracks a theme change exactly like the AGS widgets do.
+  // The AGS border pair: containers rest on alpha(@color4, 0.5) and go to a
+  // solid @accent once in use. An empty field reads as resting and a filled
+  // one as active. The spec is built here rather than read from the [lock]
+  // theme tokens, since those carry the shell's own heavier look; the colors
+  // themselves still come from the active theme, so this follows a theme
+  // change exactly like the AGS widgets do. color4 falls back to the accent
+  // for a palette that does not define one.
   readonly property bool inputActive: passwordText.length > 0 || authenticatingPassword
+  readonly property color inputRestingBorder: paletteColor4.length > 0 ? paletteColor4 : Color.accent
   readonly property color inputBorderColor: errorState
     ? Color.urgent
-    : (inputActive ? Color.accent : Util.alpha(Color.accent, 0.6))
+    : (inputActive ? Color.accent : Util.alpha(root.inputRestingBorder, 0.5))
   readonly property color inputBackground: Util.alpha(Color.background, 0.6)
   readonly property var inputBorderSpec: Border.flat(root.inputBorderColor, root.outlineThickness)
 
