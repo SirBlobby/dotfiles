@@ -78,13 +78,20 @@ by hand; see below for why.
 hardcodes workspaces 1-5 as always visible and has no setting for it, so the
 clone changes that list to 1-9 to match the old waybar `persistent-workspaces`.
 
-`plugins/blob.menu/` clones `omarchy.menu` to widen it and to let a menu row
-choose where it sits. `cardWidth` in `Menu.qml` is hardcoded at
+`plugins/blob.menu/` clones `omarchy.menu` to widen it, to let a menu row
+choose where it sits, and to put the Blob icon on the bar button. `cardWidth` in `Menu.qml` is hardcoded at
 `Style.space(300)`; the clone raises it to 440, so the apps menu (Super + Space)
 and the root menu (Super + Alt + Space) are both wider. The two oversized menus
 (screen recording, font picker) keep their own 520 and are untouched.
 `omarchy-menu` still targets `omarchy.menu` on the CLI - the manifest records
 `clonedFrom`, and the shell routes those calls here.
+
+`BarWidget.qml` swaps the stock `\ue900` glyph from the `omarchy` icon font for
+`branding/blob_icon.svg`. Qt renders SVG through `qt6-svg`, but an `Image`
+cannot be recolored, so the icon is used as an alpha mask over a rectangle
+filled with the bar foreground. That keeps it following the theme and the bar's
+own color animation the way a glyph did, and it means the black fill in the
+source file never matters.
 
 `mergeMenuSources` in `MenuModel.js` reads the default menu first and the user
 extension second, so a row that only exists in `extensions/omarchy-menu.jsonc`
