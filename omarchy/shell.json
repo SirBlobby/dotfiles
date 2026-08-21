@@ -74,11 +74,17 @@
       ]
     }
   },
-  "plugins": [],
+  "plugins": [
+    {
+      "id": "blob.lock"
+    }
+  ],
   "disabledPlugins": [
-    "omarchy.menu"
+    "omarchy.menu",
+    "omarchy.lock"
   ],
   "cloneSourceRestores": [
-    "blob.menu"
+    "blob.menu",
+    "blob.lock"
   ]
 }

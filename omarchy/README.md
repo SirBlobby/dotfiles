@@ -43,6 +43,13 @@ gap between them or the lock screen covers the branding as soon as it appears.
 Screensaver at 300 and lock at 900 leaves ten minutes of branding before the
 session locks.
 
+Neither timer runs while `~/.local/state/omarchy/indicators/stay-awake` exists.
+That file is the Stay Awake toggle, it is runtime state rather than config so
+it is not tracked here, and while it is set the idle service cancels every
+cycle with `idle-cycle-cancel: stay-awake`. `omarchy-toggle-idle allow-idle`
+clears it. The lock screen carries the branding on its own (see
+`plugins/blob.lock/` below), so this only affects the screensaver.
+
 ## Custom modules
 
 The bar accepts arbitrary ids with `type: "command"`, which is how the two
@@ -64,8 +71,8 @@ A command module with no `exec` key is a static icon; add `exec` and
 
 `blob.workspaces` and `blob.menu` were made with `omarchy plugin clone`, which
 copies a built-in plugin, disables the original, and points the bar at the copy
-- hence the `blob.` ids in `shell.json`. `blob.bar` was copied by hand; see
-below for why.
+- hence the `blob.` ids in `shell.json`. `blob.bar` and `blob.lock` were copied
+by hand; see below for why.
 
 `plugins/blob.workspaces/` clones `omarchy.workspaces`. The stock widget
 hardcodes workspaces 1-5 as always visible and has no setting for it, so the
@@ -86,6 +93,34 @@ lands at the bottom of its menu with no way to move it. The clone adds a
 ahead of it once both sources are merged - which is how `Blob` sits directly
 under `Apps` instead of below `System`. A `before:` that names an unknown id is
 ignored, and a row without one keeps its file order.
+
+`plugins/blob.lock/` clones `omarchy.lock` to put `branding/screensaver.txt` on
+the lock screen. Stock `LockView.qml` draws a blurred wallpaper, the password
+field, and a fingerprint hint - there is no branding element and no config key
+for one, so the only way to get the art behind the password prompt is a fork.
+`Service.qml` gains a watched `FileView` on the branding file and passes the
+text to both `LockView` instances (the real lock surface and the theme
+preview); `LockView.qml` gains one `Text` above the input field. The field
+itself keeps the position and size it has upstream. `Text.Fit` scales the art
+down to whatever room is left above the field, so a wider or taller
+`screensaver.txt` cannot run off the screen, and an unreadable or missing file
+leaves the lock unbranded rather than broken.
+
+Unlike the other clones this one is load-bearing for security. The lock is a
+`service` plugin, so it is enabled by its id appearing in `plugins[]` and the
+original is switched off through `disabledPlugins[]` - both are needed, because
+the two would otherwise register the same `lock` IPC target. There is no
+fallback: a QML error means the service never loads and `omarchy-shell lock
+lock` silently does nothing, which leaves the machine unlockable rather than
+locked open. `journalctl --user -t omarchy-shell` names the fault as
+`service plugin load failed for blob.lock`. To back out, drop `blob.lock` from
+`plugins[]` and `omarchy.lock` from `disabledPlugins[]`; `cloneSourceRestores`
+lists `blob.lock` so the shell restores the original by itself if the clone is
+removed through `omarchy plugin remove`.
+
+Re-copy `LockView.qml` and `Service.qml` from
+`/usr/share/omarchy/shell/plugins/lock/` after an Omarchy update that touches
+the lock, then re-apply the branding property, the `FileView`, and the `Text`.
 
 `plugins/blob.bar/` replaces the whole bar so the clock cannot be dragged out
 of the center. Omarchy 4 puts a drag-to-reorder handler on every bar module and
