@@ -2,9 +2,9 @@
   // Blob entries added to the Quickshell Omarchy menu (Super + Space).
   // These replace the walker/elephant menus used before Omarchy 4.
 
-  "blob": { "icon": "", "label": "Blob" },
-  "blob.wallpaper": { "icon": "", "label": "Wallpaper", "action": "blob_wallpaper --menu", "description": "Pick a wallpaper from ~/wallpapers" },
-  "blob.theme": { "icon": "", "label": "Theme", "action": "blob_theme --menu", "description": "Pick a local or Omarchy color theme" },
-  "blob.dynamic": { "icon": "", "label": "Dynamic theme", "action": "blob_theme --dynamic", "description": "Recolor from the current wallpaper" },
-  "blob.glass": { "icon": "", "label": "Toggle glass", "action": "blob_glass toggle", "checked": "test -f $HOME/.local/state/omarchy/toggles/hypr/blob-glass.lua" }
+  "blob": { "icon": "󰖌", "label": "Blob", "before": "learn" },
+  "blob.wallpaper": { "icon": "󰸉", "label": "Wallpaper", "action": "blob_wallpaper --menu", "description": "Pick a wallpaper from ~/wallpapers" },
+  "blob.theme": { "icon": "󰢵", "label": "Theme", "action": "blob_theme --menu", "description": "Pick a local or Omarchy color theme" },
+  "blob.dynamic": { "icon": "󰁨", "label": "Dynamic theme", "action": "blob_theme --dynamic", "description": "Recolor from the current wallpaper" },
+  "blob.glass": { "icon": "󱡓", "label": "Toggle glass", "action": "blob_glass toggle", "checked": "test -f $HOME/.local/state/omarchy/toggles/hypr/blob-glass.lua" }
 }

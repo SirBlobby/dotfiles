@@ -23,6 +23,7 @@ function normalizeItem(id, raw) {
   return {
     id: id,
     parent: parent,
+    before: value.before || "",
     kind: kind,
     icon: value.icon || "",
     iconFont: value.iconFont || "",
@@ -62,6 +63,26 @@ function parseMenuJsonc(raw) {
   return out
 }
 
+// A row may name a sibling's id in `before:` to sit ahead of it. User rows are
+// appended after every default row, so without this a new top-level entry can
+// only land at the bottom of the root menu.
+function applyBeforeHints(items, itemOrder) {
+  var order = itemOrder.slice()
+
+  for (var i = 0; i < itemOrder.length; i++) {
+    var entry = items[itemOrder[i]]
+    if (!entry || !entry.before) continue
+
+    var entryIndex = order.indexOf(entry.id)
+    if (entryIndex < 0 || order.indexOf(entry.before) < 0) continue
+
+    order.splice(entryIndex, 1)
+    order.splice(order.indexOf(entry.before), 0, entry.id)
+  }
+
+  return order
+}
+
 function mergeMenuSources(defaultItems, userItems) {
   var nextItems = ({})
   var nextOrder = []
@@ -82,8 +103,10 @@ function mergeMenuSources(defaultItems, userItems) {
     }
   }
 
+  nextOrder = applyBeforeHints(nextItems, nextOrder)
+
   if (!nextItems.root) {
-    nextItems.root = { id: "root", parent: "", kind: "menu", icon: "", iconFont: "", label: "Go", title: "", target: "", description: "", aliases: [], when: "", checked: "", action: "", provider: "" }
+    nextItems.root = { id: "root", parent: "", before: "", kind: "menu", icon: "", iconFont: "", label: "Go", title: "", target: "", description: "", aliases: [], when: "", checked: "", action: "", provider: "" }
     nextOrder.unshift("root")
   }
   for (var k3 = 0; k3 < nextOrder.length; k3++) nextItems[nextOrder[k3]].order = k3
