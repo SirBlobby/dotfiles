@@ -23,12 +23,16 @@ My current setup is built around these core components:
 ### Directory Structure
 
 - **`hypr/`**: Hyprland configurations (keybindings, window rules, animations, monitor layout, lid-close display handling, and autostart). See [`hypr/keybinds.md`](hypr/keybinds.md) for custom keybindings.
-- **`omarchy/`**: Omarchy 4 configuration — `shell.json` (bar layout, custom bar modules, and idle/lock timings), `extensions/` (entries added to the Omarchy menu), `hooks/` (event hooks such as retinting AGS on theme change), `plugins/` (forked shell plugins: the bar itself, the menu, and the workspace switcher), and `themed/` (extra theme templates). See [`omarchy/README.md`](omarchy/README.md) for the bar layout and the plugin clones.
+- **`omarchy/`**: Omarchy 4 configuration — `shell.json` (bar layout, custom bar modules, and idle/lock timings), `extensions/` (entries added to the Omarchy menu), `hooks/` (event hooks such as retinting AGS and re-rendering the Blob icon on theme change), `plugins/` (forked shell plugins: the bar itself, the menu, and the workspace switcher), and `themed/` (extra theme templates). See [`omarchy/README.md`](omarchy/README.md) for the bar layout and the plugin clones.
 - **`ags/`**: Custom desktop widgets built with TypeScript and GTK — media player, notification hub, quick settings, system monitor, wallpaper picker, theme picker, and Claude Code usage.
 - **`scripts/`**: Global utility scripts seamlessly exposed as commands by the installer. See [`commands.md`](commands.md).
 - **`wallpapers/`**: A collection of local custom wallpapers for dynamic theming. See [`wallpaper-gallery/`](wallpaper-gallery/index.md) for the full gallery (split alphabetically across multiple pages).
 - **`themes/`**: Drop-in local color themes (one `colors.toml` per theme) that `install.sh` deploys into Omarchy's theme directory. See [`themes/README.md`](themes/README.md).
-- **`branding/`**: Custom ASCII art and system branding assets.
+- **`branding/`**: Custom ASCII art and system branding assets. `blob_icon.svg` is the source for both
+  the bar menu button and the About screen logo; the `theme-set` hook recolors it to the active theme and
+  renders it to `~/.local/state/omarchy/branding/blob_icon.png` for fastfetch.
+- **`fastfetch/`**: The About screen config (`Super+Alt+Space` > About), a copy of Omarchy's
+  `/etc/fastfetch/config.jsonc` with the ASCII logo swapped for the sixel Blob icon.
 - **`kitty/`**: kitty terminal config and its color theme, applied by hand rather than by `install.sh`. See [`kitty/README.md`](kitty/README.md).
 
 ## Docs

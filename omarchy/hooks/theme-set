@@ -14,6 +14,25 @@ else
     awk -F '=' 'NF==2 { gsub(/"/,"",$2); gsub(/ /,"",$1); gsub(/ /,"",$2); print $1 "\t" $2 }' "$COLORS_FILE"
 fi | awk -F '\t' '$2 ~ /^#/ { print "@define-color " $1 " " $2 ";" }' > "$AGS_COLORS_FILE"
 
+ICON_SOURCE="$HOME/.config/omarchy/branding/blob_icon.svg"
+ICON_RENDER_DIR="$HOME/.local/state/omarchy/branding"
+ICON_RENDER="$ICON_RENDER_DIR/blob_icon.png"
+
+theme_color() {
+    awk -F '=' -v key="$1" '$1 ~ "^[ \t]*" key "[ \t]*$" { gsub(/["[:space:]]/,"",$2); print $2; exit }' "$COLORS_FILE"
+}
+
+if [ -f "$ICON_SOURCE" ] && command -v magick &> /dev/null; then
+    icon_foreground=$(theme_color foreground)
+    icon_background=$(theme_color background)
+    [ -n "$icon_foreground" ] || icon_foreground="#ffffff"
+    [ -n "$icon_background" ] || icon_background="#000000"
+
+    mkdir -p "$ICON_RENDER_DIR"
+    sed "s/fill=\"#000000\"/fill=\"$icon_foreground\"/" "$ICON_SOURCE" \
+        | magick -background none svg:- -resize 480x480 -background "$icon_background" -flatten "$ICON_RENDER"
+fi
+
 if command -v ags &> /dev/null; then
     ags quit >/dev/null 2>&1 || true
     sleep 0.5

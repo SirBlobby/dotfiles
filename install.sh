@@ -208,6 +208,7 @@ check_file "$SCRIPT_DIR/omarchy/plugins/blob.menu/Menu.qml" "$HOME_DIR/.config/o
 check_file "$SCRIPT_DIR/omarchy/plugins/blob.bar/Bar.qml" "$HOME_DIR/.config/omarchy/plugins/blob.bar/Bar.qml" "omarchy/plugins/blob.bar" || check_status=1
 check_file "$SCRIPT_DIR/omarchy/plugins/blob.lock/LockView.qml" "$HOME_DIR/.config/omarchy/plugins/blob.lock/LockView.qml" "omarchy/plugins/blob.lock" || check_status=1
 check_file "$SCRIPT_DIR/omarchy/hooks/theme-set" "$HOME_DIR/.config/omarchy/hooks/theme-set" "omarchy/hooks/theme-set" || check_status=1
+check_file "$SCRIPT_DIR/fastfetch/config.jsonc" "$HOME_DIR/.config/fastfetch/config.jsonc" "fastfetch/config.jsonc" || check_status=1
 check_file "$SCRIPT_DIR/omarchy/themed/zen.css.tpl" "$HOME_DIR/.config/omarchy/themed/zen.css.tpl" "omarchy/themed/zen.css.tpl" || check_status=1
 check_file "$SCRIPT_DIR/ags/app.ts" "$HOME_DIR/.config/ags/app.ts" "ags/app.ts" || check_status=1
 check_file "$SCRIPT_DIR/ags/style.css" "$HOME_DIR/.config/ags/style.css" "ags/style.css" || check_status=1
@@ -269,6 +270,7 @@ backup_and_copy "$SCRIPT_DIR/ags" "$HOME_DIR/.config/ags" "AGS config"
 backup_and_copy "$SCRIPT_DIR/hypr" "$HOME_DIR/.config/hypr" "Hyprland config"
 backup_and_copy "$SCRIPT_DIR/branding" "$HOME_DIR/.config/omarchy/branding" "Branding files"
 backup_and_copy "$SCRIPT_DIR/omarchy/hooks" "$HOME_DIR/.config/omarchy/hooks" "Omarchy hooks"
+backup_and_copy "$SCRIPT_DIR/fastfetch" "$HOME_DIR/.config/fastfetch" "Fastfetch config"
 backup_and_copy "$SCRIPT_DIR/omarchy/themed" "$HOME_DIR/.config/omarchy/themed" "Omarchy custom templates"
 backup_and_copy "$SCRIPT_DIR/omarchy/extensions" "$HOME_DIR/.config/omarchy/extensions" "Omarchy menu extensions"
 backup_and_copy "$SCRIPT_DIR/omarchy/plugins" "$HOME_DIR/.config/omarchy/plugins" "Omarchy shell plugins"
