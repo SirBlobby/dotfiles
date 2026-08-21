@@ -21,7 +21,10 @@ Item {
   readonly property string placeholderText: "Enter Password"
   readonly property int fieldWidth: 381
   readonly property int fieldHeight: 67
-  readonly property int outlineThickness: 3
+  // AGS draws every surface with a 2px border and square corners; see the
+  // 2px/border-radius: 0 pairs throughout ags/style.css.
+  readonly property int outlineThickness: 2
+  readonly property int fieldRadius: 0
   readonly property int fieldFontSize: Math.round(Style.font.heading * 1.125)
   readonly property int passwordDotFontSize: Math.round(Style.font.heading * 1.33)
   readonly property int passwordDotLetterSpacing: Math.round(Style.font.heading * 0.19)
@@ -42,9 +45,18 @@ Item {
 
   readonly property bool showPasswordCursor: inputEnabled && !authenticatingPassword && failureMessage.length === 0
   readonly property bool errorState: failureMessage.length > 0
-  readonly property var inputBorderSpec: errorState
-    ? Border.surfaceSpec("lock", "border-error", Color.lock.borderError, root.outlineThickness, "border-alpha")
-    : Border.surfaceSpec("lock", "border-active", Color.lock.borderActive, root.outlineThickness, "border-alpha")
+  // An empty field reads as resting and a filled one as active, which is the
+  // .theme-chip treatment in ags/style.css: a translucent accent border that
+  // goes solid once the tile is in use. The spec is built here rather than
+  // read from the [lock] theme tokens, since those carry the shell's own
+  // heavier look. Color.accent and Color.background still follow the theme,
+  // so this tracks a theme change exactly like the AGS widgets do.
+  readonly property bool inputActive: passwordText.length > 0 || authenticatingPassword
+  readonly property color inputBorderColor: errorState
+    ? Color.urgent
+    : (inputActive ? Color.accent : Util.alpha(Color.accent, 0.6))
+  readonly property color inputBackground: Util.alpha(Color.background, 0.6)
+  readonly property var inputBorderSpec: Border.flat(root.inputBorderColor, root.outlineThickness)
 
   signal submitPassword(string password)
   signal passwordTextEdited(string password)
@@ -155,9 +167,9 @@ Item {
       width: root.fieldWidth
       height: root.fieldHeight
       anchors.centerIn: parent
-      color: Color.lock.background
+      color: root.inputBackground
       borderSpec: root.inputBorderSpec
-      radius: Style.cornerRadius
+      radius: root.fieldRadius
       clip: true
 
       TextInput {

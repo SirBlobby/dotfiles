@@ -106,6 +106,16 @@ down to whatever room is left above the field, so a wider or taller
 `screensaver.txt` cannot run off the screen, and an unreadable or missing file
 leaves the lock unbranded rather than broken.
 
+The password field is restyled to match the AGS widgets: a 2px border and
+square corners in place of the shell's 3px rounded outline, an
+`alpha(background, 0.6)` fill matching `.qs-tile`, and the `.theme-chip`
+accent treatment - a translucent accent border while the field is empty that
+goes solid once there is something in it, with `urgent` on a failed attempt.
+Those come from `Color.accent`, `Color.background`, and `Color.urgent`, so the
+field still follows a theme change; only the geometry and the alphas are fixed,
+exactly as they are in `ags/style.css`. The `[lock]` tokens in a theme's
+`shell.toml` no longer reach the border or the fill.
+
 Unlike the other clones this one is load-bearing for security. The lock is a
 `service` plugin, so it is enabled by its id appearing in `plugins[]` and the
 original is switched off through `disabledPlugins[]` - both are needed, because
