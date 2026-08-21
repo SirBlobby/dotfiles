@@ -23,7 +23,7 @@ Ported from the old `waybar/config.jsonc`, section for section:
 | `network` | `omarchy.network` |
 | `pulseaudio` | `omarchy.audio` |
 | `battery` | `omarchy.power` |
-| `cpu` | `blob.cpu` (custom module) |
+| `cpu` | dropped (btop and the AGS system monitor have no bar entry point now) |
 | `custom/notification` | `blob.notifications` (custom module) |
 | (new in Omarchy 4) | `omarchy.agents` - AI agent usage |
 | (new in Omarchy 4) | `omarchy.monitor` - brightness and display controls |
@@ -52,11 +52,9 @@ clears it. The lock screen carries the branding on its own (see
 
 ## Custom modules
 
-The bar accepts arbitrary ids with `type: "command"`, which is how the two
-AGS entry points survive the move off waybar:
+The bar accepts arbitrary ids with `type: "command"`, which is how the AGS
+entry points survive the move off waybar:
 
-- `blob.cpu` - left opens btop, middle opens alacritty, right toggles the AGS
-  system monitor
 - `blob.notifications` - left toggles the AGS notification center, right
   toggles notification silencing
 - `blob.clock` - left toggles AGS quick settings, middle opens the shell's own

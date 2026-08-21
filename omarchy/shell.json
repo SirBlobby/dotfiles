@@ -52,15 +52,6 @@
           "id": "omarchy.monitor"
         },
         {
-          "id": "blob.cpu",
-          "type": "command",
-          "text": "󰍛",
-          "tooltip": "System monitor",
-          "onClick": "omarchy-launch-or-focus-tui btop",
-          "onMiddleClick": "alacritty",
-          "onRightClick": "ags toggle sys-monitor"
-        },
-        {
           "id": "omarchy.power"
         },
         {
