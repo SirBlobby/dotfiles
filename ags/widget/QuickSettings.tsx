@@ -57,6 +57,11 @@ const [stayAwake, setStayAwake] = pollBool(
   2000,
 )
 
+const [tabletFollow, setTabletFollow] = pollBool(
+  "omarchy-toggle-tablet-follow status 2>/dev/null | grep -q '\"enabled\":true' && echo on || echo off",
+  2000,
+)
+
 const [recording] = pollBool(
   "pgrep -f '^gpu-screen-recorder' >/dev/null && echo on || echo off",
   2000,
@@ -216,6 +221,20 @@ function Toggles() {
           onClicked={() => {
             closePanel()
             sh("blob_theme")
+          }}
+        />
+      </box>
+      <box class="qs-tiles" spacing={8} homogeneous>
+        <Tile
+          icon={""}
+          label="Tablet Lock"
+          active={tabletFollow}
+          tooltip={tabletFollow.as((on: boolean) =>
+            on ? "Tablet follows focused monitor" : "Tablet spans all monitors",
+          )}
+          onClicked={() => {
+            setTabletFollow(!tabletFollow.get())
+            sh("omarchy-toggle-tablet-follow toggle")
           }}
         />
       </box>
