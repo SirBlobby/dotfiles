@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# blob:summary=Verify every package list entry resolves, ignoring extra repositories
+# blob:hidden=true
+
+set -e
+
+bin_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+repo_dir="$(dirname "$bin_dir")"
+official_list="$repo_dir/packages/blob.packages"
+aur_list="$repo_dir/packages/blob-aur.packages"
+
+failures=0
+
+entries() {
+  grep -vE '^[[:space:]]*#|^[[:space:]]*$' "$1" 2>/dev/null || true
+}
+
+# pacman -Si and yay -Si both search every configured repository, so a package
+# that exists only in a third-party repo passes them and then fails on a machine
+# that does not have that repo. These checks name the repositories explicitly.
+official_names="$(pacman -Sl core extra multilib 2>/dev/null | awk '{print $2}' | sort -u)"
+
+echo "Checking $official_list against core, extra, multilib"
+for entry in $(entries "$official_list"); do
+  name=${entry%%|*}
+  if ! printf '%s\n' "$official_names" | grep -qx "$name"; then
+    echo "  NOT IN OFFICIAL REPOS: $name"
+    failures=$((failures + 1))
+  fi
+done
+
+echo "Checking $aur_list against the AUR"
+for entry in $(entries "$aur_list"); do
+  name=${entry%%|*}
+  if printf '%s\n' "$official_names" | grep -qx "$name"; then
+    echo "  IN OFFICIAL REPOS, MOVE IT: $name"
+    failures=$((failures + 1))
+    continue
+  fi
+  if ! yay -Ssa "$name" 2>/dev/null | grep -qE "^aur/$name "; then
+    echo "  NOT IN AUR: $name"
+    failures=$((failures + 1))
+  fi
+done
+
+echo
+if (( failures == 0 )); then
+  echo "All entries resolve."
+  exit 0
+fi
+
+echo "$failures problem(s)."
+exit 1

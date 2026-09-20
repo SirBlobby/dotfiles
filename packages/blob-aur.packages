@@ -3,9 +3,6 @@
 #
 # These have no official-repo equivalent. See docs/packages.md.
 
-# Wallpaper daemon used by blob-wallpaper-set and blob-theme-menu
-awww
-
 # Palette extraction behind blob-wallpaper-set
 python-pywal
 
@@ -20,10 +17,12 @@ aether
 
 # Fonts and icons with no official build
 ttf-ia-writer
-woff2-font-awesome
 yaru-icon-theme
 
 # Tooling
 mise-bin
 ufw-docker
-lazydocker
+
+# Only in the Omarchy repository as binaries; these are the AUR sources
+tzupdate
+localsend

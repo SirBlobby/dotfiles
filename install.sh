@@ -137,13 +137,38 @@ install_packages() {
   fi
 
   if (( ${#aur_missing[@]} )); then
-    if ! command -v yay &>/dev/null; then
-      say "WARN  yay is not installed; skipping ${#aur_missing[@]} AUR package(s)"
+    ensure_aur_helper || {
+      say "WARN  no AUR helper; skipping ${#aur_missing[@]} AUR package(s): ${aur_missing[*]}"
       return 0
-    fi
+    }
     say "install ${#aur_missing[@]} AUR package(s)"
     yay -S --needed --noconfirm "${aur_missing[@]}"
   fi
+}
+
+# A fresh Arch install has no AUR helper, and yay is not in the official
+# repositories, so it is built from the AUR once with makepkg. Everything after
+# this point can then use yay normally.
+ensure_aur_helper() {
+  command -v yay &>/dev/null && return 0
+
+  say "bootstrap yay from the AUR"
+  sudo pacman -S --needed --noconfirm base-devel git
+
+  local build_dir
+  build_dir="$(mktemp -d)"
+  if ! git clone --depth 1 https://aur.archlinux.org/yay-bin.git "$build_dir/yay-bin"; then
+    rm -rf "$build_dir"
+    return 1
+  fi
+
+  ( cd "$build_dir/yay-bin" && makepkg -si --noconfirm ) || {
+    rm -rf "$build_dir"
+    return 1
+  }
+
+  rm -rf "$build_dir"
+  command -v yay &>/dev/null
 }
 
 blob_sudo_keepalive() {

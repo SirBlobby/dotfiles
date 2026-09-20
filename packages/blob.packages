@@ -85,7 +85,6 @@ zram-generator
 # System utilities
 plocate
 man-db
-tzupdate
 expac
 pacman-contrib
 
@@ -99,6 +98,7 @@ noto-fonts
 noto-fonts-cjk
 noto-fonts-emoji
 fontconfig
+woff2-font-awesome
 gnome-themes-extra
 
 # Image and video handling
@@ -106,6 +106,9 @@ imagemagick
 libvips
 webp-pixbuf-loader
 ffmpegthumbnailer
+
+# Theming
+awww
 
 # Capture
 grim
@@ -133,6 +136,10 @@ neovim
 # Browser for web apps
 chromium
 
+# Build tools, needed to bootstrap an AUR helper
+base-devel
+git
+
 # Command line
 bat
 eza
@@ -142,7 +149,6 @@ fzf
 zoxide
 jq
 starship
-git
 lazygit
 btop
 fastfetch
@@ -161,6 +167,4 @@ python-gobject
 docker
 docker-compose
 docker-buildx
-
-# Sharing
-localsend
+lazydocker

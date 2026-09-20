@@ -348,6 +348,12 @@ of the `blob` listing.
 | --- | --- | --- |
 | `blob-osd` | Show the Blob Quickshell on-screen display | [-i\|--icon <icon>] [-m\|--message <text>] [-p\|--progress <0-100>] [-d\|--duration <ms>] |
 
+## packages
+
+| Command | Does | Arguments |
+| --- | --- | --- |
+| `blob-packages-check` | Verify every package list entry resolves, ignoring extra repositories (hidden) | - |
+
 ## pkg
 
 | Command | Does | Arguments |
@@ -622,4 +628,4 @@ of the `blob` listing.
 
 ## Totals
 
-293 commands.
+294 commands.

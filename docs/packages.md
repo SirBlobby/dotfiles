@@ -69,13 +69,37 @@ Two are worth knowing about:
 `install.sh` installs what is missing before it writes any config:
 
 ```
-packages/blob.packages       117 packages from core, extra, multilib
-packages/blob-aur.packages    11 packages with no official equivalent
+packages/blob.packages       119 packages from core, extra, multilib
+packages/blob-aur.packages    10 packages with no official equivalent
 ```
 
 Only missing packages are touched, through `pacman -S --needed` and
 `yay -S --needed`. `./install.sh --check` lists what it would install without
 installing anything, and `--skip-packages` does the directories and config only.
+
+### Validating the lists
+
+```
+blob-packages-check
+```
+
+`pacman -Si` and `yay -Si` both search *every* configured repository, so a
+package that exists only in a third-party repo passes them and then fails on a
+machine without that repo. `blob-packages-check` names the repositories
+explicitly instead: official entries must be in core, extra or multilib, and AUR
+entries must have an exact `aur/` match and must not be in an official repo.
+
+Run it after editing either list. It caught `localsend` and `tzupdate` sitting in
+the official list when they only exist in the Omarchy repository, and `awww`,
+`lazydocker` and `woff2-font-awesome` sitting in the AUR list when they are in
+official `extra`.
+
+### Bootstrapping an AUR helper
+
+A fresh Arch install has no AUR helper, and `yay` is not in the official
+repositories. `install.sh` builds `yay-bin` from the AUR once with `makepkg`
+before installing anything from the AUR list, which is why `base-devel` and
+`git` are in the official list.
 
 An entry may be written `wanted|already-fine`, which asks for the first name but
 accepts either as satisfying the requirement. That is how
