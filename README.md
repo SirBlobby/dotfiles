@@ -51,6 +51,7 @@ and nothing to re-apply after somebody else's release.
 | [themes.md](docs/themes.md) | the palette pipeline and how to add a theme |
 | [widgets.md](docs/widgets.md) | the ported GTK widgets and where they went |
 | [menu.md](docs/menu.md) | the menu tree and what was trimmed |
+| [packages.md](docs/packages.md) | leaving the Omarchy repository, and updating |
 | [upstream.md](docs/upstream.md) | the fork base, for diffing later |
 
 ## Install

@@ -430,6 +430,12 @@ of the `blob` listing.
 | `blob-remove-security-fido2` | Remove FIDO2 authentication from sudo and polkit | - |
 | `blob-remove-security-sudoless-docker` | Disable sudoless Docker by removing your user from the docker group | - |
 
+## repo
+
+| Command | Does | Arguments |
+| --- | --- | --- |
+| `blob-repo-migrate` | Move off the Omarchy package repository and remove it from pacman.conf | [--apply] |
+
 ## restart
 
 | Command | Does | Arguments |
@@ -614,4 +620,4 @@ of the `blob` listing.
 
 ## Totals
 
-290 commands.
+291 commands.

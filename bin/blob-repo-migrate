@@ -1,0 +1,152 @@
+#!/bin/bash
+
+# blob:summary=Move off the Omarchy package repository and remove it from pacman.conf
+# blob:args=[--apply]
+# blob:requires-sudo=true
+
+set -e
+
+pacman_conf=/etc/pacman.conf
+apply=false
+[[ ${1-} == --apply ]] && apply=true
+
+drop_packages=(
+  omarchy
+  omarchy-keyring
+  omarchy-settings
+  omarchy-nvim
+  omacalc
+  omacut
+  omawrite
+  tensaku
+  tobi-try
+  cliamp
+  herdr
+  ttfx
+  linux-omarchy
+  linux-omarchy-headers
+  asdcontrol
+)
+
+substitutions=(
+  "ttf-jetbrains-mono-nerd-basic:ttf-jetbrains-mono-nerd"
+  "hyprland-preview-share-picker:hyprland-preview-share-picker-git"
+)
+
+aur_managed=(
+  aether
+  limine-mkinitcpio-hook
+  limine-snapper-sync
+  localsend
+  minecraft-launcher
+  mise-bin
+  spotify
+  ttf-ia-writer
+  tzupdate
+  ufw-docker
+  visual-studio-code-bin
+  xdg-terminal-exec
+  yaru-icon-theme
+  yay
+)
+
+installed() {
+  pacman -Q "$1" &>/dev/null
+}
+
+heading() {
+  printf '\n%s\n' "$1"
+}
+
+if ! grep -q '^\[omarchy\]' "$pacman_conf"; then
+  echo "The [omarchy] repository is already absent from $pacman_conf."
+  exit 0
+fi
+
+echo "Migrating off the Omarchy package repository."
+echo
+echo "Booted kernel: $(uname -r)"
+
+if ! installed linux; then
+  echo
+  echo "REFUSING: the stock 'linux' package is not installed, and this would" >&2
+  echo "remove linux-omarchy. Install 'linux' first." >&2
+  exit 1
+fi
+
+heading "Remove (Omarchy's own software, and hardware support this machine does not use):"
+for package in "${drop_packages[@]}"; do
+  installed "$package" && echo "  $package"
+done
+
+heading "Replace with an equivalent:"
+for pair in "${substitutions[@]}"; do
+  from=${pair%%:*}
+  to=${pair##*:}
+  installed "$from" && echo "  $from -> $to"
+done
+
+heading "Keep, rebuilt from the AUR on the next update:"
+for package in "${aur_managed[@]}"; do
+  installed "$package" && echo "  $package"
+done
+
+heading "Then: comment out [omarchy] in $pacman_conf and resync."
+
+if [[ $apply == false ]]; then
+  echo
+  echo "This was a dry run. Re-run with --apply to carry it out."
+  exit 0
+fi
+
+echo
+read -rp "Apply all of the above? [y/N] " answer
+[[ $answer == [yY] ]] || exit 0
+
+blob-sudo-keepalive
+
+for pair in "${substitutions[@]}"; do
+  from=${pair%%:*}
+  to=${pair##*:}
+  installed "$from" || continue
+  echo "Installing $to..."
+  if pacman -Sl core extra multilib 2>/dev/null | awk -v n="$to" '$2==n {found=1} END {exit !found}'; then
+    sudo pacman -S --needed --noconfirm "$to"
+  else
+    yay -S --needed --noconfirm "$to"
+  fi
+  sudo pacman -Rdd --noconfirm "$from" || true
+done
+
+to_remove=()
+for package in "${drop_packages[@]}"; do
+  installed "$package" && to_remove+=("$package")
+done
+if (( ${#to_remove[@]} )); then
+  echo "Removing ${#to_remove[@]} package(s)..."
+  sudo pacman -Rns --noconfirm "${to_remove[@]}"
+fi
+
+backup="$pacman_conf.bak.$(date +%s)"
+echo "Backing up $pacman_conf to $backup"
+sudo cp "$pacman_conf" "$backup"
+
+sudo awk '
+  /^\[omarchy\]/ { in_block = 1; print "# [omarchy] removed by blob-repo-migrate"; next }
+  in_block && /^\[/ { in_block = 0 }
+  in_block && /^Server[[:space:]]*=/ { print "# " $0; next }
+  in_block && /^[[:space:]]*$/ { in_block = 0 }
+  { print }
+' "$pacman_conf" > /tmp/pacman.conf.blob && sudo install -m644 /tmp/pacman.conf.blob "$pacman_conf"
+rm -f /tmp/pacman.conf.blob
+
+echo "Resyncing package databases..."
+sudo pacman -Syy
+
+heading "Done. Remaining foreign packages (now AUR-managed):"
+pacman -Qmq | sed 's/^/  /'
+
+heading "Next steps:"
+echo "  blob update              rebuilds the AUR packages above from source"
+echo "  pacman -Qtdq             check for orphans the removals left behind"
+echo "  $backup   restore point if anything is wrong"
