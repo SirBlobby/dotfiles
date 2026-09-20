@@ -69,7 +69,7 @@ Two are worth knowing about:
 `install.sh` installs what is missing before it writes any config:
 
 ```
-packages/blob.packages       119 packages from core, extra, multilib
+packages/blob.packages       121 packages from core, extra, multilib
 packages/blob-aur.packages    10 packages with no official equivalent
 ```
 
@@ -131,6 +131,23 @@ Omarchy's own package list, because they were installed by hand on this machine:
 | `playerctl` | the quick settings media row |
 
 `playerctl` is in official `extra`, so it sits in the repo list.
+
+## No boot splash
+
+`plymouth` is deliberately not on either list. Blob configures no splash: there
+is no mkinitcpio hook, no kernel command line, and `default/plymouth/` ships no
+theme assets, so `blob-plymouth-set` has nothing to publish either. An installed
+but unconfigured plymouth is not harmless - it takes the console at boot and
+never hands it back, and `getty@tty1` waits on `plymouth-quit-wait.service`, so
+the machine reaches neither the greeter nor a TTY.
+
+`install.sh` masks `plymouth-start.service` and `plymouth-quit-wait.service` for
+that reason, which un-breaks a machine that already has the package. To go
+further:
+
+```
+sudo pacman -Rns plymouth
+```
 
 ## Updating
 

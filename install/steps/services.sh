@@ -11,8 +11,15 @@ system_services=(
 
 # network-online.target must not hold up graphical.target waiting for DHCP or
 # Wi-Fi association. Nothing in the session blocks on the network.
+#
+# Blob configures no boot splash: no mkinitcpio hook, no kernel command line,
+# and no theme. An unconfigured plymouth still takes the console at boot and
+# never hands it back, and getty@tty1 waits on plymouth-quit-wait.service, so
+# the machine comes up with no greeter and no TTY to fix it from.
 masked_services=(
   NetworkManager-wait-online.service
+  plymouth-start.service
+  plymouth-quit-wait.service
 )
 
 # blob-speaker-tuning.service is deliberately absent: blob-audio-tuning installs
