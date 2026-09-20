@@ -43,14 +43,33 @@ with `--check`.
    | File | Why |
    | --- | --- |
    | `/usr/local/share/wayland-sessions/blob.desktop` | the session SDDM offers |
-   | `/etc/sddm.conf.d/10-blob.conf` | Wayland greeter, run on Hyprland, remember the last session |
-   | `/etc/sddm/hyprland-greeter.lua` | the greeter's own tiny Hyprland config |
+   | `/etc/sddm.conf.d/zz-blob.conf` | Wayland greeter, run on Hyprland, stock theme, remember the last session |
+   | `/etc/sddm/hyprland-greeter.conf` | the greeter's own tiny Hyprland config |
 
    The greeter config matters more than it looks: SDDM's stock Wayland greeter
    runs on `weston`, which Blob does not install, so a default SDDM would fail
    to draw anything. `sddm.service` is enabled and the default systemd target is
    set to `graphical.target`, which an Arch install without a display manager
    does not have.
+
+   The `zz-` prefix is load-bearing. SDDM reads `/etc/sddm.conf.d` in
+   alphabetical order and the last file wins, so a leftover `10-wayland.conf`,
+   `10-theme.conf` or `autologin.conf` from another desktop would otherwise
+   override Blob's. For the same reason `zz-blob.conf` blanks `Theme` and
+   `Autologin`: a greeter pointed at an uninstalled theme, or an autologin
+   pointed at a session entry that no longer exists, leaves SDDM on a black
+   screen it never falls back from, and the only way in is a TTY.
+
+   The Omarchy ISO wrote exactly such an autologin, owned by no package, so it
+   outlives Omarchy. The installer reports it and overrides it; deleting it stops
+   the warning:
+
+   ```bash
+   sudo rm /etc/sddm.conf.d/autologin.conf
+   ```
+
+   `--autologin` writes `zzz-blob-autologin.conf`, the only file that sorts after
+   `zz-blob.conf`.
 9. **Launch.** When the installer was run from a console and nothing graphical
    is running, it starts `sddm.service` so the desktop appears without a reboot.
    `--no-launch` prints the command instead. `--autologin` writes

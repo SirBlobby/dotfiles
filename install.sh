@@ -74,6 +74,7 @@ install_login_config
 install_session_entry
 install_autologin
 enable_display_manager
+report_login_conflicts
 
 say ""
 if [[ $check == true ]]; then

@@ -86,7 +86,9 @@ It runs these steps, in this order, and every one of them is idempotent:
 
 Step 8 is the one a plain Arch install cannot do without: SDDM's stock Wayland
 greeter runs on `weston`, which Blob does not install, so the greeter is pointed
-at Hyprland instead. [install.md](docs/install.md) covers each step in full.
+at Hyprland instead. It also reports any leftover drop-in that autologs into a
+session that is not installed, which is what a black screen with no login prompt
+usually is. [install.md](docs/install.md) covers each step in full.
 
 To back out, `./uninstall.sh` removes the session entry, the config, the user
 services, and the symlink, restoring any `.bak` the installer made. The

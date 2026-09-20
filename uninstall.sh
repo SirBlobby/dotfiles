@@ -7,6 +7,9 @@ config_dir="$HOME/.config"
 session_entry="/usr/local/share/wayland-sessions/blob.desktop"
 
 root_files=(
+  /etc/sddm.conf.d/zz-blob.conf
+  /etc/sddm.conf.d/zzz-blob-autologin.conf
+  /etc/sddm/hyprland-greeter.conf
   /etc/sddm.conf.d/10-blob.conf
   /etc/sddm.conf.d/99-blob-autologin.conf
   /etc/sddm/hyprland-greeter.lua

@@ -1,13 +1,21 @@
 session_entry_dir=/usr/local/share/wayland-sessions
-greeter_compositor_config=/etc/sddm/hyprland-greeter.lua
+session_entry_search_dirs=(/usr/local/share/wayland-sessions /usr/share/wayland-sessions)
+greeter_config_dir=/etc/sddm.conf.d
+greeter_compositor_config=/etc/sddm/hyprland-greeter.conf
+
+# SDDM reads /etc/sddm.conf.d in alphabetical order and the last file wins, so
+# Blob's drop-ins are named to sort after anything a distribution, an installer
+# ISO, or a previous desktop left behind.
+blob_greeter_conf="$greeter_config_dir/zz-blob.conf"
+blob_autologin_conf="$greeter_config_dir/zzz-blob-autologin.conf"
 
 # SDDM's stock Wayland greeter runs on weston, which Blob does not install.
 # Point it at Hyprland with a greeter-only config instead.
 install_login_config() {
-  install_root_file "$repo_dir/default/sddm/hyprland-greeter.lua" \
-    "$greeter_compositor_config" "sddm/hyprland-greeter.lua"
-  install_root_file "$repo_dir/default/sddm/10-blob.conf" \
-    /etc/sddm.conf.d/10-blob.conf "sddm.conf.d/10-blob.conf"
+  install_root_file "$repo_dir/default/sddm/hyprland-greeter.conf" \
+    "$greeter_compositor_config" "sddm/hyprland-greeter.conf"
+  install_root_file "$repo_dir/default/sddm/zz-blob.conf" \
+    "$blob_greeter_conf" "sddm.conf.d/zz-blob.conf"
 }
 
 install_session_entry() {
@@ -23,9 +31,52 @@ install_autologin() {
   local generated
   generated="$(mktemp)"
   printf '[Autologin]\nUser=%s\nSession=blob.desktop\n' "$USER" >"$generated"
-  install_root_file "$generated" \
-    /etc/sddm.conf.d/99-blob-autologin.conf "sddm.conf.d/99-blob-autologin.conf"
+  install_root_file "$generated" "$blob_autologin_conf" "sddm.conf.d/zzz-blob-autologin.conf"
   rm -f "$generated"
+}
+
+session_entry_exists() {
+  local entry="$1"
+  local dir
+
+  for dir in "${session_entry_search_dirs[@]}"; do
+    [[ -e $dir/$entry ]] && return 0
+  done
+
+  return 1
+}
+
+setting_value() {
+  local file="$1" key="$2"
+
+  sed -n "s/^[[:space:]]*$key[[:space:]]*=[[:space:]]*//p" "$file" | tail -1
+}
+
+# zz-blob.conf blanks Theme and Autologin, so a leftover drop-in cannot point the
+# greeter at a theme that was uninstalled or autolog into a session that no
+# longer exists. Either one leaves SDDM on a black screen it never falls back
+# from. Report the leftovers anyway: the file is confusing to find later, and the
+# Omarchy ISO wrote an autologin that no package owns, so it outlives Omarchy.
+report_login_conflicts() {
+  local file session
+  local found=false
+
+  for file in "$greeter_config_dir"/*.conf; do
+    [[ -e $file ]] || continue
+    [[ $file == "$blob_greeter_conf" || $file == "$blob_autologin_conf" ]] && continue
+
+    session="$(setting_value "$file" Session)"
+    [[ -n $session ]] || continue
+    session_entry_exists "$session" && continue
+
+    found=true
+    say "WARN  $file autologs into $session, which is not installed"
+  done
+
+  if [[ $found == true ]]; then
+    say "      Blob's config overrides it, so the greeter still comes up."
+    say "      Delete the file to stop it coming back."
+  fi
 }
 
 # Enabling sddm is not enough on a machine installed without a display manager:
