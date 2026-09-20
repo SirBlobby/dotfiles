@@ -17,7 +17,7 @@ directories=(
   "$HOME/.local/share/fonts"
   "$HOME/.local/share/applications"
   "$HOME/.local/share/icons/hicolor/256x256/apps"
-  "$HOME/wallpapers"
+  "$HOME/.cache/blob"
 )
 
 create_directories() {

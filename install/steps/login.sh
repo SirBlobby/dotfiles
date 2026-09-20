@@ -1,7 +1,7 @@
 session_entry_dir=/usr/local/share/wayland-sessions
 session_entry_search_dirs=(/usr/local/share/wayland-sessions /usr/share/wayland-sessions)
 greeter_config_dir=/etc/sddm.conf.d
-greeter_compositor_config=/etc/sddm/hyprland-greeter.conf
+greeter_compositor_config=/etc/sddm/hyprland-greeter.lua
 
 # SDDM reads /etc/sddm.conf.d in alphabetical order and the last file wins, so
 # Blob's drop-ins are named to sort after anything a distribution, an installer
@@ -10,10 +10,12 @@ blob_greeter_conf="$greeter_config_dir/zz-blob.conf"
 blob_autologin_conf="$greeter_config_dir/zzz-blob-autologin.conf"
 
 # SDDM's stock Wayland greeter runs on weston, which Blob does not install.
-# Point it at Hyprland with a greeter-only config instead.
+# Point it at Hyprland with a greeter-only config instead. That config is Lua:
+# Hyprland dropped the old hyprlang format, and a config it cannot parse leaves
+# the greeter with no compositor and the screen black.
 install_login_config() {
-  install_root_file "$repo_dir/default/sddm/hyprland-greeter.conf" \
-    "$greeter_compositor_config" "sddm/hyprland-greeter.conf"
+  install_root_file "$repo_dir/default/sddm/hyprland-greeter.lua" \
+    "$greeter_compositor_config" "sddm/hyprland-greeter.lua"
   install_root_file "$repo_dir/default/sddm/zz-blob.conf" \
     "$blob_greeter_conf" "sddm.conf.d/zz-blob.conf"
 }

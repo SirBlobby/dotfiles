@@ -92,6 +92,11 @@ if [[ -L $blob_path ]]; then
   say "remove  BLOB_PATH symlink"
 fi
 
+if [[ -L $HOME/wallpapers ]]; then
+  rm -f "$HOME/wallpapers"
+  say "remove  ~/wallpapers symlink"
+fi
+
 for relative in blob/shell.json uwsm/default uwsm/env.d/10-blob; do
   restore_or_remove "$config_dir/$relative" "$relative"
 done

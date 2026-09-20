@@ -74,24 +74,26 @@ It runs these steps, in this order, and every one of them is idempotent:
 
 | Step | What it does |
 | --- | --- |
-| 1. `BLOB_PATH` | symlinks `~/.local/share/blob` to this checkout |
-| 2. Directories | creates the 19 directories the shell and scripts expect |
+| 1. Directories | creates the 19 directories the shell and scripts expect, before anything writes into them |
+| 2. `BLOB_PATH` | symlinks `~/.local/share/blob` to this checkout |
 | 3. Packages | installs what is missing from `packages/`, bootstrapping `yay` first on a machine that has no AUR helper |
 | 4. Config | copies `hypr/`, the themed app configs, `blob/shell.json`, the uwsm environment, and the icon font into `~/.config` |
-| 5. User units | installs the session services into `~/.config/systemd/user` and enables them |
-| 6. systemd drop-ins | writes the shutdown timeouts, oomd thresholds, plocate prune paths, and sleep hooks under `/etc` |
-| 7. System services | enables NetworkManager, resolved, bluetooth, cups, avahi, docker, power-profiles-daemon, and oomd, and masks `NetworkManager-wait-online` |
-| 8. Login screen | installs the session entry and the SDDM config, enables `sddm.service`, and sets the default target to `graphical.target` |
-| 9. Launch | starts the login screen, so the desktop comes up without a reboot |
+| 5. First theme | links `~/wallpapers` to the checkout, applies `flats` headless, and picks a background, so the first login is not a blank desktop |
+| 6. User units | installs the session services into `~/.config/systemd/user` and enables them |
+| 7. systemd drop-ins | writes the shutdown timeouts, oomd thresholds, plocate prune paths, and sleep hooks under `/etc` |
+| 8. System services | enables NetworkManager, resolved, bluetooth, cups, avahi, docker, power-profiles-daemon, and oomd, and masks `NetworkManager-wait-online` |
+| 9. Login screen | installs the session entry and the SDDM config, enables `sddm.service`, and sets the default target to `graphical.target` |
+| 10. Launch | starts the login screen, so the desktop comes up without a reboot |
 
-Step 8 is the one a plain Arch install cannot do without: SDDM's stock Wayland
+Step 9 is the one a plain Arch install cannot do without: SDDM's stock Wayland
 greeter runs on `weston`, which Blob does not install, so the greeter is pointed
-at Hyprland instead. It also reports any leftover drop-in that autologs into a
-session that is not installed, which is what a black screen with no login prompt
-usually is. [install.md](docs/install.md) covers each step in full.
+at Hyprland with a Lua config, the only format Hyprland still reads. It also
+reports any leftover drop-in that autologs into a session that is not installed,
+which is the other thing a black screen with no login prompt usually is.
+[install.md](docs/install.md) covers each step in full.
 
 To back out, `./uninstall.sh` removes the session entry, the config, the user
-services, and the symlink, restoring any `.bak` the installer made. The
+services, and the symlinks, restoring any `.bak` the installer made. The
 checkout, the wallpapers, and the themes stay where they are.
 
 ## Regenerating docs

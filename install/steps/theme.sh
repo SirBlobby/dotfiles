@@ -1,0 +1,92 @@
+default_theme=flats
+wallpaper_dir="$HOME/wallpapers"
+current_state_dir="$HOME/.local/state/blob/current"
+
+# ~/wallpapers is what the wallpaper picker and `blob wallpaper set` read, and
+# the checkout already carries the collection. Link it for the same reason
+# BLOB_PATH is a link: one copy, and edits in the checkout are live.
+link_wallpapers() {
+  local source="$repo_dir/wallpapers"
+  local current=""
+
+  [[ -L $wallpaper_dir ]] && current="$(readlink -f "$wallpaper_dir")"
+
+  if [[ $current == "$source" ]]; then
+    say "ok    wallpapers"
+    return 0
+  fi
+
+  if [[ -d $wallpaper_dir && ! -L $wallpaper_dir ]] && [[ -n "$(ls -A "$wallpaper_dir")" ]]; then
+    say "ok    wallpapers (own directory kept)"
+    return 0
+  fi
+
+  note_change
+  if [[ $check == true ]]; then
+    say "would link $wallpaper_dir -> $source"
+    return 0
+  fi
+
+  [[ -d $wallpaper_dir && ! -L $wallpaper_dir ]] && rmdir "$wallpaper_dir"
+  ln -sfn "$source" "$wallpaper_dir"
+  say "link  wallpapers -> $source"
+}
+
+# Without a theme there is no palette, no themed app config, and no background
+# for the shell to draw, so the first login lands on a black screen that looks
+# like a failed session. Applied headless: no shell and no session bus exist
+# while the installer runs.
+install_default_theme() {
+  if [[ -s $current_state_dir/theme.name ]]; then
+    say "ok    theme ($(cat "$current_state_dir/theme.name"))"
+    return 0
+  fi
+
+  note_change
+  if [[ $check == true ]]; then
+    say "would apply the $default_theme theme"
+    return 0
+  fi
+
+  if BLOB_PATH="$blob_path" BLOB_THEME_HEADLESS=1 PATH="$repo_dir/bin:$PATH" \
+    blob-theme-set "$default_theme" >/dev/null; then
+    say "theme $default_theme"
+  else
+    say "WARN  could not apply the $default_theme theme"
+  fi
+}
+
+# Only a theme that ships its own backgrounds/ sets this link, and most ship
+# none: they are meant to leave the current wallpaper alone. On a first install
+# there is no current wallpaper, so pick one.
+install_default_background() {
+  local link="$current_state_dir/background"
+  local search="$wallpaper_dir"
+  local first
+
+  if [[ -e $link ]]; then
+    say "ok    background"
+    return 0
+  fi
+
+  # --check writes nothing, so the wallpaper link is not there yet to look in.
+  [[ -d $search ]] || search="$repo_dir/wallpapers"
+
+  first="$(find -L "$search" -maxdepth 1 -type f \
+    \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) \
+    2>/dev/null | sort | head -1)"
+
+  if [[ -z $first ]]; then
+    say "SKIP  background (no image in $search)"
+    return 0
+  fi
+
+  note_change
+  if [[ $check == true ]]; then
+    say "would set the background to $(basename "$first")"
+    return 0
+  fi
+
+  ln -nsf "$first" "$link"
+  say "bg    $(basename "$first")"
+}

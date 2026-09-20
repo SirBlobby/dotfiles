@@ -1,6 +1,10 @@
 # BLOB_PATH is a symlink to this checkout rather than a copy, so bin/, shell/,
 # themes/ and default/ are always the working tree. Every path the shell
 # resolves as $BLOB_PATH/... therefore needs no install step at all.
+#
+# ~/.local/share does not exist on a fresh Arch install, and ln does not create
+# the parent of its link, so make it here rather than relying on another step
+# having run first.
 link_blob_path() {
   local current=""
   [[ -L $blob_path ]] && current="$(readlink -f "$blob_path")"
@@ -22,6 +26,7 @@ link_blob_path() {
     return 0
   fi
 
+  mkdir -p "$(dirname "$blob_path")"
   ln -sfn "$repo_dir" "$blob_path"
   say "link  BLOB_PATH -> $repo_dir"
 }

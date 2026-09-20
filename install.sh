@@ -48,6 +48,7 @@ source "$repo_dir/install/steps/directories.sh"
 source "$repo_dir/install/steps/packages.sh"
 source "$repo_dir/install/steps/config.sh"
 source "$repo_dir/install/steps/services.sh"
+source "$repo_dir/install/steps/theme.sh"
 source "$repo_dir/install/steps/login.sh"
 
 say "Blob installer"
@@ -57,14 +58,18 @@ if [[ $check == true ]]; then
 fi
 say ""
 
-link_blob_path
 create_directories
+link_blob_path
 install_packages
 
 install_shipped_config
 install_user_units
 install_systemd_dropins
 install_zen_config
+
+link_wallpapers
+install_default_theme
+install_default_background
 
 enable_system_services
 mask_system_services
@@ -82,7 +87,7 @@ if [[ $check == true ]]; then
   (( changes == 0 )) || exit 1
 else
   say "$changes item(s) changed."
-  say "Set a theme with 'blob theme set <name>' once the session is up."
+  say "Change the theme with 'blob theme set <name>' once the session is up."
   say ""
   launch_desktop
 fi

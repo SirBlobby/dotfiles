@@ -66,3 +66,8 @@ Twenty-two came across from upstream, plus `flats` and `pitch-dark`. Their
 `backgrounds/` directories are empty on purpose: the upstream images were
 Omarchy branding, and `~/wallpapers` holds 103 of your own. A theme with no
 background of its own leaves the current wallpaper alone.
+
+Because of that, a machine with no wallpaper yet would get none from the theme
+either. The installer covers the gap: it symlinks `~/wallpapers` to the
+checkout, applies `flats`, and points the background symlink at the first image
+it finds. See [install.md](install.md).
