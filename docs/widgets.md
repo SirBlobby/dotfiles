@@ -52,3 +52,51 @@ binding to the shell's own audio, brightness and media services. Polling only
 runs while a panel is open, so the cost is bounded, but wiring these to the
 services is the obvious next refinement and would remove the last per-tick
 process spawns.
+
+## Displays
+
+`blob.displays` arranges monitors and assigns wallpapers per monitor. Opened
+with `Super + Shift + Ctrl + D` or the Blob menu's Displays row.
+
+### Monitors tab
+
+A scaled picture of the desktop, one draggable rectangle per monitor. Dropping
+one applies the new position immediately. Edges snap to a neighbour's edge
+within 60 logical pixels, so monitors end up touching exactly.
+
+Per-monitor controls: mode, scale, enable or disable, and mirror.
+
+**Scale options are filtered, not free.** Hyprland steps fractional scaling in
+1/120 and rejects a scale that does not land on a whole number of physical
+pixels on both axes. `DisplayModel.scaleIsValid` applies that rule, so only
+usable scales are offered. On a 1920x1080 panel that means 1.0 and 1.2 are
+adjacent with nothing between them, which is the constraint `hypr/monitors.lua`
+documents by hand.
+
+**Nothing is written to `monitors.lua`.** Every change goes through
+`hyprctl keyword monitor` and lasts until the config reloads or the session
+ends. "Reset to monitors.lua" runs `hyprctl reload` and makes the checked-in
+config authoritative again. To keep a layout, edit `monitors.lua` yourself -
+`blob display arrange list` prints the current layout in the exact keyword form,
+ready to copy.
+
+### Wallpapers tab
+
+A thumbnail grid of `~/wallpapers`. Clicking one assigns it to the selected
+monitor through `blob-bg-monitor`, which symlinks it under
+`~/.local/state/blob/backgrounds/<output>`.
+
+`blob.background` already drew one window per screen but pointed them all at the
+same image. It now resolves per screen: a monitor with an assignment shows it,
+and a monitor without one shows the global wallpaper from `blob-bg-set`. The
+crossfade machinery stays on the global path only, so an assigned monitor swaps
+without the reveal animation rather than risking that code.
+
+| Command | Does |
+| --- | --- |
+| `blob bg monitor <output> <image>` | assign a wallpaper to one monitor |
+| `blob bg monitor <output> --clear` | fall back to the global wallpaper |
+| `blob bg monitor --list` | show assignments |
+| `blob display arrange list` | print the layout as monitor keywords |
+| `blob display arrange apply <kw>` | apply a keyword now |
+| `blob display arrange reset` | reload, restoring monitors.lua |

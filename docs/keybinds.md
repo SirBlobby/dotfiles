@@ -14,6 +14,7 @@ Personal overrides in `hypr/bindings.lua` win over the defaults, and
 | `SUPER + ALT + W` | Wallpaper picker |
 | `SUPER + CTRL + M` | System monitor |
 | `SUPER + CTRL + Q` | Quick settings |
+| `SUPER + SHIFT + CTRL + D` | Displays |
 | `SUPER + SPACE` | Apps menu |
 
 ## Applications

@@ -1,0 +1,29 @@
+# Packages this desktop needs from the AUR.
+# Installed by install.sh with: yay -S --needed
+#
+# These have no official-repo equivalent. See docs/packages.md.
+
+# Wallpaper daemon used by blob-wallpaper-set and blob-theme-menu
+awww
+
+# Palette extraction behind blob-wallpaper-set
+python-pywal
+
+# Terminal dispatch; every TUI launcher's Exec= line calls it
+xdg-terminal-exec
+
+# Screenshare picker used by the Hyprland portal
+hyprland-preview-share-picker-git|hyprland-preview-share-picker
+
+# Theming GUI that writes the same colors.toml the CLI does
+aether
+
+# Fonts and icons with no official build
+ttf-ia-writer
+woff2-font-awesome
+yaru-icon-theme
+
+# Tooling
+mise-bin
+ufw-docker
+lazydocker

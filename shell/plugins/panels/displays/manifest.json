@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "name": "Displays",
+  "version": "1.0.0",
+  "author": "Blob",
+  "description": "Arrange monitors and assign wallpapers per monitor",
+  "id": "blob.displays",
+  "kinds": [
+    "overlay"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "overlay": "Displays.qml"
+  }
+}

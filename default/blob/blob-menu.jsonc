@@ -112,6 +112,7 @@
 
   // Blob
   "blob.wallpaper": {"icon":"󰸉","label":"Wallpaper","action":"blob-wallpaper-set --menu","description":"Pick a wallpaper from ~/wallpapers"},
+  "blob.displays": {"icon":"󰍹","label":"Displays","action":"blob-shell shell toggle blob.displays","description":"Arrange monitors and assign wallpapers"},
   "blob.theme": {"icon":"󰢵","label":"Theme","action":"blob-theme-menu","description":"Pick a local or bundled color theme"},
   "blob.dynamic": {"icon":"󰁨","label":"Dynamic theme","action":"blob-theme-dynamic","description":"Recolor from the current wallpaper"},
   "blob.glass": {"icon":"󱡓","label":"Toggle glass","action":"blob-toggle-glass toggle","checked":"test -f $HOME/.local/state/blob/toggles/hypr/blob-glass.lua"},

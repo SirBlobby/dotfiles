@@ -11,15 +11,17 @@ font_dir="$HOME/.local/share/fonts"
 
 force=false
 check=false
+skip_packages=false
 changes=0
 
 usage() {
   cat <<USAGE
 Usage: ./install.sh [OPTIONS]
 
-  --check    Report what would change, write nothing
-  --force    Overwrite files that have local changes
-  --help     Show this message
+  --check           Report what would change, write nothing
+  --force           Overwrite files that have local changes
+  --skip-packages   Do not install packages, only directories and config
+  --help            Show this message
 USAGE
   exit 0
 }
@@ -28,6 +30,7 @@ while (( $# > 0 )); do
   case "$1" in
     --force) force=true; shift ;;
     --check) check=true; shift ;;
+    --skip-packages) skip_packages=true; shift ;;
     --help) usage ;;
     *) echo "Unknown option: $1" >&2; usage ;;
   esac
@@ -39,6 +42,112 @@ say() {
 
 note_change() {
   changes=$((changes + 1))
+}
+
+directories=(
+  "$HOME/.config/blob/hooks"
+  "$HOME/.config/blob/extensions"
+  "$HOME/.config/blob/plugins"
+  "$HOME/.config/blob/themed"
+  "$HOME/.config/blob/themes"
+  "$HOME/.config/blob/branding"
+  "$HOME/.config/hypr"
+  "$HOME/.config/uwsm/env.d"
+  "$HOME/.local/state/blob/toggles/hypr"
+  "$HOME/.local/state/blob/indicators"
+  "$HOME/.local/state/blob/notifications/history"
+  "$HOME/.local/state/blob/notifications/images"
+  "$HOME/.local/state/blob/backgrounds"
+  "$HOME/.local/state/blob/current"
+  "$HOME/.local/share/fonts"
+  "$HOME/.local/share/applications"
+  "$HOME/.local/share/icons/hicolor/256x256/apps"
+  "$HOME/wallpapers"
+)
+
+create_directories() {
+  local missing=()
+  local dir
+  for dir in "${directories[@]}"; do
+    [[ -d $dir ]] || missing+=("$dir")
+  done
+
+  if (( ${#missing[@]} == 0 )); then
+    say "ok    directories"
+    return
+  fi
+
+  note_change
+  if [[ $check == true ]]; then
+    say "would create ${#missing[@]} directory(ies):"
+    printf '        %s\n' "${missing[@]}"
+    return
+  fi
+
+  mkdir -p "${missing[@]}"
+  say "mkdir ${#missing[@]} directory(ies)"
+}
+
+read_package_list() {
+  [[ -f $1 ]] || return 0
+  grep -vE '^[[:space:]]*#|^[[:space:]]*$' "$1"
+}
+
+# A list entry may be "wanted|already-fine", which asks for the first name but
+# treats either as satisfying the requirement. That is how the AUR replacement
+# for a package still shipped by another repository avoids a file conflict.
+missing_packages() {
+  local entry wanted alternative
+  for entry in $(read_package_list "$1"); do
+    wanted=${entry%%|*}
+    alternative=${entry#*|}
+    pacman -Q "$wanted" &>/dev/null && continue
+    [[ $alternative != "$entry" ]] && pacman -Q "$alternative" &>/dev/null && continue
+    printf '%s\n' "$wanted"
+  done
+}
+
+install_packages() {
+  if [[ $skip_packages == true ]]; then
+    say "skip  packages (--skip-packages)"
+    return
+  fi
+
+  local -a repo_missing aur_missing
+  mapfile -t repo_missing < <(missing_packages "$repo_dir/packages/blob.packages")
+  mapfile -t aur_missing < <(missing_packages "$repo_dir/packages/blob-aur.packages")
+
+  if (( ${#repo_missing[@]} == 0 && ${#aur_missing[@]} == 0 )); then
+    say "ok    packages"
+    return
+  fi
+
+  note_change
+  if [[ $check == true ]]; then
+    (( ${#repo_missing[@]} )) && say "would install ${#repo_missing[@]} repo package(s): ${repo_missing[*]}"
+    (( ${#aur_missing[@]} )) && say "would install ${#aur_missing[@]} AUR package(s): ${aur_missing[*]}"
+    return
+  fi
+
+  blob_sudo_keepalive
+
+  if (( ${#repo_missing[@]} )); then
+    say "install ${#repo_missing[@]} repo package(s)"
+    sudo pacman -S --needed --noconfirm "${repo_missing[@]}"
+  fi
+
+  if (( ${#aur_missing[@]} )); then
+    if ! command -v yay &>/dev/null; then
+      say "WARN  yay is not installed; skipping ${#aur_missing[@]} AUR package(s)"
+      return
+    fi
+    say "install ${#aur_missing[@]} AUR package(s)"
+    yay -S --needed --noconfirm "${aur_missing[@]}"
+  fi
+}
+
+blob_sudo_keepalive() {
+  sudo -v 2>/dev/null || true
 }
 
 # BLOB_PATH is a symlink to this checkout rather than a copy, so bin/, shell/,
@@ -144,12 +253,8 @@ fi
 say ""
 
 link_blob_path
-
-if [[ $check == false ]]; then
-  mkdir -p "$state_dir"/{toggles/hypr,indicators,notifications}
-  mkdir -p "$config_dir/blob"/{hooks,extensions,plugins,themed,themes}
-  mkdir -p "$HOME/wallpapers"
-fi
+create_directories
+install_packages
 
 install_tree "$repo_dir/hypr" "$config_dir/hypr" "hypr"
 # config/ is the shipped-defaults directory. Everything in it is reachable as

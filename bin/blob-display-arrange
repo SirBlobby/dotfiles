@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# blob:summary=Apply a monitor layout at runtime without touching monitors.lua
+# blob:args=<list|apply <keyword>...|reset>
+# blob:examples=blob display arrange apply 'DP-1,1920x1080@60,0x0,1'
+
+set -e
+
+action="${1-}"
+shift || true
+
+usage() {
+  cat <<USAGE
+Usage: blob-display-arrange <command>
+
+  list                 print the current layout as monitor keywords
+  apply <keyword>...   apply one or more monitor keywords now
+  reset                reload the Hyprland config, restoring monitors.lua
+
+A keyword is Hyprland's own monitor form:
+
+  <name>,<mode>,<x>x<y>,<scale>[,transform,<n>][,mirror,<name>]
+  <name>,disable
+
+Changes made with apply are runtime only. They last until the config is
+reloaded or the session ends; monitors.lua is never written.
+USAGE
+}
+
+case "$action" in
+list)
+  hyprctl monitors all -j | jq -r '
+    .[]
+    | if .disabled then "\(.name),disable"
+      else
+        "\(.name),\(.width)x\(.height)@\((.refreshRate * 100 | round) / 100),\(.x)x\(.y),\(.scale)"
+        + (if .transform != 0 then ",transform,\(.transform)" else "" end)
+        + (if .mirrorOf != "none" then ",mirror,\(.mirrorOf)" else "" end)
+      end
+  '
+  ;;
+apply)
+  if (( $# == 0 )); then
+    echo "apply needs at least one monitor keyword" >&2
+    exit 1
+  fi
+  for keyword in "$@"; do
+    if [[ $keyword != *,* ]]; then
+      echo "Not a monitor keyword: $keyword" >&2
+      exit 1
+    fi
+    hyprctl keyword monitor "$keyword" >/dev/null
+    echo "applied $keyword"
+  done
+  ;;
+reset)
+  hyprctl reload >/dev/null
+  echo "reloaded; monitors.lua is authoritative again"
+  ;;
+""|--help|-h)
+  usage
+  ;;
+*)
+  echo "Unknown command: $action" >&2
+  usage >&2
+  exit 1
+  ;;
+esac

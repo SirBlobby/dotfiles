@@ -1,0 +1,166 @@
+# Packages this desktop needs from the official Arch repositories.
+# Installed by install.sh with: pacman -S --needed
+#
+# Derived from Omarchy's base list, minus its own software and the features
+# this fork dropped, plus what the fork's own scripts and widgets need.
+
+# Compositor and shell
+hyprland
+quickshell
+uwsm
+sddm
+hyprland-guiutils
+hyprpicker
+hyprsunset
+xdg-desktop-portal-hyprland
+xdg-desktop-portal-gtk
+gtk4-layer-shell
+qt6-wayland
+qt6-imageformats
+wl-clipboard
+wtype
+socat
+inotify-tools
+plymouth
+polkit
+
+# Shell widget backends
+playerctl
+pamixer
+brightnessctl
+ddcutil
+
+# Networking
+networkmanager
+nss-mdns
+avahi
+wireless-regdb
+
+# Bluetooth
+bluez
+bluez-utils
+bluez-tools
+
+# Audio
+pipewire
+pipewire-alsa
+pipewire-jack
+pipewire-pulse
+wireplumber
+alsa-utils
+lsp-plugins-lv2
+
+# Power and thermals
+power-profiles-daemon
+thermald
+
+# Storage and devices
+udiskie
+gvfs-mtp
+gvfs-nfs
+gvfs-smb
+dosfstools
+exfatprogs
+btrfs-progs
+bolt
+kernel-modules-hook
+gnome-disk-utility
+
+# Printing
+cups
+cups-filters
+cups-pk-helper
+system-config-printer
+
+# Security
+ufw
+gnome-keyring
+libsecret
+
+# Boot and snapshots
+limine
+snapper
+zram-generator
+
+# System utilities
+plocate
+man-db
+tzupdate
+expac
+pacman-contrib
+
+# Terminals
+foot
+kitty
+
+# Fonts and icons
+ttf-jetbrains-mono-nerd
+noto-fonts
+noto-fonts-cjk
+noto-fonts-emoji
+fontconfig
+gnome-themes-extra
+
+# Image and video handling
+imagemagick
+libvips
+webp-pixbuf-loader
+ffmpegthumbnailer
+
+# Capture
+grim
+slurp
+gpu-screen-recorder
+tesseract
+tesseract-data-eng
+qrencode
+zbar
+
+# Media
+mpv
+mpv-mpris
+imv
+evince
+
+# Files
+nautilus
+nautilus-python
+sushi
+
+# Editor
+neovim
+
+# Browser for web apps
+chromium
+
+# Command line
+bat
+eza
+fd
+ripgrep
+fzf
+zoxide
+jq
+starship
+git
+lazygit
+btop
+fastfetch
+inxi
+dua-cli
+tldr
+whois
+inetutils
+unzip
+yt-dlp
+gum
+less
+python-gobject
+
+# Containers
+docker
+docker-compose
+docker-buildx
+
+# Sharing
+localsend

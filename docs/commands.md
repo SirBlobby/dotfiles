@@ -43,6 +43,7 @@ of the `blob` listing.
 | `blob-bg-cache` | Cache background switcher thumbnails for the current theme | - |
 | `blob-bg-current` | Show current background | - |
 | `blob-bg-install` | Open the current theme's user background folder | - |
+| `blob-bg-monitor` | Assign a wallpaper to one monitor, leaving the others alone | <--list\|--clear-all\|<output> <image>\|<output> --clear> |
 | `blob-bg-next` | Cycle to the next background for the current theme | - |
 | `blob-bg-set` | Set the current background image | <path-to-image> |
 | `blob-bg-switcher` | Open the Blob background switcher | - |
@@ -138,6 +139,7 @@ of the `blob` listing.
 
 | Command | Does | Arguments |
 | --- | --- | --- |
+| `blob-display-arrange` | Apply a monitor layout at runtime without touching monitors.lua | <list\|apply <keyword>...\|reset> |
 | `blob-display-size` | Scale text everywhere — blob shell, GTK apps, and terminals | [size\|reset] |
 | `blob-display-state` | Print monitor panel state for the shell | - |
 
@@ -620,4 +622,4 @@ of the `blob` listing.
 
 ## Totals
 
-291 commands.
+293 commands.

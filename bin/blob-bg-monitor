@@ -1,0 +1,81 @@
+#!/bin/bash
+
+# blob:summary=Assign a wallpaper to one monitor, leaving the others alone
+# blob:args=<--list|--clear-all|<output> <image>|<output> --clear>
+# blob:examples=blob bg monitor DP-1 ~/wallpapers/astronaut2.jpg
+
+set -e
+
+state_dir="$HOME/.local/state/blob/backgrounds"
+mkdir -p "$state_dir"
+
+usage() {
+  cat <<USAGE
+Usage: blob-bg-monitor <output> <image>     assign a wallpaper to one monitor
+       blob-bg-monitor <output> --clear     fall back to the global wallpaper
+       blob-bg-monitor --list               show current assignments
+       blob-bg-monitor --clear-all          drop every assignment
+
+Monitors with no assignment show the global wallpaper set by blob-bg-set.
+Output names are what 'hyprctl monitors' reports, such as DP-1 or eDP-1.
+USAGE
+}
+
+notify_shell() {
+  blob-shell -q background refresh
+}
+
+known_output() {
+  hyprctl monitors all -j 2>/dev/null | jq -e --arg name "$1" 'any(.[]; .name == $name)' >/dev/null
+}
+
+case "${1-}" in
+--list)
+  found=false
+  for link in "$state_dir"/*; do
+    [[ -e $link ]] || continue
+    found=true
+    printf '%-12s %s\n' "$(basename "$link")" "$(readlink -f "$link")"
+  done
+  [[ $found == true ]] || echo "No per-monitor wallpapers assigned."
+  exit 0
+  ;;
+--clear-all)
+  rm -f "$state_dir"/*
+  notify_shell
+  echo "Cleared every per-monitor wallpaper."
+  exit 0
+  ;;
+""|--help|-h)
+  usage
+  exit 0
+  ;;
+esac
+
+output="$1"
+image="${2-}"
+
+if [[ -z $image ]]; then
+  usage >&2
+  exit 1
+fi
+
+if ! known_output "$output"; then
+  echo "Warning: '$output' is not a connected monitor right now." >&2
+fi
+
+if [[ $image == --clear ]]; then
+  rm -f "$state_dir/$output"
+  notify_shell
+  echo "Cleared $output; it follows the global wallpaper again."
+  exit 0
+fi
+
+if [[ ! -f $image ]]; then
+  echo "Not a file: $image" >&2
+  exit 1
+fi
+
+ln -sfn "$(realpath "$image")" "$state_dir/$output"
+notify_shell
+echo "Set $output to $(basename "$image")"

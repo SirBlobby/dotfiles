@@ -64,6 +64,35 @@ Two are worth knowing about:
 
 `quickshell` never came from the Omarchy repository - it is in official `extra`.
 
+## Installing packages
+
+`install.sh` installs what is missing before it writes any config:
+
+```
+packages/blob.packages       117 packages from core, extra, multilib
+packages/blob-aur.packages    11 packages with no official equivalent
+```
+
+Only missing packages are touched, through `pacman -S --needed` and
+`yay -S --needed`. `./install.sh --check` lists what it would install without
+installing anything, and `--skip-packages` does the directories and config only.
+
+An entry may be written `wanted|already-fine`, which asks for the first name but
+accepts either as satisfying the requirement. That is how
+`hyprland-preview-share-picker-git` avoids conflicting with the non-git build
+that the Omarchy repository still ships.
+
+Three of the AUR entries are load-bearing for this fork and were not in
+Omarchy's own package list, because they were installed by hand on this machine:
+
+| Package | Needed by |
+| --- | --- |
+| `python-pywal` | `blob-wallpaper-set`, palette extraction |
+| `awww` | the wallpaper daemon `blob-wallpaper-set` and `blob-theme-menu` drive |
+| `playerctl` | the quick settings media row |
+
+`playerctl` is in official `extra`, so it sits in the repo list.
+
 ## Updating
 
 ```

@@ -13,6 +13,17 @@ Item {
   readonly property string home: Quickshell.env("HOME")
   readonly property string stateHome: home + "/.local/state"
   readonly property string currentBackgroundLink: stateHome + "/blob/current/background"
+  readonly property string monitorBackgroundDir: stateHome + "/blob/backgrounds"
+
+  // Per-monitor assignments, keyed by output name, written by blob-bg-monitor.
+  // A monitor with no entry falls back to the global background, so the
+  // transition machinery below stays on the single-image path it was built for.
+  property var monitorBackgrounds: ({})
+
+  function monitorBackgroundFor(name) {
+    var assigned = root.monitorBackgrounds[String(name || "")]
+    return assigned ? String(assigned) : ""
+  }
 
   property string currentBackground: ""
   property string displayedBackground: ""
@@ -32,6 +43,20 @@ Item {
 
   function refreshBackground() {
     if (!readlinkProc.running) readlinkProc.running = true
+    if (!monitorBackgroundProc.running) monitorBackgroundProc.running = true
+  }
+
+  function loadMonitorBackgrounds(raw) {
+    var next = ({})
+    var lines = String(raw || "").split("\n")
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].trim()
+      if (!line) continue
+      var split = line.indexOf("\t")
+      if (split <= 0) continue
+      next[line.substring(0, split)] = line.substring(split + 1)
+    }
+    root.monitorBackgrounds = next
   }
 
   function setBackground(path, instant) {
@@ -128,6 +153,18 @@ Item {
     }
   }
 
+  Process {
+    id: monitorBackgroundProc
+    command: ["bash", "-c",
+      'dir="$1"; [[ -d $dir ]] || exit 0; ' +
+      'for link in "$dir"/*; do [[ -e $link ]] || continue; ' +
+      'printf "%s\\t%s\\n" "${link##*/}" "$(readlink -f "$link")"; done',
+      "--", root.monitorBackgroundDir]
+    stdout: StdioCollector {
+      onStreamFinished: root.loadMonitorBackgrounds(text)
+    }
+  }
+
   IpcHandler {
     target: "background"
 
@@ -187,6 +224,9 @@ Item {
 
       screen: modelData
       visible: !remapGuard.remapping
+
+      readonly property string assignedBackground: root.monitorBackgroundFor(modelData ? modelData.name : "")
+      readonly property bool hasAssignment: assignedBackground.length > 0
       anchors { top: true; bottom: true; left: true; right: true }
 
       ScreenMoveRemap {
@@ -221,7 +261,7 @@ Item {
       Image {
         id: base
         anchors.fill: parent
-        source: root.imageUrl(root.displayedBackground)
+        source: root.imageUrl(panel.hasAssignment ? panel.assignedBackground : root.displayedBackground)
         fillMode: Image.PreserveAspectCrop
         asynchronous: true
         cache: true
@@ -243,14 +283,14 @@ Item {
         cache: false
         smooth: true
         mipmap: true
-        visible: root.oldBackground !== "" && root.revealProgress < 1
+        visible: !panel.hasAssignment && root.oldBackground !== "" && root.revealProgress < 1
         onStatusChanged: panel.maybeStartReveal()
       }
 
       Item {
         id: incomingLayer
         anchors.fill: parent
-        visible: root.incomingBackground !== "" && incomingFrame.status === Image.Ready && (root.revealProgress >= 1 || panel.maskReady)
+        visible: !panel.hasAssignment && root.incomingBackground !== "" && incomingFrame.status === Image.Ready && (root.revealProgress >= 1 || panel.maskReady)
         layer.enabled: root.incomingBackground !== "" && root.revealProgress < 1
         layer.smooth: true
         layer.effect: MultiEffect {
