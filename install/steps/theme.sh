@@ -90,3 +90,47 @@ install_default_background() {
   ln -nsf "$first" "$link"
   say "bg    $(basename "$first")"
 }
+
+# The theme pipeline renders one file per app into the current-theme directory,
+# but each app only ever reads its own config tree. These links are what join
+# the two. Without them a theme switch silently leaves the app on stock colors,
+# because nothing errors: the app just never sees the generated file.
+link_theme_file() {
+  local theme_file="$1" dest="$2" label="$3"
+  local target="$current_state_dir/theme/$theme_file"
+
+  if [[ -L $dest ]] && [[ "$(readlink "$dest")" == "$target" ]]; then
+    say "ok    $label"
+    return 0
+  fi
+
+  if [[ -e $dest && ! -L $dest ]] && [[ $force == false ]]; then
+    note_change
+    say "DIFF  $label (own file kept; --force to replace)"
+    return 0
+  fi
+
+  note_change
+  if [[ $check == true ]]; then
+    say "would link $label"
+    return 0
+  fi
+
+  mkdir -p "$(dirname "$dest")"
+  ln -nsf "$target" "$dest"
+  say "link  $label"
+}
+
+# btop reads color_theme = "current" out of its own themes directory, and
+# Neovim loads whatever theme.lua its plugin directory holds. Neovim is only
+# linked when that directory already exists: Blob ships no Neovim config, so
+# creating the tree would be inventing a layout the user has not chosen.
+link_app_themes() {
+  link_theme_file btop.theme "$config_dir/btop/themes/current.theme" "btop theme"
+
+  if [[ -d $config_dir/nvim/lua/plugins ]]; then
+    link_theme_file neovim.lua "$config_dir/nvim/lua/plugins/theme.lua" "neovim theme"
+  else
+    say "SKIP  neovim theme (no ~/.config/nvim/lua/plugins)"
+  fi
+}

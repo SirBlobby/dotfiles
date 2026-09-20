@@ -70,6 +70,7 @@ install_zen_config
 link_wallpapers
 install_default_theme
 install_default_background
+link_app_themes
 
 enable_system_services
 mask_system_services

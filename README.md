@@ -78,7 +78,7 @@ It runs these steps, in this order, and every one of them is idempotent:
 | 2. `BLOB_PATH` | symlinks `~/.local/share/blob` to this checkout |
 | 3. Packages | installs what is missing from `packages/`, bootstrapping `yay` first on a machine that has no AUR helper |
 | 4. Config | copies `hypr/`, the themed app configs, `blob/shell.json`, the uwsm environment, and the icon font into `~/.config` |
-| 5. First theme | links `~/wallpapers` to the checkout, applies `flats` headless, and picks a background, so the first login is not a blank desktop |
+| 5. First theme | links `~/wallpapers` to the checkout, applies `flats` headless, picks a background, and links the btop and Neovim theme files, so the first login is not a blank desktop |
 | 6. User units | installs the session services into `~/.config/systemd/user` and enables them |
 | 7. systemd drop-ins | writes the shutdown timeouts, oomd thresholds, plocate prune paths, and sleep hooks under `/etc` |
 | 8. System services | enables NetworkManager, resolved, bluetooth, cups, avahi, docker, power-profiles-daemon, and oomd, and masks `NetworkManager-wait-online` |

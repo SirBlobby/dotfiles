@@ -37,8 +37,12 @@ with `--check`.
    `wallpapers/`, `flats` is applied with `BLOB_THEME_HEADLESS=1` (no shell or
    session bus exists yet), and the background symlink is pointed at the first
    image in `~/wallpapers`. Without this the first login has no palette and no
-   wallpaper, which draws as a black desktop. All three steps are skipped when a
-   theme, a background or a wallpaper directory of your own is already there.
+   wallpaper, which draws as a black desktop. It then links the per-app theme
+   files the pipeline renders but no app would otherwise find:
+   `~/.config/btop/themes/current.theme` (btop's `color_theme = "current"`) and,
+   only when `~/.config/nvim/lua/plugins` already exists, `theme.lua` there.
+   Every step is skipped when a theme, a background, a wallpaper directory or a
+   theme file of your own is already in place.
 6. **User units** land in `~/.config/systemd/user` and are enabled, not started:
    they are all `WantedBy=graphical-session.target`, so they come up with the
    session. `blob-speaker-tuning.service` is left out, because

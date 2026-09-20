@@ -27,6 +27,12 @@ the shell and the CLI never disagree about what a slot means.
 
 ## Templates
 
+Each rendered file is picked up differently: `foot.ini` and `kitty.conf` by an
+`include` in the shipped terminal config, `hyprland.lua` through Hyprland's Lua
+module path, `shell.toml` and `chromium.theme` read straight from the state
+directory, and `btop.theme` and `neovim.lua` through symlinks the installer
+makes into those apps' own config trees.
+
 `default/themed/*.tpl` are rendered per theme into
 `~/.local/state/blob/current/theme/`. Nine ship: foot, kitty, btop, chromium,
 hyprland, the screenshare picker, neovim, `shell.toml`, and zen.
