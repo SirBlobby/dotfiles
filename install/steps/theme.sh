@@ -37,8 +37,11 @@ link_wallpapers() {
 # like a failed session. Applied headless: no shell and no session bus exist
 # while the installer runs.
 install_default_theme() {
-  if [[ -s $current_state_dir/theme.name ]]; then
-    say "ok    theme ($(cat "$current_state_dir/theme.name"))"
+  local current_name=""
+  [[ -s $current_state_dir/theme.name ]] && current_name="$(cat "$current_state_dir/theme.name")"
+
+  if [[ -n $current_name && -f $current_state_dir/theme/colors.toml ]]; then
+    say "ok    theme ($current_name)"
     return 0
   fi
 
@@ -53,6 +56,7 @@ install_default_theme() {
     say "theme $default_theme"
   else
     say "WARN  could not apply the $default_theme theme"
+    say "      the session will come up without a palette; run 'blob theme set $default_theme'"
   fi
 }
 

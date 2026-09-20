@@ -13,7 +13,7 @@ with `--check`.
 | `install/helpers/as-root.sh` | `as_root`, a no-op when already root |
 | `install/steps/directories.sh` | the directories the shell and scripts expect |
 | `install/steps/packages.sh` | repo and AUR packages, and the yay bootstrap |
-| `install/steps/config.sh` | the `BLOB_PATH` symlink and everything under `~/.config` |
+| `install/steps/config.sh` | the `BLOB_PATH` symlink, everything under `~/.config`, and the login shell profile |
 | `install/steps/services.sh` | system services, systemd drop-ins, user units |
 | `install/steps/theme.sh` | the wallpaper link, the first theme, the first background |
 | `install/steps/login.sh` | SDDM, the session entry, and the first launch |
@@ -33,6 +33,13 @@ with `--check`.
    built once with `makepkg`. See [packages.md](packages.md).
 4. **Config** is copied into `~/.config`: `hypr/`, the themed app configs,
    `blob/shell.json`, the uwsm environment, and the icon font.
+   `session/profile.sh` also goes to `/etc/profile.d/blob.sh`, which sources
+   `session/env-bootstrap` and is what puts `blob` on `PATH` in a login shell.
+   Without it `BLOB_PATH` and `$BLOB_PATH/bin` are only set by
+   `~/.config/uwsm/env.d/10-blob`, which uwsm reads when the graphical session
+   starts, so `blob` is not found from a TTY. A shell that was already open when
+   the installer ran keeps its old `PATH`; open a new one, or
+   `source ~/.local/share/blob/session/env-bootstrap`.
 5. **The first theme** is applied. `~/wallpapers` is symlinked to the checkout's
    `wallpapers/`, `flats` is applied with `BLOB_THEME_HEADLESS=1` (no shell or
    session bus exists yet), and the background symlink is pointed at the first
@@ -42,7 +49,10 @@ with `--check`.
    `~/.config/btop/themes/current.theme` (btop's `color_theme = "current"`) and,
    only when `~/.config/nvim/lua/plugins` already exists, `theme.lua` there.
    Every step is skipped when a theme, a background, a wallpaper directory or a
-   theme file of your own is already in place.
+   theme file of your own is already in place. A theme counts as in place only
+   when the staged theme under `~/.local/state/blob/current/theme` is there too,
+   so a recorded theme name left without its palette is applied again rather
+   than skipped.
 6. **User units** land in `~/.config/systemd/user` and are enabled, not started:
    they are all `WantedBy=graphical-session.target`, so they come up with the
    session. `blob-speaker-tuning.service` is left out, because

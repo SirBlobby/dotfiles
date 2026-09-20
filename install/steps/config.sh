@@ -63,6 +63,10 @@ install_shipped_config() {
   install_file "$repo_dir/fonts/omarchy.ttf" "$font_dir/omarchy.ttf" "fonts/omarchy.ttf"
 }
 
+install_shell_profile() {
+  install_root_file "$repo_dir/session/profile.sh" /etc/profile.d/blob.sh "profile.d/blob.sh"
+}
+
 install_zen_config() {
   local profile
   profile="$(find "$config_dir/zen" -maxdepth 1 -type d -name '*.Default (release)*' 2>/dev/null | head -1)"

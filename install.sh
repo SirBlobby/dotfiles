@@ -63,6 +63,7 @@ link_blob_path
 install_packages
 
 install_shipped_config
+install_shell_profile
 install_user_units
 install_systemd_dropins
 install_zen_config
@@ -88,7 +89,14 @@ if [[ $check == true ]]; then
   (( changes == 0 )) || exit 1
 else
   say "$changes item(s) changed."
-  say "Change the theme with 'blob theme set <name>' once the session is up."
+
+  active_theme="$(cat "$current_state_dir/theme.name" 2>/dev/null || true)"
+  if [[ -n $active_theme ]]; then
+    say "Theme: $active_theme. Change it with 'blob theme set <name>'."
+  fi
+
+  say "New shells find the blob command through /etc/profile.d/blob.sh."
+  say "For this shell: source $blob_path/session/env-bootstrap"
   say ""
   launch_desktop
 fi
