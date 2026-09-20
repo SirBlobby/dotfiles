@@ -8,8 +8,23 @@ note_change() {
   changes=$((changes + 1))
 }
 
+unit_search_dirs=(
+  /etc/systemd/system
+  /run/systemd/system
+  /usr/local/lib/systemd/system
+  /usr/lib/systemd/system
+)
+
 system_unit_exists() {
-  systemctl cat -- "$1" &>/dev/null
+  local unit="$1" dir
+
+  systemctl cat -- "$unit" &>/dev/null && return 0
+
+  for dir in "${unit_search_dirs[@]}"; do
+    [[ -e $dir/$unit ]] && return 0
+  done
+
+  return 1
 }
 
 user_manager_available() {

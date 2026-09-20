@@ -82,6 +82,7 @@ install_session_entry
 install_autologin
 enable_display_manager
 report_login_conflicts
+report_desktop_essentials
 
 say ""
 if [[ $check == true ]]; then

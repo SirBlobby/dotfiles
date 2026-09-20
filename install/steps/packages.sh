@@ -58,7 +58,7 @@ install_packages() {
 
   if (( ${#repo_missing[@]} )); then
     say "install ${#repo_missing[@]} repo package(s)"
-    as_root pacman -S --needed --noconfirm "${repo_missing[@]}"
+    install_repo_packages "${repo_missing[@]}"
   fi
 
   if (( ${#aur_missing[@]} )); then
@@ -69,6 +69,45 @@ install_packages() {
     say "install ${#aur_missing[@]} AUR package(s)"
     install_aur_packages "${aur_missing[@]}"
   fi
+}
+
+install_repo_packages() {
+  local package
+  local -a failed=()
+
+  as_root pacman -S --needed --noconfirm "$@" && return 0
+
+  say "WARN  the batch install failed; refreshing the package databases"
+  as_root pacman -Sy --noconfirm || true
+  as_root pacman -S --needed --noconfirm "$@" && return 0
+
+  say "WARN  still failing; retrying one package at a time"
+  for package in "$@"; do
+    as_root pacman -S --needed --noconfirm "$package" || failed+=("$package")
+  done
+
+  (( ${#failed[@]} == 0 )) && return 0
+
+  say "WARN  ${#failed[@]} repo package(s) failed to install: ${failed[*]}"
+}
+
+desktop_essentials=(sddm hyprland quickshell uwsm)
+
+report_desktop_essentials() {
+  local package
+  local -a missing=()
+
+  for package in "${desktop_essentials[@]}"; do
+    package_installed "$package" || missing+=("$package")
+  done
+
+  if (( ${#missing[@]} == 0 )); then
+    say "ok    desktop essentials"
+    return 0
+  fi
+
+  say "WARN  the desktop cannot start without: ${missing[*]}"
+  say "      install them with 'sudo pacman -S ${missing[*]}', then ./install.sh again"
 }
 
 install_aur_packages() {

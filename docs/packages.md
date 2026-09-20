@@ -81,6 +81,14 @@ packages pulled in under a different name no longer come back on every run. AUR
 packages are built one at a time, so a build that fails is reported at the end
 instead of stopping the install.
 
+Repo packages go in one `pacman` call. If that call fails the databases are
+refreshed with `pacman -Sy` and it is tried again, because a stale database is
+what turns an installed-and-present package into `target not found`. If it still
+fails the packages are installed one at a time, so one unresolvable name does not
+block the other hundred - which is how a missing `sddm` used to turn into a
+machine with no login screen. `install.sh` ends by naming any of `sddm`,
+`hyprland`, `quickshell` and `uwsm` that are still not installed.
+
 `./install.sh --check` lists what it would install without installing anything,
 and `--skip-packages` does the directories and config only.
 

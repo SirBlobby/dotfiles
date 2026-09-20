@@ -30,7 +30,10 @@ with `--check`.
    than assuming step 1 ran.
 3. **Packages** come from `packages/blob.packages` and
    `packages/blob-aur.packages`. A machine with no AUR helper gets `yay-bin`
-   built once with `makepkg`. See [packages.md](packages.md).
+   built once with `makepkg`. A failed batch refreshes the databases and retries,
+   then falls back to one package at a time, so a single name that no longer
+   resolves cannot cost you the other hundred and the config, service and login
+   steps below. See [packages.md](packages.md).
 4. **Config** is copied into `~/.config`: `hypr/`, the themed app configs,
    `blob/shell.json`, the uwsm environment, and the icon font.
    `session/profile.sh` also goes to `/etc/profile.d/blob.sh`, which sources
@@ -63,7 +66,17 @@ with `--check`.
    avahi, docker, power-profiles-daemon, and oomd.
    `NetworkManager-wait-online.service` is masked so a slow DHCP lease cannot
    hold up the login screen.
-9. **The login screen** is SDDM. Three pieces have to be in place:
+9. **The login screen** is SDDM. It has to be installed first: if
+   `sddm.service` is not there, the installer says whether the package is
+   missing or whether systemd has simply not re-read its units yet, and carries
+   on without enabling anything. A unit counts as present when `systemctl cat`
+   finds it or when its file is under `/etc/systemd/system`,
+   `/run/systemd/system`, `/usr/local/lib/systemd/system` or
+   `/usr/lib/systemd/system` - `systemctl` goes through the service manager, so
+   it reports a perfectly good unit as missing inside a chroot or right after
+   pacman wrote it.
+
+   Three pieces have to be in place:
 
    | File | Why |
    | --- | --- |
@@ -97,10 +110,13 @@ with `--check`.
 
    `--autologin` writes `zzz-blob-autologin.conf`, the only file that sorts after
    `zz-blob.conf`.
-10. **Launch.** When the installer was run from a console and nothing graphical
-    is running, it starts `sddm.service` so the desktop appears without a reboot.
-    `--no-launch` prints the command instead. `--autologin` writes
-    `/etc/sddm.conf.d/zzz-blob-autologin.conf` for the current user.
+10. **Launch.** `sddm`, `hyprland`, `quickshell` and `uwsm` are checked one last
+    time and any that are missing are named, because that is the whole difference
+    between a desktop and a console. Then, when the installer was run from a
+    console and nothing graphical is running, it starts `sddm.service` so the
+    desktop appears without a reboot. `--no-launch` prints the command instead.
+    `--autologin` writes `/etc/sddm.conf.d/zzz-blob-autologin.conf` for the
+    current user.
 
 ## Flags
 

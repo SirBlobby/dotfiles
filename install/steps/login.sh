@@ -85,7 +85,13 @@ report_login_conflicts() {
 # its default target is multi-user.target, which never pulls in graphical.target.
 enable_display_manager() {
   if ! system_unit_exists sddm.service; then
-    say "WARN  sddm.service not found; the desktop cannot start at boot"
+    if package_installed sddm; then
+      say "WARN  sddm is installed but sddm.service is not visible to systemd"
+      say "      run 'sudo systemctl daemon-reload', then ./install.sh again"
+    else
+      say "WARN  sddm is not installed; the desktop cannot start at boot"
+      say "      install it with 'sudo pacman -S sddm', then ./install.sh again"
+    fi
     return 0
   fi
 
@@ -114,13 +120,19 @@ enable_display_manager() {
   fi
 
   if [[ $enable_needed == true ]]; then
-    as_root systemctl enable sddm.service
-    say "enable sddm.service"
+    if as_root systemctl enable sddm.service; then
+      say "enable sddm.service"
+    else
+      say "WARN  could not enable sddm.service"
+    fi
   fi
 
   if [[ $target_needed == true ]]; then
-    as_root systemctl set-default graphical.target
-    say "set   default target to graphical.target"
+    if as_root systemctl set-default graphical.target; then
+      say "set   default target to graphical.target"
+    else
+      say "WARN  could not set the default target to graphical.target"
+    fi
   fi
 }
 
@@ -137,6 +149,7 @@ launch_desktop() {
   fi
 
   if ! system_unit_exists sddm.service; then
+    say "No login screen to start: sddm is not installed."
     return 0
   fi
 
@@ -151,5 +164,7 @@ launch_desktop() {
   fi
 
   say "Starting the login screen. Pick the Blob session to log in."
-  as_root systemctl start sddm.service
+  as_root systemctl start sddm.service || {
+    say "WARN  sddm.service did not start; see 'systemctl status sddm'"
+  }
 }
