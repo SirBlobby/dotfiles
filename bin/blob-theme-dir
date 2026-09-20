@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# blob:summary=Print the directory holding a theme, preferring a user-installed copy
+# blob:args=<theme-name>
+# blob:examples=blob theme dir tokyo-night
+
+theme="${1:-}"
+
+if [[ -z $theme ]]; then
+  echo "Usage: blob-theme-dir <theme-name>" >&2
+  exit 1
+fi
+
+if [[ -d $HOME/.config/blob/themes/$theme ]]; then
+  echo "$HOME/.config/blob/themes/$theme"
+else
+  echo "$BLOB_PATH/themes/$theme"
+fi

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# blob:summary=Cache background switcher thumbnails for the current theme
+
+theme_name=$(cat "$HOME/.local/state/blob/current/theme.name" 2>/dev/null)
+
+blob-menu-images \
+  --cache-only \
+  "$HOME/.local/state/blob/current/theme/backgrounds" \
+  "$HOME/.config/blob/backgrounds/$theme_name"

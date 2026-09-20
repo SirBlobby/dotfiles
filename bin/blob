@@ -1,0 +1,105 @@
+#!/bin/bash
+
+set -e
+
+blob_bin_dir="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+
+command_file() {
+  local name="$1"
+  if [[ -x "$blob_bin_dir/$name" ]]; then
+    printf '%s\n' "$blob_bin_dir/$name"
+  else
+    command -v "$name" 2>/dev/null
+  fi
+}
+
+resolve_command() {
+  local words=("$@")
+  local word_count=${#words[@]}
+  local words_used name joined
+  for (( words_used = word_count; words_used > 0; words_used-- )); do
+    joined=$(printf '%s-' "${words[@]:0:words_used}")
+    name="blob-${joined%-}"
+    if [[ -n $(command_file "$name") ]]; then
+      printf '%s %s\n' "$words_used" "$name"
+      return 0
+    fi
+  done
+  return 1
+}
+
+metadata_value() {
+  sed -n "s/^# blob:$2=//p" "$1" | head -1
+}
+
+is_hidden() {
+  grep -q '^# blob:hidden=true' "$1" 2>/dev/null
+}
+
+list_commands() {
+  local file base summary
+  for file in "$blob_bin_dir"/blob-*; do
+    [[ -f $file ]] || continue
+    is_hidden "$file" && continue
+    base=$(basename "$file")
+    summary=$(metadata_value "$file" summary)
+    printf '  %-28s %s\n' "${base#blob-}" "$summary"
+  done
+}
+
+show_command_help() {
+  local name="$1"
+  local file
+  file=$(command_file "$name")
+  printf '%s\n' "$(metadata_value "$file" summary)"
+  local args
+  args=$(metadata_value "$file" args)
+  printf '\nUsage: %s %s\n' "${name//-/ }" "$args"
+  local examples
+  examples=$(metadata_value "$file" examples)
+  [[ -n $examples ]] && printf '\nExample: %s\n' "$examples"
+  return 0
+}
+
+show_usage() {
+  cat <<USAGE
+Usage: blob <command> [args...]
+
+Commands are files named blob-<area>-<verb>. Both forms work:
+
+  blob theme set tokyo-night
+  blob-theme-set tokyo-night
+
+Available commands:
+USAGE
+  list_commands
+  printf '\nRun "blob help <command>" for details on one.\n'
+}
+
+case "${1-}" in
+"" | help | --help | -h)
+  shift || true
+  if (( $# == 0 )); then
+    show_usage
+    exit 0
+  fi
+  if resolution=$(resolve_command "$@"); then
+    show_command_help "${resolution#* }"
+    exit 0
+  fi
+  echo "Unknown command: $*" >&2
+  exit 1
+  ;;
+esac
+
+if ! resolution=$(resolve_command "$@"); then
+  echo "Unknown command: $*" >&2
+  echo 'Run "blob" to list commands.' >&2
+  exit 1
+fi
+
+words_used="${resolution%% *}"
+command_name="${resolution#* }"
+shift "$words_used"
+
+exec "$(command_file "$command_name")" "$@"

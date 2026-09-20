@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# blob:summary=Reload btop configuration (used by the Blob theme switching).
+
+pkill -SIGUSR2 btop

@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "idle": {
+    "screensaver": 150,
+    "lock": 300
+  },
+  "bar": {
+    "position": "top",
+    "transparent": false,
+    "centerAnchor": "blob.clock",
+    "layout": {
+      "left": [
+        { "id": "blob.menu" },
+        { "id": "blob.workspaces" }
+      ],
+      "center": [
+        { "id": "blob.indicators" },
+        {
+          "id": "blob.clock",
+          "format": "dddd HH:mm",
+          "formatAlt": "d MMMM 'W'ww yyyy",
+          "verticalFormat": "HH\n—\nmm"
+        },
+        { "id": "blob.keyboard-layout" },
+        { "id": "blob.weather" },
+        { "id": "blob.system-update" }
+      ],
+      "right": [
+        { "id": "blob.tray" },
+        { "id": "blob.bluetooth" },
+        { "id": "blob.network" },
+        { "id": "blob.audio" },
+        { "id": "blob.monitor" },
+        { "id": "blob.power" }
+      ]
+    }
+  },
+  "plugins": []
+}

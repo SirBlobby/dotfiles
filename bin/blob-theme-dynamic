@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# blob:summary=Apply the pywal-generated theme built from the current wallpaper
+
+dynamic_theme_dir="$HOME/.config/blob/themes/blob-dynamic"
+
+if [ ! -f "$dynamic_theme_dir/colors.toml" ]; then
+  echo "No dynamic theme yet. Pick a wallpaper first: blob-bg-menu" >&2
+  exit 1
+fi
+
+BLOB_THEME_SKIP_BACKGROUND=1 exec blob-theme-set blob-dynamic

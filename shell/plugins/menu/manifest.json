@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "blob.menu",
+  "name": "Blob menu",
+  "version": "1.0.0",
+  "author": "Blob",
+  "description": "Quickshell-powered Blob command menu",
+  "kinds": [
+    "menu",
+    "bar-widget"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "menu": "Menu.qml",
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Blob menu",
+    "description": "Launches the Blob menu",
+    "category": "Compositor",
+    "allowMultiple": false
+  }
+}

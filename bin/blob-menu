@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# blob:summary=Control the Blob menu (toggle / summon / close / refresh)
+# blob:args=[toggle|summon|close|refresh|ping] [route]
+# blob:examples=blob menu | blob menu toggle system | blob menu summon style.theme | blob menu refresh
+
+# Thin wrapper around the standard plugin IPC surface. The menu is the
+# first-party `blob.menu` plugin; routes are passed as JSON payload.
+
+set -euo pipefail
+
+verb="${1-toggle}"
+route="${2-root}"
+
+menu_payload() {
+  jq -nc --arg menu "$1" '{ menu: $menu }'
+}
+
+case "$verb" in
+  toggle)
+    exec blob-shell shell toggle blob.menu "$(menu_payload "$route")"
+    ;;
+  summon)
+    exec blob-shell shell summon blob.menu "$(menu_payload "$route")"
+    ;;
+  close)
+    exec blob-shell shell hide blob.menu
+    ;;
+  refresh | ping)
+    exec blob-shell shell call blob.menu "$verb" "{}"
+    ;;
+  -h | --help | help)
+    cat <<USAGE
+Usage: blob menu [verb] [route]
+
+Verbs:
+  toggle [route]   Open the menu at <route>, or close it if already open. Default verb.
+  summon [route]   Always open the menu (no close-if-visible toggle).
+  close            Close the menu if it is visible.
+  refresh          Re-parse the menu JSONC files.
+  ping             Health check.
+
+Route is an item id (e.g. setup.power) or alias (e.g. power). Defaults to
+"root", which opens the top-level menu.
+USAGE
+    exit 0
+    ;;
+  *)
+    echo "blob-menu: unknown verb '$verb'. Try 'blob menu --help'." >&2
+    exit 2
+    ;;
+esac

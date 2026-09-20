@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "blob.polkit",
+  "name": "Polkit Agent",
+  "version": "1.0.0",
+  "author": "Blob",
+  "description": "Theme-aware authentication dialog for privileged actions.",
+  "blob": {
+    "capabilities": [
+      "authentication"
+    ]
+  },
+  "kinds": [
+    "service"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "service": "PolkitAgent.qml"
+  }
+}

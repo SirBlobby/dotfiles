@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# blob:summary=Returns true when clamshell mode is active
+# blob:hidden=true
+
+# Clamshell = lid closed while driving one or more external monitors.
+blob-hw-laptop-closed && blob-hw-external

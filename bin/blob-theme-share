@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# blob:summary=Fetch a shared theme by link or id and apply it as blob-dynamic
+# blob:args=<share-link-or-id>
+# blob:examples=blob theme share https://wall-styles.vercel.app/?id=aB3xQ
+
+dynamic_theme_dir="$HOME/.config/blob/themes/blob-dynamic"
+base_url="${BLOB_THEME_URL:-https://wall-styles.vercel.app}"
+
+input="$1"
+
+if [ -z "$input" ]; then
+  echo "Usage: blob-theme-share <share-link-or-id>" >&2
+  exit 1
+fi
+
+if [[ $input == http*://* ]]; then
+  host=$(echo "$input" | sed -E 's#^(https?://[^/]+).*#\1#')
+  share_id=$(echo "$input" | grep -oE 'id=[A-Za-z0-9]+' | head -1 | cut -d= -f2)
+  if [ -z "$share_id" ]; then
+    echo "Error: no share id found in '$input'." >&2
+    exit 1
+  fi
+  api="$host/api/theme?id=$share_id&format=toml"
+else
+  api="$base_url/api/theme?id=$input&format=toml"
+fi
+
+mkdir -p "$dynamic_theme_dir/backgrounds"
+
+echo "Fetching theme..."
+downloaded=$(mktemp)
+if ! curl -fsSL "$api" -o "$downloaded"; then
+  echo "Error: could not fetch the theme. The link may be expired (themes last one hour)." >&2
+  rm -f "$downloaded"
+  exit 1
+fi
+
+if ! grep -q '^background = ' "$downloaded"; then
+  echo "Error: the response did not look like a valid colors.toml." >&2
+  rm -f "$downloaded"
+  exit 1
+fi
+
+mv "$downloaded" "$dynamic_theme_dir/colors.toml"
+
+cat >"$dynamic_theme_dir/neovim.lua" <<'NEOVIM'
+return {
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "tokyonight",
+    },
+  },
+}
+NEOVIM
+
+blob-theme-set blob-dynamic
+
+echo "Applied shared theme to blob-dynamic."

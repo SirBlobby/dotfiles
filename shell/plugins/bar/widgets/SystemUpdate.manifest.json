@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "blob.system-update",
+  "name": "Blob update",
+  "version": "1.0.0",
+  "author": "Blob",
+  "description": "Indicates available Blob updates",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "SystemUpdate.qml"
+  },
+  "barWidget": {
+    "displayName": "Blob update",
+    "description": "Indicates available Blob updates",
+    "category": "System",
+    "allowMultiple": false
+  }
+}

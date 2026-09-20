@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# blob:summary=Open the Blob background switcher
+# blob:group=theme
+# blob:name=bg-switcher
+# blob:aliases=blob background
+
+theme_name=$(cat "$HOME/.local/state/blob/current/theme.name" 2>/dev/null)
+current_background=$(readlink -f "$HOME/.local/state/blob/current/background" 2>/dev/null)
+
+blob-menu-images \
+  --selected "$current_background" \
+  "$HOME/.local/state/blob/current/theme/backgrounds" \
+  "$HOME/.config/blob/backgrounds/$theme_name"

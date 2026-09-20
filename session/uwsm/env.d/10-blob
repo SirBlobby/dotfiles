@@ -1,0 +1,12 @@
+[ -r "$HOME/.local/share/blob/session/env-bootstrap" ] && . "$HOME/.local/share/blob/session/env-bootstrap"
+
+if [ -f "${BLOB_PATH%/}/session/uwsm/default" ]; then
+  . "${BLOB_PATH%/}/session/uwsm/default"
+else
+  export TERMINAL=xdg-terminal-exec
+  export EDITOR="blob-launch-editor --inline"
+fi
+
+[ -f "$HOME/.config/uwsm/default" ] && . "$HOME/.config/uwsm/default"
+
+blob-cmd-present mise && eval "$(mise activate bash --shims)"

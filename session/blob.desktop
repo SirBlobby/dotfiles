@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Blob (Hyprland uwsm)
+Comment=Blob Hyprland session managed by uwsm
+Exec=uwsm start -g -1 -e -D Hyprland hyprland.desktop
+TryExec=uwsm
+Type=Application

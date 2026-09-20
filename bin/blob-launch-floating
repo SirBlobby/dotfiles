@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# blob:summary=Launch a floating terminal with the Blob presentation wrapper
+# blob:args=<command>
+
+# Export the current theme's gum styling so gum widgets match the active theme
+# even after a theme switch (the inherited environment is captured at login).
+source blob-restart-gum
+
+cmd="$*"
+presentation_script="blob-show-logo; $cmd; if (( \$? != 130 )); then blob-show-done; fi"
+
+exec setsid uwsm-app -- xdg-terminal-exec --app-id=org.blob.terminal --title=Blob -e bash -c "$presentation_script"

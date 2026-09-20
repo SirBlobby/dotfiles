@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# blob:summary=Pick a color theme from the local and bundled sets
+# blob:args=[--mode|--print]
+
+user_themes_dir="$HOME/.config/blob/themes"
+current_dir="$HOME/.local/state/blob/current"
+
+prettify() {
+  echo "$1" | sed -E 's/(^|-)([a-z])/\1\u\2/g; s/-/ /g'
+}
+
+current_mode() {
+  local name
+  name=$(cat "$current_dir/theme.name" 2>/dev/null)
+  if [ "$name" = "blob-dynamic" ]; then
+    echo "dynamic"
+  else
+    echo "static"
+  fi
+}
+
+list_theme_rows() {
+  printf 'Dynamic (from wallpaper)\tblob-dynamic\n'
+
+  {
+    find "$user_themes_dir" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+    find "$BLOB_PATH/themes" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+  } | while read -r theme_dir; do
+    [ -f "$theme_dir/colors.toml" ] || continue
+    slug=$(basename "$theme_dir")
+    [ "$slug" = "blob-dynamic" ] && continue
+    printf '%s\t%s\n' "$(prettify "$slug")" "$slug"
+  done | sort -u -t$'\t' -k2,2
+}
+
+print_current_colors() {
+  local colors_file="$current_dir/theme/colors.toml"
+  if [ ! -f "$colors_file" ]; then
+    echo "No active theme colors.toml found at $colors_file" >&2
+    exit 1
+  fi
+  awk '1' "$colors_file"
+}
+
+case "$1" in
+--mode)
+  current_mode
+  ;;
+--print)
+  print_current_colors
+  ;;
+*)
+  selection=$(list_theme_rows | blob-menu-select "Select Theme" -- --width 800) || exit 0
+  slug=$(printf '%s' "$selection" | cut -f2)
+  [ -n "$slug" ] || exit 0
+  if [ "$slug" = "blob-dynamic" ]; then
+    exec blob-theme-dynamic
+  fi
+  awww kill --all >/dev/null 2>&1
+  exec blob-theme-set "$slug"
+  ;;
+esac
