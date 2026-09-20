@@ -111,8 +111,8 @@
   "system": {"icon":"","label":"System","aliases":["power-menu"]},
 
   // Blob
-  "blob.wallpaper": {"icon":"󰸉","label":"Wallpaper","action":"blob-wallpaper-set --menu","description":"Pick a wallpaper from ~/wallpapers"},
-  "blob.displays": {"icon":"󰍹","label":"Displays","action":"blob-shell shell toggle blob.displays","description":"Arrange monitors and assign wallpapers"},
+  "blob.wallpaper": {"icon":"󰸉","label":"Wallpaper","action":"blob-shell shell toggle blob.displays","description":"Pick a wallpaper, globally or per monitor"},
+  "blob.display-layout": {"icon":"󰍹","label":"Display layout","action":"blob-shell shell toggle blob.display-layout","description":"Arrange monitors, set mode, scale, and mirroring"},
   "blob.theme": {"icon":"󰢵","label":"Theme","action":"blob-theme-menu","description":"Pick a local or bundled color theme"},
   "blob.dynamic": {"icon":"󰁨","label":"Dynamic theme","action":"blob-theme-dynamic","description":"Recolor from the current wallpaper"},
   "blob.glass": {"icon":"󱡓","label":"Toggle glass","action":"blob-toggle-glass toggle","checked":"test -f $HOME/.local/state/blob/toggles/hypr/blob-glass.lua"},

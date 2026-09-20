@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "name": "Display layout",
+  "version": "1.0.0",
+  "author": "Blob",
+  "description": "Arrange monitors by dragging, and set their mode, scale, and mirroring",
+  "id": "blob.display-layout",
+  "kinds": [
+    "overlay"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "overlay": "DisplayLayout.qml"
+  }
+}

@@ -11,10 +11,10 @@ Personal overrides in `hypr/bindings.lua` win over the defaults, and
 | Keys | Action |
 | --- | --- |
 | `SUPER + ALT + SPACE` | Blob menu |
-| `SUPER + ALT + W` | Wallpaper picker |
+| `SUPER + ALT + W` | Wallpapers |
 | `SUPER + CTRL + M` | System monitor |
 | `SUPER + CTRL + Q` | Quick settings |
-| `SUPER + SHIFT + CTRL + D` | Displays |
+| `SUPER + SHIFT + CTRL + D` | Display layout |
 | `SUPER + SPACE` | Apps menu |
 
 ## Applications

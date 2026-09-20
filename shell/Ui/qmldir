@@ -37,3 +37,4 @@ Card 1.0 Card.qml
 CardHeader 1.0 CardHeader.qml
 StatRow 1.0 StatRow.qml
 CardIconButton 1.0 CardIconButton.qml
+Chip 1.0 Chip.qml

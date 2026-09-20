@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "name": "Displays",
+  "name": "Wallpapers",
   "version": "1.0.0",
   "author": "Blob",
-  "description": "Arrange monitors and assign wallpapers per monitor",
+  "description": "Pick wallpapers, globally or per monitor",
   "id": "blob.displays",
   "kinds": [
     "overlay"

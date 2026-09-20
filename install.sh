@@ -74,14 +74,14 @@ create_directories() {
 
   if (( ${#missing[@]} == 0 )); then
     say "ok    directories"
-    return
+    return 0
   fi
 
   note_change
   if [[ $check == true ]]; then
     say "would create ${#missing[@]} directory(ies):"
     printf '        %s\n' "${missing[@]}"
-    return
+    return 0
   fi
 
   mkdir -p "${missing[@]}"
@@ -110,7 +110,7 @@ missing_packages() {
 install_packages() {
   if [[ $skip_packages == true ]]; then
     say "skip  packages (--skip-packages)"
-    return
+    return 0
   fi
 
   local -a repo_missing aur_missing
@@ -119,14 +119,14 @@ install_packages() {
 
   if (( ${#repo_missing[@]} == 0 && ${#aur_missing[@]} == 0 )); then
     say "ok    packages"
-    return
+    return 0
   fi
 
   note_change
   if [[ $check == true ]]; then
     (( ${#repo_missing[@]} )) && say "would install ${#repo_missing[@]} repo package(s): ${repo_missing[*]}"
     (( ${#aur_missing[@]} )) && say "would install ${#aur_missing[@]} AUR package(s): ${aur_missing[*]}"
-    return
+    return 0
   fi
 
   blob_sudo_keepalive
@@ -139,7 +139,7 @@ install_packages() {
   if (( ${#aur_missing[@]} )); then
     if ! command -v yay &>/dev/null; then
       say "WARN  yay is not installed; skipping ${#aur_missing[@]} AUR package(s)"
-      return
+      return 0
     fi
     say "install ${#aur_missing[@]} AUR package(s)"
     yay -S --needed --noconfirm "${aur_missing[@]}"
@@ -159,19 +159,19 @@ link_blob_path() {
 
   if [[ $current == "$repo_dir" ]]; then
     say "ok    BLOB_PATH -> $repo_dir"
-    return
+    return 0
   fi
 
   if [[ -e $blob_path && ! -L $blob_path ]]; then
     say "WARN  $blob_path exists and is not a symlink; move it aside first"
     note_change
-    return
+    return 0
   fi
 
   note_change
   if [[ $check == true ]]; then
     say "would link BLOB_PATH -> $repo_dir"
-    return
+    return 0
   fi
 
   ln -sfn "$repo_dir" "$blob_path"
@@ -186,24 +186,24 @@ install_file() {
 
   if [[ ! -e $source ]]; then
     say "SKIP  $label (missing in repo)"
-    return
+    return 0
   fi
 
   if [[ -e $dest ]] && cmp -s "$source" "$dest"; then
     say "ok    $label"
-    return
+    return 0
   fi
 
   note_change
 
   if [[ -e $dest ]] && [[ $force == false ]]; then
     say "DIFF  $label (local changes kept; --force to overwrite)"
-    return
+    return 0
   fi
 
   if [[ $check == true ]]; then
     say "would write $label"
-    return
+    return 0
   fi
 
   mkdir -p "$(dirname "$dest")"
@@ -217,7 +217,7 @@ install_tree() {
 
   if [[ ! -d $source ]]; then
     say "SKIP  $label (missing in repo)"
-    return
+    return 0
   fi
 
   local relative
@@ -232,13 +232,13 @@ install_session_entry() {
 
   if [[ -e $dest ]] && cmp -s "$source" "$dest"; then
     say "ok    wayland session entry"
-    return
+    return 0
   fi
 
   note_change
   if [[ $check == true ]]; then
     say "would install wayland session entry (needs sudo)"
-    return
+    return 0
   fi
 
   sudo install -Dm644 "$source" "$dest"

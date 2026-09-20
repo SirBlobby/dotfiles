@@ -53,18 +53,15 @@ runs while a panel is open, so the cost is bounded, but wiring these to the
 services is the obvious next refinement and would remove the last per-tick
 process spawns.
 
-## Displays
+## Display layout
 
-`blob.displays` arranges monitors and assigns wallpapers per monitor. Opened
-with `Super + Shift + Ctrl + D` or the Blob menu's Displays row.
-
-### Monitors tab
+`blob.display-layout` arranges monitors. Opened with `Super + Shift + Ctrl + D`
+or the Blob menu's Display layout row.
 
 A scaled picture of the desktop, one draggable rectangle per monitor. Dropping
 one applies the new position immediately. Edges snap to a neighbour's edge
-within 60 logical pixels, so monitors end up touching exactly.
-
-Per-monitor controls: mode, scale, enable or disable, and mirror.
+within 60 logical pixels, so monitors end up touching exactly. Per-monitor
+controls: mode, scale, enable or disable, and mirror.
 
 **Scale options are filtered, not free.** Hyprland steps fractional scaling in
 1/120 and rejects a scale that does not land on a whole number of physical
@@ -80,23 +77,36 @@ config authoritative again. To keep a layout, edit `monitors.lua` yourself -
 `blob display arrange list` prints the current layout in the exact keyword form,
 ready to copy.
 
-### Wallpapers tab
+Rotation and primary-monitor selection are not implemented. `DisplayModel` reads
+`transform` and round-trips it, so a rotated monitor is drawn and preserved
+correctly, but nothing in the widget sets it.
 
-A thumbnail grid of `~/wallpapers`. Clicking one assigns it to the selected
-monitor through `blob-bg-monitor`, which symlinks it under
-`~/.local/state/blob/backgrounds/<output>`.
+## Wallpapers
+
+`blob.displays` picks wallpapers. Opened with `Super + Alt + W` or the Blob
+menu's Wallpaper row.
+
+A thumbnail grid of `~/wallpapers`, with a row of chips selecting the target:
+"All monitors" sets the global wallpaper through `blob-bg-set`, and a specific
+output assigns just that monitor through `blob-bg-monitor`, which symlinks the
+image under `~/.local/state/blob/backgrounds/<output>`. An output with its own
+wallpaper is marked with an asterisk.
 
 `blob.background` already drew one window per screen but pointed them all at the
 same image. It now resolves per screen: a monitor with an assignment shows it,
-and a monitor without one shows the global wallpaper from `blob-bg-set`. The
-crossfade machinery stays on the global path only, so an assigned monitor swaps
-without the reveal animation rather than risking that code.
+and a monitor without one shows the global wallpaper. The crossfade machinery
+stays on the global path only, so an assigned monitor swaps without the reveal
+animation rather than risking that code.
 
 | Command | Does |
 | --- | --- |
+| `blob bg set <image>` | set the global wallpaper |
 | `blob bg monitor <output> <image>` | assign a wallpaper to one monitor |
 | `blob bg monitor <output> --clear` | fall back to the global wallpaper |
 | `blob bg monitor --list` | show assignments |
 | `blob display arrange list` | print the layout as monitor keywords |
 | `blob display arrange apply <kw>` | apply a keyword now |
 | `blob display arrange reset` | reload, restoring monitors.lua |
+
+Both widgets share `Ui/Chip.qml`, `Ui/Card.qml` and `Ui/CardIconButton.qml`
+rather than carrying their own copies.
