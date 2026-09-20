@@ -91,6 +91,13 @@ of the `blob` listing.
 | `blob-capture-webcam-list` | List webcam devices that support video capture (hidden) | - |
 | `blob-capture-webcam-resize` | Resize the active webcam recording overlay | <smaller\|larger\|reset\|small\|medium\|large> |
 
+## chromium
+
+| Command | Does | Arguments |
+| --- | --- | --- |
+| `blob-chromium-copy-url-host` | Native messaging host: copy a Chromium tab URL to the clipboard (hidden) | - |
+| `blob-chromium-ytdlp-host` | Native messaging host: download the URL sent by the yt-dlp Chromium extension (hidden) | - |
+
 ## clipboard
 
 | Command | Does | Arguments |
@@ -162,6 +169,13 @@ of the `blob` listing.
 | `blob-font-current` | Show current monospace font | - |
 | `blob-font-list` | List available monospace fonts | - |
 | `blob-font-set` | Set the system monospace font | <font-name> |
+
+## games
+
+| Command | Does | Arguments |
+| --- | --- | --- |
+| `blob-games-retro-cores` | List installed RetroArch core names | - |
+| `blob-games-retro-install` | Create a desktop launcher for a RetroArch game | [core path-to-game] |
 
 ## git
 
@@ -235,7 +249,21 @@ of the `blob` listing.
 
 | Command | Does | Arguments |
 | --- | --- | --- |
+| `blob-install-browser` | Install a supported browser | <chrome\|brave\|brave-origin\|edge\|firefox\|zen> |
+| `blob-install-chromium-copy-url` | Install the native messaging host for the Copy URL Chromium extension | - |
+| `blob-install-chromium-ytdlp` | Install the native messaging host for the yt-dlp Chromium extension | - |
+| `blob-install-dev-env` | Install a supported development environment | <ruby\|node\|bun\|deno\|go\|laravel\|symfony\|php\|python\|elixir\|phoenix\|rust\|java\|zig\|ocaml\|dotnet\|clojure\|scala> |
+| `blob-install-docker-dbs` | Install one of the supported databases in a Docker container with the suitable development options. | - |
 | `blob-install-font` | Install a Nerd Font package and switch the system to it | <display-name> <package> <family> |
+| `blob-install-gaming-battlenet` | Install Battle.net standalone via umu-launcher + GE-Proton (no Steam, no Lutris, no Heroic). | - |
+| `blob-install-gaming-geforce-now` | Install and launch Geforce Now. | - |
+| `blob-install-gaming-gpu-lib32` | Install lib32 graphics drivers (Vulkan + NVIDIA) for any detected GPUs. | - |
+| `blob-install-gaming-heroic` | Install Heroic Games Launcher (Epic, GOG, Amazon Prime Gaming) with graphics drivers. | - |
+| `blob-install-gaming-lutris` | Install Lutris with Wine + DXVK for running Windows games (Battle.net, EA, Ubisoft Connect, etc.) | - |
+| `blob-install-gaming-retroarch` | Install RetroArch with the full libretro core set plus FBNeo and a ~/Games ROM directory. | - |
+| `blob-install-gaming-steam` | Install Steam and graphics drivers selected for this system | - |
+| `blob-install-gaming-xbox-cloud` | Install Xbox Cloud Gaming as a web app and launch it. | - |
+| `blob-install-gaming-xbox-controllers` | Install support for using Xbox controllers with Steam/RetroArch/etc. | - |
 | `blob-install-launch` | Install a packaged app and launch it once it finishes | <display-name> <packages> <desktop-id> |
 
 ## launch
@@ -243,6 +271,7 @@ of the `blob` listing.
 | Command | Does | Arguments |
 | --- | --- | --- |
 | `blob-launch-about` | Launch the fastfetch TUI that gives information about the current system. | - |
+| `blob-launch-battlenet` | Launch the installed Battle.net client via umu-launcher + GE-Proton. | [--with-mangohud] |
 | `blob-launch-browser` | Launch the default browser as determined by xdg-settings. | [url] |
 | `blob-launch-config-editor` | Open a config file in the user's editor and surface a toast | <path> |
 | `blob-launch-docker-tui` | Open the Docker TUI (lazydocker) with access to the Docker daemon (hidden) | - |
@@ -261,9 +290,11 @@ of the `blob` listing.
 | `blob-launch-floating` | Launch a floating terminal with the Blob presentation wrapper | <command> |
 | `blob-launch-or-focus` | Launch an app or focus an existing window matching a pattern | <window-pattern> <launch-command> |
 | `blob-launch-or-focus-tui` | Launch a TUI or focus an existing terminal window for it | [--app-id=<app-id>] <command> [args...] |
+| `blob-launch-or-focus-webapp` | Launch or focus on a given web app identified by the window-pattern. | <window-pattern> <url-and-flags...> |
 | `blob-launch-screensaver` | Launch the Blob screensaver in the default terminal on the system with the correct font configuration. | - |
 | `blob-launch-shell` | Launch the Blob shell with its log kept in the journal (hidden) | - |
 | `blob-launch-tui` | Launch a TUI command in the default terminal with Blob styling | [--app-id=<app-id>] <command> [args...] |
+| `blob-launch-webapp` | Launch a URL as a web app in the default supported browser | <url> |
 
 ## menu
 
@@ -321,6 +352,7 @@ of the `blob` listing.
 | --- | --- | --- |
 | `blob-pkg-add` | Install Arch packages if they are missing | <packages...> |
 | `blob-pkg-aur` | Returns true if the AUR is up and available. | - |
+| `blob-pkg-aur-add` | Add the named packages to the system from the AUR if they're missing. Returns false if it couldn't be done. | <packages...> |
 | `blob-pkg-aur-install` | Show a fuzzy-finder TUI for picking new AUR packages to install. | - |
 | `blob-pkg-drop` | Remove all the named packages from the system if they're installed (otherwise ignore). | <packages...> |
 | `blob-pkg-install` | Show a fuzzy-finder TUI for picking new Arch and OPR packages to install. | - |
@@ -384,6 +416,17 @@ of the `blob` listing.
 
 | Command | Does | Arguments |
 | --- | --- | --- |
+| `blob-remove-browser` | Remove a supported browser and clean up Blob browser defaults | <chrome\|brave\|brave-origin\|edge\|firefox\|zen> |
+| `blob-remove-dev-env` | Remove a development environment that was previously installed via blob-install-dev-env. | <ruby\|node\|bun\|deno\|go\|php\|laravel\|symfony\|python\|elixir\|phoenix\|zig\|rust\|java\|dotnet\|ocaml\|clojure\|scala> |
+| `blob-remove-gaming-battlenet` | Remove Battle.net, its Proton prefix, installed games, and desktop entry. | - |
+| `blob-remove-gaming-geforce-now` | Remove the GeForce NOW Flatpak app and its data. | - |
+| `blob-remove-gaming-heroic` | Remove Heroic Games Launcher and its game libraries, configs, and caches. | - |
+| `blob-remove-gaming-lutris` | Remove Lutris, Wine, umu-launcher, and all their configs and caches. | - |
+| `blob-remove-gaming-minecraft` | Remove the Minecraft launcher along with its worlds, mods, and caches. | - |
+| `blob-remove-gaming-retroarch` | Remove RetroArch, all libretro cores, and its config/saves. Leaves ~/Games/roms and ~/Games/bios alone. | - |
+| `blob-remove-gaming-steam` | Remove Steam and all of its game libraries, configs, and caches. | - |
+| `blob-remove-gaming-xbox-cloud` | Remove the Xbox Cloud Gaming web app. | - |
+| `blob-remove-gaming-xbox-controllers` | Remove the xpadneo Xbox controller driver and undo its module/blacklist config. | - |
 | `blob-remove-security-fido2` | Remove FIDO2 authentication from sudo and polkit | - |
 | `blob-remove-security-sudoless-docker` | Disable sudoless Docker by removing your user from the docker group | - |
 
@@ -554,6 +597,21 @@ of the `blob` listing.
 | `blob-weather-location` | Show or set the location used for weather reports | - |
 | `blob-weather-status` | Returns a formatted weather status string with temperature and wind speed. | - |
 
+## webapp
+
+| Command | Does | Arguments |
+| --- | --- | --- |
+| `blob-webapp-handler-hey` | Open HEY webmail and translate mailto links | [url] |
+| `blob-webapp-handler-zoom` | Open Zoom web meetings from browser protocol links | [url] |
+| `blob-webapp-install` | Create a desktop launcher for a web app | [name url icon-url-or-name [custom-exec] [mime-types]] |
+| `blob-webapp-remove` | Remove a web app desktop launcher | [name] |
+
+## windows
+
+| Command | Does | Arguments |
+| --- | --- | --- |
+| `blob-windows-vm` | Install, launch, stop, inspect, or remove the Windows VM | <install\|remove\|launch\|stop\|status> [options] |
+
 ## Totals
 
-252 commands.
+290 commands.

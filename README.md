@@ -20,7 +20,7 @@ and nothing to re-apply after somebody else's release.
 - **[Quickshell](https://quickshell.org/)** as the desktop: `blob-shell` is one
   process hosting the bar, both menus, the panels, notifications, the lock
   screen, and the OSD as plugins.
-- **A `blob-*` CLI** of 251 commands, dispatched by `blob`.
+- **A `blob-*` CLI** of 290 commands, dispatched by `blob`.
 - **24 themes** with a palette pipeline that retints the terminal, editor,
   browser, shell, and lock screen from one `colors.toml`.
 

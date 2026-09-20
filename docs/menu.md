@@ -8,12 +8,12 @@ menu fork carried is gone.
 
 ## Trimmed from upstream
 
-Upstream ships 338 rows. This tree has 178. What came out:
+Upstream ships 338 rows. This tree has 260. What came out:
 
 | Section | Dropped | Why |
 | --- | --- | --- |
-| `install.*` | 84 of 90 | the software catalogue: browsers, gaming, dev languages, AI tools, services. Kept: Package, AUR, TUI, and the Style subtree (theme, background, font) |
-| `remove.*` | 56 of 59 | same catalogue in reverse. Kept: Package, TUI, Theme |
+| `install.*` | 35 of 91 | AI tools, editors, terminals, services, web apps, preinstalls. Browsers, gaming, dev languages and the Windows VM were restored on request |
+| `remove.*` | 16 of 60 | the same set in reverse, plus security and dictation removal |
 | `setup.default.agent.*` | 14 | AI agent defaults |
 | `update.channel.*` | 5 | release channels for a package that will not exist |
 | `learn.*` | 4 | Omarchy's manual and Discord, plus tmux and herdr keybindings |
@@ -27,8 +27,8 @@ which also keeps them working whichever way the web app question lands.
 
 ## Commands the menu still needs
 
-The tree references 95 commands. All of them are now in `bin/`. What follows is
-kept as the record of what Phase 6 had to fill:
+Every command the tree references is in `bin/`. What follows is the record of
+what Phase 6 had to fill:
 
 - **audio**: `blob-audio-restart`
 - **bar**: `blob-bar`
@@ -78,3 +78,35 @@ Every row in this tree resolves to a command in `bin/`. The only unbacked
 `hypr/default/helpers.lua` and reachable only from a binding that uses
 `{ webapp = ... }`. No such binding ships. They stay as the hook for whichever
 way the web app question lands.
+
+## Restored install and remove subtrees
+
+Browsers, gaming, dev languages and the Windows VM came back after the first
+pass cut them, which took 82 rows and 38 commands with them.
+
+| Subtree | Rows | Covers |
+| --- | --- | --- |
+| Browsers | 14 | Chrome, Edge, Brave, Brave Origin, Firefox, Zen, install and remove |
+| Gaming | 20 | Steam, RetroArch, Minecraft, Lutris, Heroic, GeForce NOW, Xbox Cloud, Xbox controllers, Battle.net |
+| Development | 44 | Ruby on Rails, JavaScript (Node/Bun/Deno), Go, PHP (+ Laravel, Symfony), Python, Elixir (+ Phoenix), Zig, Rust, Java, .NET, OCaml, Clojure, Scala |
+| Windows VM | 2 | install and remove |
+
+### This settled the web app question
+
+Xbox Cloud Gaming and GeForce NOW are web apps, not packages. Restoring gaming
+therefore pulled in `blob-webapp-install`, `blob-webapp-remove`,
+`blob-launch-webapp` and `blob-launch-or-focus-webapp`, and those fall back to
+`chromium.desktop` for any browser that is not Chrome, Brave, Edge, Opera,
+Vivaldi or Helium. Zen is Firefox-based.
+
+So chromium stays, as the web app runtime. The `webapp` helper in
+`hypr/default/helpers.lua` is live again rather than a dangling hook, though no
+binding ships that uses it. The `install.webapp` and `remove.webapp` menu rows
+are still out; the machinery behind them now works, so adding them back is a
+two-line change if you want to create web app launchers from the menu.
+
+### Still out
+
+AI tools, editors, terminals, services (1Password, Dropbox, Spotify, Signal,
+Tailscale, NordVPN, ONCE, Bitwarden), preinstalls, dictation, and the security
+removal rows. Say the word on any of them.
