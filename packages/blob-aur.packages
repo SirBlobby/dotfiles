@@ -3,8 +3,8 @@
 #
 # These have no official-repo equivalent. See docs/packages.md.
 
-# Palette extraction behind blob-wallpaper-set
-python-pywal
+# Palette extraction behind blob-wallpaper-set; pywal16 is the maintained fork
+python-pywal16|python-pywal
 
 # Terminal dispatch; every TUI launcher's Exec= line calls it
 xdg-terminal-exec

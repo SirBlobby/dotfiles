@@ -74,8 +74,15 @@ packages/blob-aur.packages    10 packages with no official equivalent
 ```
 
 Only missing packages are touched, through `pacman -S --needed` and
-`yay -S --needed`. `./install.sh --check` lists what it would install without
-installing anything, and `--skip-packages` does the directories and config only.
+`yay -S --needed`. An entry is treated as already installed, and skipped, when a
+package of that name is installed, when an installed package provides that name,
+or when the name is a group whose members are all installed - so `base-devel` and
+packages pulled in under a different name no longer come back on every run. AUR
+packages are built one at a time, so a build that fails is reported at the end
+instead of stopping the install.
+
+`./install.sh --check` lists what it would install without installing anything,
+and `--skip-packages` does the directories and config only.
 
 ### Validating the lists
 
@@ -111,7 +118,7 @@ Omarchy's own package list, because they were installed by hand on this machine:
 
 | Package | Needed by |
 | --- | --- |
-| `python-pywal` | `blob-wallpaper-set`, palette extraction |
+| `python-pywal16` | `blob-wallpaper-set`, palette extraction |
 | `awww` | the wallpaper daemon `blob-wallpaper-set` and `blob-theme-menu` drive |
 | `playerctl` | the quick settings media row |
 

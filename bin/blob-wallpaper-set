@@ -37,6 +37,11 @@ else
     fi
 fi
 
+if ! command -v wal >/dev/null 2>&1; then
+    echo "Error: 'wal' is not installed. Install it with: yay -S python-pywal16"
+    exit 1
+fi
+
 echo "Extracting colors using Pywal..."
 wal -i "$IMAGE_PATH" -n -q 2> >(grep -v "deprecated in IMv7" >&2)
 

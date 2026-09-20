@@ -3,6 +3,21 @@ read_package_list() {
   grep -vE '^[[:space:]]*#|^[[:space:]]*$' "$1"
 }
 
+package_installed() {
+  local name="$1" member
+
+  pacman -Q "$name" &>/dev/null && return 0
+  pacman -T "$name" &>/dev/null && return 0
+
+  local -a members=()
+  mapfile -t members < <(pacman -Sg "$name" 2>/dev/null | awk '{print $2}')
+  (( ${#members[@]} )) || return 1
+
+  for member in "${members[@]}"; do
+    pacman -Q "$member" &>/dev/null || return 1
+  done
+}
+
 # A list entry may be "wanted|already-fine", which asks for the first name but
 # treats either as satisfying the requirement. That is how the AUR replacement
 # for a package still shipped by another repository avoids a file conflict.
@@ -11,8 +26,8 @@ missing_packages() {
   for entry in $(read_package_list "$1"); do
     wanted=${entry%%|*}
     alternative=${entry#*|}
-    pacman -Q "$wanted" &>/dev/null && continue
-    [[ $alternative != "$entry" ]] && pacman -Q "$alternative" &>/dev/null && continue
+    package_installed "$wanted" && continue
+    [[ $alternative != "$entry" ]] && package_installed "$alternative" && continue
     printf '%s\n' "$wanted"
   done
 }
@@ -52,8 +67,22 @@ install_packages() {
       return 0
     }
     say "install ${#aur_missing[@]} AUR package(s)"
-    yay -S --needed --noconfirm "${aur_missing[@]}"
+    install_aur_packages "${aur_missing[@]}"
   fi
+}
+
+install_aur_packages() {
+  local package
+  local -a failed=()
+
+  for package in "$@"; do
+    yay -S --needed --noconfirm "$package" || failed+=("$package")
+  done
+
+  (( ${#failed[@]} == 0 )) && return 0
+
+  say "WARN  ${#failed[@]} AUR package(s) failed to build: ${failed[*]}"
+  say "WARN  the install continued; retry them with 'yay -S <name>'"
 }
 
 # A fresh Arch install has no AUR helper, and yay is not in the official
