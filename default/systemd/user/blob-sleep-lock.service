@@ -11,7 +11,7 @@ ConditionEnvironment=WAYLAND_DISPLAY
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/blob-system-sleep-monitor
+ExecStart=%h/.local/share/blob/bin/blob-system-sleep-monitor
 Restart=always
 RestartSec=2
 

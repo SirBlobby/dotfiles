@@ -4,9 +4,29 @@ set -e
 
 blob_path="$HOME/.local/share/blob"
 config_dir="$HOME/.config"
-session_entry="/usr/share/wayland-sessions/blob.desktop"
+session_entry="/usr/local/share/wayland-sessions/blob.desktop"
+
+root_files=(
+  /etc/sddm.conf.d/10-blob.conf
+  /etc/sddm.conf.d/99-blob-autologin.conf
+  /etc/sddm/hyprland-greeter.lua
+  /etc/systemd/system.conf.d/10-blob.conf
+  /etc/systemd/system/user@.service.d/10-blob.conf
+  /etc/systemd/oomd.conf.d/10-blob.conf
+  /etc/systemd/system/plocate-updatedb.service.d/10-blob.conf
+  /etc/systemd/system-sleep/keyboard-backlight
+  /etc/systemd/system-sleep/unmount-fuse
+)
+
+user_units=(
+  bt-agent.service
+  blob-sleep-lock.service
+  blob-fcitx5.service
+  blob-crash-watch.service
+)
 
 keep_state=false
+keep_session=false
 assume_yes=false
 
 usage() {
@@ -16,6 +36,7 @@ Usage: ./uninstall.sh [OPTIONS]
 Removes what install.sh wrote. The checkout itself is never touched.
 
   --keep-state   Leave ~/.local/state/blob in place
+  --keep-session Leave the Blob session entry and the login screen config
   --yes          Do not prompt
   --help         Show this message
 USAGE
@@ -25,6 +46,7 @@ USAGE
 while (( $# > 0 )); do
   case "$1" in
     --keep-state) keep_state=true; shift ;;
+    --keep-session) keep_session=true; shift ;;
     --yes) assume_yes=true; shift ;;
     --help) usage ;;
     *) echo "Unknown option: $1" >&2; usage ;;
@@ -41,7 +63,7 @@ restore_or_remove() {
   if [[ -e $path.bak ]]; then
     mv "$path.bak" "$path"
     say "restore $label (from .bak)"
-    return
+    return 0
   fi
 
   if [[ -e $path ]]; then
@@ -84,6 +106,28 @@ if [[ $keep_state == false && -d $HOME/.local/state/blob ]]; then
   rm -rf "$HOME/.local/state/blob"
   say "remove  ~/.local/state/blob"
 fi
+
+for unit in "${user_units[@]}"; do
+  if [[ "$(systemctl --user is-enabled -- "$unit" 2>/dev/null || true)" == enabled ]]; then
+    systemctl --user disable --now "$unit" >/dev/null 2>&1 || true
+    say "disable $unit"
+  fi
+  rm -f "$config_dir/systemd/user/$unit"
+done
+rm -f "$config_dir/systemd/user/app.slice.d/10-oomd.conf"
+
+if [[ $keep_session == true ]]; then
+  say ""
+  say "Done. The Blob session entry and the login screen config were kept."
+  exit 0
+fi
+
+for path in "${root_files[@]}"; do
+  if [[ -e $path ]]; then
+    sudo rm -f "$path"
+    say "remove  $path"
+  fi
+done
 
 if [[ -e $session_entry ]]; then
   sudo rm -f "$session_entry"

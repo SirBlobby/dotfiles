@@ -11,7 +11,7 @@ ConditionPathExists=!%h/.local/state/blob/toggles/crash-capture-off
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/blob-crash-watch
+ExecStart=%h/.local/share/blob/bin/blob-crash-watch
 Restart=always
 RestartSec=5
 

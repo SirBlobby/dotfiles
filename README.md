@@ -39,6 +39,7 @@ and nothing to re-apply after somebody else's release.
 | `branding/` | icon, ASCII art, boot splash |
 | `wallpapers/` | 103 wallpapers, previewed in [the gallery](wallpaper-gallery/index.md) |
 | `session/` | wayland session entry and uwsm environment |
+| `install/` | the installer steps `install.sh` runs |
 | `docs/` | everything below |
 
 ## Docs
@@ -51,6 +52,7 @@ and nothing to re-apply after somebody else's release.
 | [themes.md](docs/themes.md) | the palette pipeline and how to add a theme |
 | [widgets.md](docs/widgets.md) | the ported GTK widgets and where they went |
 | [menu.md](docs/menu.md) | the menu tree and what was trimmed |
+| [install.md](docs/install.md) | what the installer does, step by step |
 | [packages.md](docs/packages.md) | leaving the Omarchy repository, and updating |
 | [upstream.md](docs/upstream.md) | the fork base, for diffing later |
 
@@ -61,16 +63,34 @@ and nothing to re-apply after somebody else's release.
 files that must sit under `~/.config` get copied.
 
 ```bash
-./install.sh            # link and deploy
-./install.sh --check    # report what would change, write nothing
-./install.sh --force    # overwrite files with local changes
+./install.sh              # directories, packages, config, services, login screen
+./install.sh --check      # report what would change, write nothing
+./install.sh --force      # overwrite files with local changes
+./install.sh --autologin  # log this user straight into the Blob session
+./install.sh --no-launch  # do not open the login screen at the end
 ```
 
-Then log out and pick the Blob session.
+It runs these steps, in this order, and every one of them is idempotent:
 
-To back out, `./uninstall.sh` removes the session entry, the config, and the
-symlink, restoring any `.bak` the installer made. The checkout, the wallpapers,
-and the themes stay where they are.
+| Step | What it does |
+| --- | --- |
+| 1. `BLOB_PATH` | symlinks `~/.local/share/blob` to this checkout |
+| 2. Directories | creates the 19 directories the shell and scripts expect |
+| 3. Packages | installs what is missing from `packages/`, bootstrapping `yay` first on a machine that has no AUR helper |
+| 4. Config | copies `hypr/`, the themed app configs, `blob/shell.json`, the uwsm environment, and the icon font into `~/.config` |
+| 5. User units | installs the session services into `~/.config/systemd/user` and enables them |
+| 6. systemd drop-ins | writes the shutdown timeouts, oomd thresholds, plocate prune paths, and sleep hooks under `/etc` |
+| 7. System services | enables NetworkManager, resolved, bluetooth, cups, avahi, docker, power-profiles-daemon, and oomd, and masks `NetworkManager-wait-online` |
+| 8. Login screen | installs the session entry and the SDDM config, enables `sddm.service`, and sets the default target to `graphical.target` |
+| 9. Launch | starts the login screen, so the desktop comes up without a reboot |
+
+Step 8 is the one a plain Arch install cannot do without: SDDM's stock Wayland
+greeter runs on `weston`, which Blob does not install, so the greeter is pointed
+at Hyprland instead. [install.md](docs/install.md) covers each step in full.
+
+To back out, `./uninstall.sh` removes the session entry, the config, the user
+services, and the symlink, restoring any `.bak` the installer made. The
+checkout, the wallpapers, and the themes stay where they are.
 
 ## Regenerating docs
 
