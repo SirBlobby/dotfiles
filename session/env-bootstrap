@@ -2,6 +2,10 @@ BLOB_PATH="$HOME/.local/share/blob"
 export BLOB_PATH
 
 case ":$PATH:" in
+*":$BLOB_PATH/bin:"*) ;;
+*) PATH="$BLOB_PATH/bin${PATH:+:$PATH}" ;;
+esac
+case ":$PATH:" in
 *":$HOME/.local/share/mise/shims:"*) ;;
 *) PATH="${PATH:+$PATH:}$HOME/.local/share/mise/shims" ;;
 esac

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# blob:summary=Show the current battery status notification
+
+blob-notify-send -g 󰁹 -u low "$(blob-battery-status)"

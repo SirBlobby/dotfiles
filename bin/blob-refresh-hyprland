@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# blob:summary=Overwrite all the user Hyprland Lua configs in ~/.config/hypr with the Blob defaults.
+
+blob-refresh-config hypr/.luarc.json
+blob-refresh-config hypr/autostart.lua
+blob-refresh-config hypr/bindings.lua
+blob-refresh-config hypr/input.lua
+blob-refresh-config hypr/looknfeel.lua
+blob-refresh-config hypr/hyprland.lua
+blob-refresh-config hypr/monitors.lua
+
+mkdir -p ~/.local/state/blob/toggles/hypr
+cp "$BLOB_PATH/default/hypr/toggles/flags.lua" ~/.local/state/blob/toggles/hypr/

@@ -1,0 +1,6 @@
+#!/bin/bash
+# blob:summary=Launch emojis
+# blob:group=menu
+# blob:examples=blob menu emoji
+
+blob-shell shell toggle blob.emojis

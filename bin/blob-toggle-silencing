@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# blob:summary=Toggle notification do-not-disturb mode
+
+state=$(blob-shell notifications toggleDnd 2>/dev/null || echo "")
+blob-shell -q blob.indicators refresh

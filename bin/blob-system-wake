@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# blob:summary=Wake displays and restore brightness after idle
+# blob:group=system
+# blob:name=wake
+# blob:examples=blob system wake
+
+blob-brightness-display on
+blob-brightness-keyboard restore
+blob-hypr-monitor-clamshell >/dev/null 2>&1 || true

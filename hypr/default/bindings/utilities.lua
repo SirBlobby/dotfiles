@@ -89,7 +89,6 @@ o.bind("SUPER + CTRL + ALT + T", "Show time", "blob-notification-time")
 o.bind("SUPER + CTRL + ALT + B", "Show battery remaining", "blob-notification-battery")
 o.bind("SUPER + CTRL + ALT + W", "Toggle weather", "blob-notification-weather")
 
-o.bind("SUPER + SHIFT + CTRL + A", "Agent", "blob-agent --pick")
 o.bind("SUPER + CTRL + A", "Audio", "blob-shell shell toggle blob.audio")
 o.bind("SUPER + CTRL + B", "Bluetooth", "blob-shell shell toggle blob.bluetooth")
 o.bind("SUPER + CTRL + D", "Display", "blob-shell shell toggle blob.monitor")

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# blob:summary=Toggle microphone mute. Drives the hardware mic-mute LED on laptops that expose one.
+
+wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle >/dev/null
+
+if wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | grep -q MUTED; then
+  blob-brightness-keyboard-mute on
+  blob-osd -i microphone-muted -m "Microphone muted"
+else
+  blob-brightness-keyboard-mute off
+  blob-osd -i microphone -m "Microphone on"
+fi

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# blob:summary=Cycle to the next media source and transfer playback when the current source is playing
+# blob:args=[next|previous]
+# blob:examples=blob audio source switch | blob-audio-source-switch previous
+
+direction="${1:-next}"
+
+case "$direction" in
+  next)
+    blob-shell media sourceSwitch
+    ;;
+  previous)
+    blob-shell media sourceSwitchPrevious
+    ;;
+  *)
+    echo "Usage: blob-audio-source-switch [next|previous]" >&2
+    exit 1
+    ;;
+esac

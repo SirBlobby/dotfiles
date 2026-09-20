@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# blob:summary=Print the number of pending package updates
+# blob:hidden=true
+
+pending=0
+
+if blob-cmd-present checkupdates; then
+  pending=$(checkupdates 2>/dev/null | wc -l)
+fi
+
+if blob-cmd-present yay; then
+  aur=$(yay -Qua 2>/dev/null | wc -l)
+  pending=$((pending + aur))
+fi
+
+echo "$pending"

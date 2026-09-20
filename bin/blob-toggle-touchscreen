@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# blob:summary=Enable, disable, or toggle the touch functionality of the screen
+# blob:args=[on|off|toggle]
+
+exec blob-toggle-input touchscreen "${1:-toggle}"

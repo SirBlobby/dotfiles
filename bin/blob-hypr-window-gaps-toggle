@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# blob:summary=Toggles the window gaps globally between no gaps and the default.
+
+blob-hypr-toggle window-no-gaps

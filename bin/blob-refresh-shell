@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# blob:summary=Reset shell.json to Blob defaults
+# blob:examples=blob refresh shell
+
+set -euo pipefail
+
+blob-refresh-config blob/shell.json
+blob-bar defaults
+
+blob-shell-restart

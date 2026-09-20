@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# blob:summary=Restart the hyprsunset service (used for blue light filtering/night light).
+
+blob-restart-app hyprsunset

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# blob:summary=Toggle screensaver availability
+
+blob-toggle screensaver-off
+
+if blob-toggle-enabled screensaver-off; then
+  blob-notify-send -g 󱄄 "Screensaver disabled"
+else
+  blob-notify-send -g 󱄄 "Screensaver enabled"
+fi

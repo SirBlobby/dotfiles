@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# blob:summary=Enable, disable, or toggle the touchpad
+# blob:args=[on|off|toggle]
+
+exec blob-toggle-input touchpad "${1:-toggle}"

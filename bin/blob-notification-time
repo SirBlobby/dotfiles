@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# blob:summary=Show the current time and date notification
+
+blob-notify-send -g  -u low "$(date +"%A %H:%M  ·  %d %B %Y  ·  Week %V")"

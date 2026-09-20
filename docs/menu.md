@@ -27,8 +27,8 @@ which also keeps them working whichever way the web app question lands.
 
 ## Commands the menu still needs
 
-The tree references 95 commands. 72 are not in `bin/` yet - this is the
-Phase 6 vendor list, grouped by area:
+The tree references 95 commands. All of them are now in `bin/`. What follows is
+kept as the record of what Phase 6 had to fill:
 
 - **audio**: `blob-audio-restart`
 - **bar**: `blob-bar`
@@ -69,3 +69,12 @@ stay.
 `blob-capture-record-webcam` also stays a separate command rather than folding
 into `blob-capture-record --webcam` as planned, because the menu row calls it
 directly and upstream ships it as its own script.
+
+## Status
+
+Every row in this tree resolves to a command in `bin/`. The only unbacked
+`blob-*` names left anywhere in the repo are `blob-launch-webapp` and
+`blob-launch-or-focus-webapp`, both referenced from the `webapp` helper in
+`hypr/default/helpers.lua` and reachable only from a binding that uses
+`{ webapp = ... }`. No such binding ships. They stay as the hook for whichever
+way the web app question lands.

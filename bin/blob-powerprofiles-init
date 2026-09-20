@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# blob:summary=Set the correct power profile on boot based on current AC/battery state.
+
+exec blob-power-set autodetect

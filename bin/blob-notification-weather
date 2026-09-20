@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# blob:summary=Toggle the current weather panel
+
+blob-shell shell toggle blob.weather

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# blob:summary=Check if a toggle is enabled (flag file exists)
+# blob:args=<flag-name>
+
+[[ -f "$HOME/.local/state/blob/toggles/$1" ]]

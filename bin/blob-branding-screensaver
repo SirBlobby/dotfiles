@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# blob:summary=Edit, set, or reset screensaver branding
+# blob:group=branding
+# blob:name=screensaver
+# blob:args=<image|text|reset>
+# blob:examples=blob branding screensaver image | blob branding screensaver text | blob branding screensaver reset
+
+set -euo pipefail
+
+case "${1:-}" in
+image)
+  image=$(blob-file-select --title "Pick PNG or SVG for screensaver" --extensions "png svg")
+  if blob-transcode-ascii "$image" ~/.config/blob/branding/screensaver.txt; then
+    blob-launch-screensaver force >/dev/null 2>&1
+  fi
+  ;;
+text)
+  blob-launch-editor ~/.config/blob/branding/screensaver.txt >/dev/null 2>&1 && blob-launch-screensaver force >/dev/null 2>&1
+  ;;
+reset)
+  cp "$BLOB_PATH/logo.txt" ~/.config/blob/branding/screensaver.txt && blob-launch-screensaver force >/dev/null 2>&1
+  ;;
+*)
+  echo "Usage: blob-branding-screensaver <image|text|reset>" >&2
+  exit 1
+  ;;
+esac

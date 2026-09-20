@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# blob:summary=Overwrite the user config for hyprsunset with the Blob default and restart the service.
+
+blob-refresh-config hypr/hyprsunset.conf
+blob-restart-hyprsunset

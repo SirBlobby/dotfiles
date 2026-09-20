@@ -4,7 +4,6 @@ hl.on("hyprland.start", function()
   hl.exec_cmd("dbus-update-activation-environment --systemd --all")
 
   hl.exec_cmd("blob-launch-shell")
-  hl.exec_cmd("blob-provision-first-run")
   hl.exec_cmd("blob-powerprofiles-init")
   hl.exec_cmd(o.launch("blob-hypr-monitor-watch"))
   hl.exec_cmd(o.launch("udiskie --automount --no-notify --no-tray"))

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# blob:summary=Toggle single-window square aspect ratio.
+
+case $(blob-hypr-toggle single-window-aspect-ratio) in
+  on) blob-notify-send -g  "Enable single-window square aspect ratio" ;;
+  off) blob-notify-send -g  "Disable single-window square aspect ratio" ;;
+esac

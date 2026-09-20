@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# blob:summary=Open a config file in the user's editor and surface a toast
+# blob:args=<path>
+# blob:examples=blob launch config-editor ~/.config/hypr/hyprland.lua
+
+path="${1-}"
+
+if [[ -z $path ]]; then
+  echo "Usage: blob-launch-config-editor <path>" >&2
+  exit 1
+fi
+
+blob-notify-send -u low "Editing config file" "$path"
+exec blob-launch-editor "$path"

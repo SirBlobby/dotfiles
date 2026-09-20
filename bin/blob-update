@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# blob:summary=Update system and AUR packages
+# blob:args=[--no-confirm]
+# blob:requires-sudo=true
+
+set -e
+
+confirm=true
+[[ ${1-} == --no-confirm ]] && confirm=false
+
+if [[ $confirm == true ]]; then
+  read -rp "Update system and AUR packages? [y/N] " answer
+  [[ $answer == [yY] ]] || exit 0
+fi
+
+blob-sudo-keepalive
+
+echo "Refreshing the keyring..."
+sudo pacman -Sy --needed --noconfirm archlinux-keyring
+
+echo "Updating system packages..."
+sudo pacman -Syu --noconfirm
+
+if blob-cmd-present yay && blob-pkg-aur; then
+  echo "Updating AUR packages..."
+  yay -Sua --noconfirm
+fi
+
+orphans=$(pacman -Qtdq 2>/dev/null || true)
+if [[ -n $orphans ]]; then
+  echo "Removing orphaned packages..."
+  printf '%s\n' "$orphans" | sudo pacman -Rns --noconfirm -
+fi
+
+blob-notify-send "Update complete" "System and AUR packages are up to date"

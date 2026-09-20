@@ -148,7 +148,7 @@ Item {
   function applySelected(emoji) {
     if (!emoji) return
     root.dismiss()
-    Quickshell.execDetached([root.blobPath + "/bin/blob-menu-emoji", emoji])
+    Quickshell.execDetached([root.blobPath + "/bin/blob-menu-emoji-insert", emoji])
   }
 
   ListModel { id: displayModel }

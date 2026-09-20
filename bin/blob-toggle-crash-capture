@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# blob:summary=Toggle crash capture notifications
+
+# nf-md-robot_dead, escaped so this file reads without a Nerd Font.
+readonly CRASH_GLYPH=$'\U000f16a1'
+
+blob-toggle crash-capture-off
+
+# The unit checks the same flag with ConditionPathExists, so stopping and
+# starting only settles this session; the next login reads the flag itself.
+if blob-toggle-enabled crash-capture-off; then
+  systemctl --user stop blob-crash-watch.service
+  blob-notify-send -g "$CRASH_GLYPH" "Crash capture disabled"
+else
+  systemctl --user start blob-crash-watch.service
+  blob-notify-send -g "$CRASH_GLYPH" "Crash capture enabled"
+fi

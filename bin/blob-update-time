@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# blob:summary=Restart system time synchronization
+# blob:requires-sudo=true
+
+echo "Updating time..."
+sudo systemctl restart systemd-timesyncd
