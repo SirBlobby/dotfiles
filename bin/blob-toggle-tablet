@@ -128,7 +128,7 @@ case "${1:-toggle}" in
     select_mode all
     ;;
   set)
-    [ -n "$2" ] || { echo "Usage: blob-toggle-tablet-follow set <monitor|follow|all>" >&2; exit 1; }
+    [ -n "$2" ] || { echo "Usage: blob-toggle-tablet set <monitor|follow|all>" >&2; exit 1; }
     select_mode "$2"
     ;;
   status|--status)
@@ -141,7 +141,7 @@ case "${1:-toggle}" in
     [ "$(selected_mode)" = "all" ] || start_daemon
     ;;
   *)
-    echo "Usage: blob-toggle-tablet-follow [toggle|on|off|set <monitor|follow|all>|status|monitors|autostart]" >&2
+    echo "Usage: blob-toggle-tablet [toggle|on|off|set <monitor|follow|all>|status|monitors|autostart]" >&2
     exit 1
     ;;
 esac

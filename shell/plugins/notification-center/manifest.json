@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "name": "Notification centre",
+  "version": "1.0.0",
+  "author": "Blob",
+  "description": "List of recent notifications with clear-all and silence controls",
+  "id": "blob.notification-center",
+  "kinds": [
+    "overlay"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "overlay": "NotificationCenter.qml"
+  }
+}

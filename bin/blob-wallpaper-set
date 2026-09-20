@@ -19,21 +19,8 @@ mkdir -p "$THEME_DIR/backgrounds"
     echo "PATH=$PATH"
 } >> "$HOME/.cache/blob-wallpaper.log"
 
-# Rows for blob-menu-select, as "<label><TAB><path>". The menu returns the
-# label and the subtext, so the full path comes back as a stable key.
-list_wallpaper_rows() {
-    find "$WALLPAPER_DIR" -maxdepth 1 -type f \
-        \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.gif' -o -iname '*.bmp' -o -iname '*.webp' \) \
-        2>/dev/null | sort | while read -r background; do
-        name=$(basename "$background")
-        label=$(echo "${name%.*}" | sed -E 's/^[0-9]+//; s/^[-_]//; s/[-_]/ /g; s/(^| )([a-z])/\1\u\2/g')
-        printf '%s\t%s\n' "$label" "$background"
-    done
-}
-
 if [ -z "$1" ] || [ "$1" = "--menu" ]; then
-    selection=$(list_wallpaper_rows | blob-menu-select "Select Wallpaper" -- --width 800) || exit 0
-    IMAGE_PATH=$(printf '%s' "$selection" | cut -f2)
+    IMAGE_PATH=$(blob-menu-images --show-labels --filterable "$WALLPAPER_DIR") || exit 0
     if [ -z "$IMAGE_PATH" ] || [ ! -f "$IMAGE_PATH" ]; then
         exit 0
     fi

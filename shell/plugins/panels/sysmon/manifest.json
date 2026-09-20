@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "name": "System monitor",
+  "version": "1.0.0",
+  "author": "Blob",
+  "description": "CPU, memory, disk, and temperature meters",
+  "id": "blob.sysmon",
+  "kinds": [
+    "overlay"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "overlay": "SysMonitor.qml"
+  }
+}

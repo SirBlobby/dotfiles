@@ -508,6 +508,17 @@ QtObject {
     onLoadFailed: refreshTimer.restart()
   }
 
+  // Card geometry for the ported widget panels. Square corners, a 2px border at
+  // half alpha on the blue slot, and a 0.6 fill: the look the GTK widgets had.
+  readonly property int cardBorderWidth: 2
+  readonly property int cardRadius: 0
+  readonly property real cardFillAlpha: 0.6
+  readonly property real cardBorderAlpha: 0.5
+  readonly property real panelFillAlpha: 0.92
+  readonly property int cardPadding: spaceReal(14)
+  readonly property int cardSpacing: spaceReal(10)
+  readonly property int tilePadding: spaceReal(8)
+
   Component.onCompleted: {
     refresh()
     resolveFontFamily()

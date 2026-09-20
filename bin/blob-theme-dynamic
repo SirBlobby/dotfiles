@@ -5,7 +5,7 @@
 dynamic_theme_dir="$HOME/.config/blob/themes/blob-dynamic"
 
 if [ ! -f "$dynamic_theme_dir/colors.toml" ]; then
-  echo "No dynamic theme yet. Pick a wallpaper first: blob-bg-menu" >&2
+  echo "No dynamic theme yet. Pick a wallpaper first: blob-wallpaper-set --menu" >&2
   exit 1
 fi
 

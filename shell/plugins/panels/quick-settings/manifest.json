@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "name": "Quick settings",
+  "version": "1.0.0",
+  "author": "Blob",
+  "description": "Control centre with tiles, sliders, calendar, media, and weather",
+  "id": "blob.quick-settings",
+  "kinds": [
+    "overlay"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "overlay": "QuickSettings.qml"
+  }
+}

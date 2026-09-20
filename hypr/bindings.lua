@@ -2,6 +2,8 @@
 -- See current bindings and descriptions: blob menu keybindings --print
 
 o.bind("SUPER + ALT + W", "Wallpaper picker", "blob-wallpaper-set --menu")
+o.bind("SUPER + CTRL + M", "System monitor", "blob-shell shell toggle blob.sysmon")
+o.bind("SUPER + CTRL + Q", "Quick settings", "blob-shell shell toggle blob.quick-settings")
 
 -- Apps on SUPER + SPACE, root menu on ALT, swapping the shipped defaults back.
 hl.unbind("SUPER + SPACE")

@@ -21,6 +21,8 @@ QtObject {
   property color accent: "#cacccc"
   property color urgent: "#a55555"
   property color muted: "#707880"
+  property color blue: "#7aa2f7"
+  property color magenta: "#ad8ee6"
 
   // Flat dictionary of "section.key" -> raw string from shell.toml.
   // Reassigning this whole property is what makes surface bindings below
@@ -142,6 +144,8 @@ QtObject {
     var color4Value = ""
     var color7Value = ""
     var color8Value = ""
+    var blueValue = ""
+    var magentaValue = ""
     for (var i = 0; i < lines.length; i++) {
       var match = lines[i].match(/^\s*([A-Za-z0-9_-]+)\s*=\s*["']?(#[0-9A-Fa-f]{6})/)
       if (!match) continue
@@ -157,11 +161,23 @@ QtObject {
       else if (match[1] === "color7") color7Value = match[2]
       else if (match[1] === "color8") color8Value = match[2]
       else if (match[1] === "red" || match[1] === "color1") urgent = match[2]
+      else if (match[1] === "blue") blueValue = match[2]
+      else if (match[1] === "magenta" || match[1] === "purple" || match[1] === "color5") magentaValue = match[2]
     }
     if (!loadedBackground && color0Value.length > 0) background = color0Value
     if (!loadedForeground && color7Value.length > 0) foreground = color7Value
     if (!foundAccent && color4Value.length > 0) accent = color4Value
     if (!foundMuted) muted = color8Value.length > 0 ? color8Value : foreground
+
+    // color4/color5 are the pywal aliases the widgets were designed against;
+    // blob-theme-color resolves color4 to blue and color5 to magenta, so the
+    // same cascade is applied here rather than a second convention.
+    if (blueValue.length > 0) blue = blueValue
+    else if (color4Value.length > 0) blue = color4Value
+    else blue = accent
+
+    if (magentaValue.length > 0) magenta = magentaValue
+    else magenta = accent
   }
 
   // Last theme-supplied and user-supplied shell.toml dicts, kept separate so
