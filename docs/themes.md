@@ -30,12 +30,13 @@ the shell and the CLI never disagree about what a slot means.
 Each rendered file is picked up differently: `foot.ini` and `kitty.conf` by an
 `include` in the shipped terminal config, `hyprland.lua` through Hyprland's Lua
 module path, `shell.toml` and `chromium.theme` read straight from the state
-directory, and `btop.theme`, `neovim.lua` and `gtk.css` through symlinks the
-installer makes into those apps' own config trees.
+directory, and `btop.theme`, `neovim.lua`, `gtk.css` and `starship.toml`
+through symlinks the installer makes into those apps' own config trees.
 
 `default/themed/*.tpl` are rendered per theme into
-`~/.local/state/blob/current/theme/`. Ten ship: foot, kitty, btop, chromium,
-hyprland, the screenshare picker, neovim, `shell.toml`, zen, and `gtk.css`.
+`~/.local/state/blob/current/theme/`. Eleven ship: foot, kitty, btop, chromium,
+hyprland, the screenshare picker, neovim, `shell.toml`, zen, `gtk.css`, and
+`starship.toml`.
 
 An app picks its colors up in one of two ways. Most include the generated file
 directly, so nothing has to run:
@@ -64,6 +65,20 @@ so an app that was already open keeps its old colors until it is restarted.
 
 Adding a template for another app means dropping a `.tpl` in `default/themed/`
 and, if it cannot include a file, adding an applier to that list.
+
+## The prompt
+
+`starship.toml` is linked to `~/.config/starship.toml`. It carries a
+`[palettes.blob]` block built from the theme - `accent`, `foreground`, `muted`,
+`success`, `warning`, `error` - and every style in the file names one of those
+rather than a literal color, so the prompt moves with the theme. Starship reads
+its config on each prompt, so a theme change shows up on the next command, in
+shells that are already open.
+
+`starship init bash` runs from `session/bashrc`, which `install.sh` sources from
+`~/.bashrc` with a single line. That file returns immediately in a
+non-interactive shell, so it cannot disturb `scp` or `rsync`, and it also
+sources `session/env-bootstrap` so `blob` is on `PATH` in any interactive shell.
 
 ## The three ways to set a theme
 

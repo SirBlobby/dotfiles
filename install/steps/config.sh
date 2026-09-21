@@ -63,6 +63,27 @@ install_shipped_config() {
   install_file "$repo_dir/fonts/omarchy.ttf" "$font_dir/omarchy.ttf" "fonts/omarchy.ttf"
 }
 
+bashrc_line='[ -r "$HOME/.local/share/blob/session/bashrc" ] && . "$HOME/.local/share/blob/session/bashrc"'
+
+install_bash_integration() {
+  local bashrc="$HOME/.bashrc"
+
+  if [[ -f $bashrc ]] && grep -Fqx "$bashrc_line" "$bashrc"; then
+    say "ok    bashrc"
+    return 0
+  fi
+
+  note_change
+  if [[ $check == true ]]; then
+    say "would source session/bashrc from ~/.bashrc"
+    return 0
+  fi
+
+  [[ -f $bashrc ]] && cp "$bashrc" "$bashrc.bak"
+  printf '\n%s\n' "$bashrc_line" >>"$bashrc"
+  say "write bashrc"
+}
+
 refresh_font_cache() {
   if ! command -v fc-cache &>/dev/null; then
     say "SKIP  font cache (fc-cache not installed)"

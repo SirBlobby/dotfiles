@@ -65,6 +65,7 @@ install_packages
 install_shipped_config
 refresh_font_cache
 install_shell_profile
+install_bash_integration
 install_user_units
 install_systemd_dropins
 install_zen_config

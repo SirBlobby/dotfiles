@@ -42,6 +42,10 @@ with `--check`.
    panels come up full of blanks. `fonts.conf` binds `monospace` to
    `JetBrainsMono Nerd Font`; `blob font set` rewrites the same file, and the
    installer then reports it as a local change and keeps your choice.
+   `~/.bashrc` gets one line sourcing `session/bashrc`, which is what starts
+   the starship prompt and puts `blob` on `PATH` in an interactive shell. The
+   line is added once, a `.bak` is kept, and a `~/.bashrc` that already has it
+   is left alone.
    `session/profile.sh` also goes to `/etc/profile.d/blob.sh`, which sources
    `session/env-bootstrap` and is what puts `blob` on `PATH` in a login shell.
    Without it `BLOB_PATH` and `$BLOB_PATH/bin` are only set by

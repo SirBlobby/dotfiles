@@ -112,6 +112,8 @@ for lua in hyprland.lua monitors.lua input.lua looknfeel.lua bindings.lua autost
   restore_or_remove "$config_dir/hypr/$lua" "hypr/$lua"
 done
 
+[[ -L $config_dir/starship.toml ]] && restore_or_remove "$config_dir/starship.toml" "starship.toml"
+
 for gtk in gtk-3.0 gtk-4.0; do
   [[ -L $config_dir/$gtk/gtk.css ]] && restore_or_remove "$config_dir/$gtk/gtk.css" "$gtk/gtk.css"
 done
