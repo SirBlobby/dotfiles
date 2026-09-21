@@ -21,7 +21,7 @@ current_mode() {
 }
 
 list_theme_rows() {
-  printf 'Dynamic (from wallpaper)\tblob-dynamic\n'
+  printf '\tDynamic (from wallpaper)\tblob-dynamic\n'
 
   {
     find "$user_themes_dir" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
@@ -30,8 +30,8 @@ list_theme_rows() {
     [ -f "$theme_dir/colors.toml" ] || continue
     slug=$(basename "$theme_dir")
     [ "$slug" = "blob-dynamic" ] && continue
-    printf '%s\t%s\n' "$(prettify "$slug")" "$slug"
-  done | sort -u -t$'\t' -k2,2
+    printf '\t%s\t%s\n' "$(prettify "$slug")" "$slug"
+  done | sort -u -t$'\t' -k3,3
 }
 
 print_current_colors() {
