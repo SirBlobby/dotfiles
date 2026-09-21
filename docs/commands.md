@@ -296,6 +296,7 @@ of the `blob` listing.
 | `blob-launch-or-focus-webapp` | Launch or focus on a given web app identified by the window-pattern. | <window-pattern> <url-and-flags...> |
 | `blob-launch-screensaver` | Launch the Blob screensaver in the default terminal on the system with the correct font configuration. | - |
 | `blob-launch-shell` | Launch the Blob shell with its log kept in the journal (hidden) | - |
+| `blob-launch-terminal` | Launch the default terminal | [command [args...]] |
 | `blob-launch-tui` | Launch a TUI command in the default terminal with Blob styling | [--app-id=<app-id>] <command> [args...] |
 | `blob-launch-webapp` | Launch a URL as a web app in the default supported browser | <url> |
 

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# blob:summary=Launch the default terminal
+# blob:args=[command [args...]]
+
+if blob-cmd-present xdg-terminal-exec; then
+  exec setsid uwsm-app -- xdg-terminal-exec "$@"
+fi
+
+for terminal in foot kitty; do
+  blob-cmd-present "$terminal" && exec setsid uwsm-app -- "$terminal" "$@"
+done
+
+blob-notify-send "No terminal installed" "Install xdg-terminal-exec, foot or kitty."
+exit 1
