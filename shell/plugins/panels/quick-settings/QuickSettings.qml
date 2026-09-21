@@ -192,83 +192,82 @@ Item {
       onClicked: root.dismiss()
     }
 
-    Row {
+    WeatherCard {
+      anchors.top: controlCentre.top
+      anchors.right: controlCentre.left
+      anchors.rightMargin: Style.spaceReal(12)
+      available: root.weatherAvailable
+      glyph: root.weatherGlyph
+      place: root.weatherPlace
+      temperature: root.weatherTemperature
+      wind: root.weatherWind
+    }
+
+    Card {
+      id: controlCentre
       anchors.top: parent.top
       anchors.topMargin: Style.spaceReal(10) + root.barInset
       anchors.horizontalCenter: parent.horizontalCenter
+      implicitWidth: Style.spaceReal(400)
+      fillColor: Util.alpha(Color.background, Style.panelFillAlpha)
       spacing: Style.spaceReal(12)
 
-      WeatherCard {
-        available: root.weatherAvailable
-        glyph: root.weatherGlyph
-        place: root.weatherPlace
-        temperature: root.weatherTemperature
-        wind: root.weatherWind
+      Header {
+        width: parent.width
+        clock: clockValue.value
+        today: dateValue.value
+        onLockRequested: root.runAndDismiss("blob-system-lock")
+        onLogoutRequested: root.runAndDismiss("blob-system-logout")
+        onCloseRequested: root.dismiss()
       }
 
-      Card {
-        id: controlCentre
-        implicitWidth: Style.spaceReal(400)
-        fillColor: Util.alpha(Color.background, Style.panelFillAlpha)
-        spacing: Style.spaceReal(12)
+      Calendar {
+        width: parent.width
+        polling: root.opened
+      }
 
-        Header {
-          width: parent.width
-          clock: clockValue.value
-          today: dateValue.value
-          onLockRequested: root.runAndDismiss("blob-system-lock")
-          onLogoutRequested: root.runAndDismiss("blob-system-logout")
-          onCloseRequested: root.dismiss()
+      Tiles {
+        bluetoothOn: bluetoothFlag.value
+        doNotDisturb: dndFlag.value
+        nightLight: nightLightFlag.value
+        recording: recordingFlag.value
+        stayAwake: stayAwakeFlag.value
+        tabletFollow: tabletFlag.value
+        onRunRequested: function(command) { root.runAndDismiss(command) }
+        onPanelRequested: function(pluginId) { root.openPanel(pluginId) }
+        onToggleRequested: function(command) { root.toggleAndRefresh(command) }
+      }
+
+      SliderRow {
+        width: parent.width
+        icon: mutedFlag.value ? "" : ""
+        dimmed: mutedFlag.value
+        value: Number(volumeValue.value) || 0
+        onIconActivated: root.toggleAndRefresh("pamixer --toggle-mute")
+        onValueRequested: function(next) {
+          root.run("pamixer --set-volume " + next)
+          volumeValue.value = String(next)
         }
+      }
 
-        Calendar {
-          width: parent.width
-          polling: root.opened
+      SliderRow {
+        width: parent.width
+        icon: ""
+        value: Number(brightnessValue.value) || 0
+        onValueRequested: function(next) {
+          root.run("brightnessctl set " + next + "%")
+          brightnessValue.value = String(next)
         }
+      }
 
-        Tiles {
-          bluetoothOn: bluetoothFlag.value
-          doNotDisturb: dndFlag.value
-          nightLight: nightLightFlag.value
-          recording: recordingFlag.value
-          stayAwake: stayAwakeFlag.value
-          tabletFollow: tabletFlag.value
-          onRunRequested: function(command) { root.runAndDismiss(command) }
-          onPanelRequested: function(pluginId) { root.openPanel(pluginId) }
-          onToggleRequested: function(command) { root.toggleAndRefresh(command) }
-        }
-
-        SliderRow {
-          width: parent.width
-          icon: mutedFlag.value ? "" : ""
-          dimmed: mutedFlag.value
-          value: Number(volumeValue.value) || 0
-          onIconActivated: root.toggleAndRefresh("pamixer --toggle-mute")
-          onValueRequested: function(next) {
-            root.run("pamixer --set-volume " + next)
-            volumeValue.value = String(next)
-          }
-        }
-
-        SliderRow {
-          width: parent.width
-          icon: ""
-          value: Number(brightnessValue.value) || 0
-          onValueRequested: function(next) {
-            root.run("brightnessctl set " + next + "%")
-            brightnessValue.value = String(next)
-          }
-        }
-
-        MediaRow {
-          width: parent.width
-          title: root.mediaParts.length > 0 ? root.mediaParts[0] : ""
-          artist: root.mediaParts.length > 1 ? root.mediaParts[1] : ""
-          status: root.mediaParts.length > 2 ? root.mediaParts[2] : "Stopped"
-          onControlRequested: function(action) {
-            root.run("playerctl " + action)
-            stateSettleTimer.restart()
-          }
+      MediaRow {
+        width: parent.width
+        title: root.mediaParts.length > 0 ? root.mediaParts[0] : ""
+        artist: root.mediaParts.length > 1 ? root.mediaParts[1] : ""
+        status: root.mediaParts.length > 2 ? root.mediaParts[2] : "Stopped"
+        onControlRequested: function(action) {
+          root.run("playerctl " + action)
+          stateSettleTimer.restart()
         }
       }
     }
