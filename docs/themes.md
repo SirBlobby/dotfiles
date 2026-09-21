@@ -9,7 +9,7 @@ retints the running desktop.
 | File | Used by |
 | --- | --- |
 | `colors.toml` | required; the palette everything else derives from |
-| `backgrounds/` | the background switcher |
+| `backgrounds/` | the background switcher; a theme without one keeps the current wallpaper |
 | `shell.lock.toml` | lock screen surface tokens |
 | `neovim.lua` | the editor colorscheme |
 | `icons.theme` | GTK icon theme name |
