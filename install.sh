@@ -63,6 +63,7 @@ link_blob_path
 install_packages
 
 install_shipped_config
+refresh_font_cache
 install_shell_profile
 install_user_units
 install_systemd_dropins

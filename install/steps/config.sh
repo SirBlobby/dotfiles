@@ -63,6 +63,21 @@ install_shipped_config() {
   install_file "$repo_dir/fonts/omarchy.ttf" "$font_dir/omarchy.ttf" "fonts/omarchy.ttf"
 }
 
+refresh_font_cache() {
+  if ! command -v fc-cache &>/dev/null; then
+    say "SKIP  font cache (fc-cache not installed)"
+    return 0
+  fi
+
+  if [[ $check == true ]]; then
+    say "would refresh the font cache"
+    return 0
+  fi
+
+  fc-cache -f "$font_dir" >/dev/null 2>&1 || true
+  say "ok    font cache"
+}
+
 install_shell_profile() {
   install_root_file "$repo_dir/session/profile.sh" /etc/profile.d/blob.sh "profile.d/blob.sh"
 }

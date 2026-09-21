@@ -15,6 +15,13 @@ Item {
 
   readonly property string pluginId: (manifest && manifest.id) || "blob.quick-settings"
 
+  readonly property int barInset: {
+    var bar = root.shell ? root.shell.bar : null
+    if (!bar || bar.barHidden === true) return 0
+    if (String(bar.position || "top") !== "top") return 0
+    return Math.max(0, bar.barSize || 0)
+  }
+
   function open(payloadJson) {
     root.opened = true
   }
@@ -187,7 +194,7 @@ Item {
 
     Row {
       anchors.top: parent.top
-      anchors.topMargin: Style.spaceReal(10)
+      anchors.topMargin: Style.spaceReal(10) + root.barInset
       anchors.horizontalCenter: parent.horizontalCenter
       spacing: Style.spaceReal(12)
 
