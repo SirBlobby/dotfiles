@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# blob:summary=Print the terminal text effects command the screensaver can use
+# blob:hidden=true
+
+for candidate in ttfx tte; do
+  if command -v "$candidate" &>/dev/null; then
+    printf '%s\n' "$candidate"
+    exit 0
+  fi
+done
+
+exit 1

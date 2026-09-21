@@ -2,13 +2,37 @@
 
 # blob:summary=Run the Blob screensaver using random effects from TTE.
 
+effect_command=$(blob-screensaver-effect) || exit 1
+
+effect_args() {
+  local input="$HOME/.config/blob/branding/screensaver.txt"
+
+  if [[ $effect_command == "ttfx" ]]; then
+    printf '%s\n' -i "$input" --frame-rate 120 --canvas-width 0 --canvas-height 0 \
+      --reuse-canvas --anchor-canvas c --anchor-text c --random-effect --no-eol \
+      --no-restore-cursor
+    return 0
+  fi
+
+  local effects=(
+    beams binarypath blackhole bouncyballs bubbles burn colorshift crumble
+    decrypt errorcorrect expand fireworks middleout orbittingvolley overflow
+    pour print rain randomsequence rings scattered slice slide spotlights
+    spray swarm sweep synthgrid unstable vhstape waves wipe
+  )
+
+  printf '%s\n' -i "$input" --frame-rate 120 --canvas-width 0 --canvas-height 0 \
+    --anchor-canvas c --anchor-text c --no-color \
+    "${effects[RANDOM % ${#effects[@]}]}"
+}
+
 screensaver_in_focus() {
   hyprctl activewindow -j | jq -e '.class == "org.blob.screensaver"' >/dev/null 2>&1
 }
 
 exit_screensaver() {
   hyprctl eval 'hl.config({ cursor = { invisible = false } })' &>/dev/null || hyprctl keyword cursor:invisible false &>/dev/null || true
-  pkill -x ttfx 2>/dev/null
+  pkill -x "$effect_command" 2>/dev/null
   pkill -f '[o]rg.blob.screensaver' 2>/dev/null
   exit 0
 }
@@ -36,11 +60,10 @@ wait_for_terminal_resize() {
 wait_for_terminal_resize
 
 while true; do
-  ttfx -i ~/.config/blob/branding/screensaver.txt \
-    --frame-rate 120 --canvas-width 0 --canvas-height 0 --reuse-canvas --anchor-canvas c --anchor-text c\
-    --random-effect --no-eol --no-restore-cursor &
+  mapfile -t effect_arguments < <(effect_args)
+  "$effect_command" "${effect_arguments[@]}" &
 
-  while pgrep -t "${tty#/dev/}" -x ttfx >/dev/null; do
+  while pgrep -t "${tty#/dev/}" -x "$effect_command" >/dev/null; do
     if read -n1 -t 1 || ! screensaver_in_focus; then
       exit_screensaver
     fi

@@ -9,6 +9,7 @@ session_entry="/usr/local/share/wayland-sessions/blob.desktop"
 root_files=(
   /etc/profile.d/blob.sh
   /usr/local/bin/blob-hw-gpu-accelerated
+  /etc/pam.d/blob-lock-password
   /etc/sddm.conf.d/zz-blob.conf
   /etc/sddm.conf.d/zzz-blob-autologin.conf
   /etc/sddm/hyprland-greeter.conf

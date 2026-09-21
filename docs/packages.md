@@ -70,7 +70,7 @@ Two are worth knowing about:
 
 ```
 packages/blob.packages       121 packages from core, extra, multilib
-packages/blob-aur.packages    10 packages with no official equivalent
+packages/blob-aur.packages    11 packages with no official equivalent
 ```
 
 Only missing packages are touched, through `pacman -S --needed` and
@@ -127,6 +127,7 @@ Omarchy's own package list, because they were installed by hand on this machine:
 | Package | Needed by |
 | --- | --- |
 | `python-pywal16` | `blob-wallpaper-set`, palette extraction |
+| `python-terminaltexteffects` | `blob-screensaver`, the effects it draws |
 | `awww` | the wallpaper daemon `blob-wallpaper-set` and `blob-theme-menu` drive |
 | `playerctl` | the quick settings media row |
 

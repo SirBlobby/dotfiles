@@ -21,6 +21,8 @@ install_login_config() {
     "$blob_greeter_conf" "sddm.conf.d/zz-blob.conf"
   install_root_file "$repo_dir/bin/blob-hw-gpu-accelerated" \
     "$greeter_gpu_detector" "blob-hw-gpu-accelerated" 0755
+  install_root_file "$repo_dir/default/pam.d/blob-lock-password" \
+    /etc/pam.d/blob-lock-password "pam.d/blob-lock-password"
 }
 
 install_session_entry() {

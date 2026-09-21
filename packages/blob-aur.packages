@@ -6,6 +6,9 @@
 # Palette extraction behind blob-wallpaper-set; pywal16 is the maintained fork
 python-pywal16|python-pywal
 
+# Terminal text effects behind the screensaver; ttfx was the Omarchy build
+python-terminaltexteffects
+
 # Terminal dispatch; every TUI launcher's Exec= line calls it
 xdg-terminal-exec
 

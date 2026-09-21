@@ -2,7 +2,8 @@
 
 # blob:summary=Launch the Blob screensaver in the default terminal on the system with the correct font configuration.
 
-if blob-cmd-missing ttfx; then
+if ! blob-screensaver-effect >/dev/null; then
+  blob-notify-send -g ✋ "Screensaver needs ttfx or tte" "Install python-terminaltexteffects."
   exit 1
 fi
 

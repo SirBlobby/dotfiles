@@ -97,6 +97,7 @@ with `--check`.
    | `/etc/sddm.conf.d/zz-blob.conf` | Wayland greeter, run on Hyprland, stock theme, remember the last session |
    | `/etc/sddm/hyprland-greeter.lua` | the greeter's own tiny Hyprland config |
    | `/usr/local/bin/blob-hw-gpu-accelerated` | the renderer check that config runs, where SDDM's user can read it |
+   | `/etc/pam.d/blob-lock-password` | the PAM stack the lock screen authenticates against |
 
    The greeter config matters more than it looks: SDDM's stock Wayland greeter
    runs on `weston`, which Blob does not install, so a default SDDM would fail
@@ -144,6 +145,18 @@ with `--check`.
 | `--skip-packages` | directories, config and services only |
 | `--autologin` | skip the SDDM prompt for this user |
 | `--no-launch` | leave the login screen for the next reboot |
+
+## The lock screen
+
+The lock plugin watches `/etc/pam.d/blob-lock-password` and refuses to lock at
+all when it is not there - `blob system lock` returns `missing-pam` and nothing
+appears, which reads as a keybinding that does nothing. The installer writes it;
+it is one line including `system-auth`, the same stack every other Wayland
+locker on Arch authenticates against.
+
+Fingerprint unlock is separate and opt-in: `blob setup-security-fingerprint`
+writes `/etc/pam.d/blob-lock-fingerprint`, and the lock only offers fingerprint
+when that file and a reader are both present.
 
 ## Choosing a renderer
 
