@@ -22,7 +22,7 @@ effect_args() {
   )
 
   printf '%s\n' -i "$input" --frame-rate 120 --canvas-width 0 --canvas-height 0 \
-    --anchor-canvas c --anchor-text c --no-color \
+    --anchor-canvas c --anchor-text c \
     "${effects[RANDOM % ${#effects[@]}]}"
 }
 
