@@ -42,10 +42,8 @@ with `--check`.
    panels come up full of blanks. `fonts.conf` binds `monospace` to
    `JetBrainsMono Nerd Font`; `blob font set` rewrites the same file, and the
    installer then reports it as a local change and keeps your choice.
-   `~/.bashrc` gets one line sourcing `session/bashrc`, which is what starts
-   the starship prompt and puts `blob` on `PATH` in an interactive shell. The
-   line is added once, a `.bak` is kept, and a `~/.bashrc` that already has it
-   is left alone.
+   `~/.bashrc` gets one line sourcing `session/bashrc`. The line is added once,
+   a `.bak` is kept, and a `~/.bashrc` that already has it is left alone.
    `session/profile.sh` also goes to `/etc/profile.d/blob.sh`, which sources
    `session/env-bootstrap` and is what puts `blob` on `PATH` in a login shell.
    Without it `BLOB_PATH` and `$BLOB_PATH/bin` are only set by
@@ -145,6 +143,28 @@ with `--check`.
 | `--skip-packages` | directories, config and services only |
 | `--autologin` | skip the SDDM prompt for this user |
 | `--no-launch` | leave the login screen for the next reboot |
+
+## The interactive shell
+
+`session/bashrc` is sourced from `~/.bashrc` and returns immediately in a
+non-interactive shell, so it cannot disturb `scp` or `rsync`. It does three
+things, each only when the tool is installed:
+
+| Line | Effect |
+| --- | --- |
+| `session/env-bootstrap` | `BLOB_PATH` and `$BLOB_PATH/bin` on `PATH`, so `blob` resolves |
+| `starship init bash` | the themed prompt, see [themes.md](themes.md#the-prompt) |
+| `zoxide init bash --cmd cd` | `cd` learns the directories you actually use |
+
+`--cmd cd` replaces `cd` rather than adding a `z` command, so
+`cd blomarchy` jumps to the last matching directory you have visited from
+anywhere, while `cd ./relative/path`, `cd -` and `cd` with no argument keep
+behaving exactly as the builtin does. `cdi` picks from the matches
+interactively through `fzf`, and `zoxide query -ls` prints the database.
+
+The database is built as you go: it learns a directory the first time you `cd`
+there, so the jumping is only as good as the history behind it and a fresh
+install knows nothing yet.
 
 ## The lock screen
 
