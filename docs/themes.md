@@ -30,12 +30,12 @@ the shell and the CLI never disagree about what a slot means.
 Each rendered file is picked up differently: `foot.ini` and `kitty.conf` by an
 `include` in the shipped terminal config, `hyprland.lua` through Hyprland's Lua
 module path, `shell.toml` and `chromium.theme` read straight from the state
-directory, and `btop.theme` and `neovim.lua` through symlinks the installer
-makes into those apps' own config trees.
+directory, and `btop.theme`, `neovim.lua` and `gtk.css` through symlinks the
+installer makes into those apps' own config trees.
 
 `default/themed/*.tpl` are rendered per theme into
-`~/.local/state/blob/current/theme/`. Nine ship: foot, kitty, btop, chromium,
-hyprland, the screenshare picker, neovim, `shell.toml`, and zen.
+`~/.local/state/blob/current/theme/`. Ten ship: foot, kitty, btop, chromium,
+hyprland, the screenshare picker, neovim, `shell.toml`, zen, and `gtk.css`.
 
 An app picks its colors up in one of two ways. Most include the generated file
 directly, so nothing has to run:
@@ -47,7 +47,20 @@ include ~/.local/state/blob/current/theme/kitty.conf
 Zen does the same through a CSS import in `userChrome.css`. The rest are pushed
 by a short applier listed in `post_theme_commands` inside `blob-theme-set`:
 `blob-theme-foot`, `blob-theme-browser`, `blob-restart-terminal`,
-`blob-restart-btop`, `blob-hypr-restart`.
+`blob-restart-btop`, `blob-hypr-restart`, `blob-theme-gtk`.
+
+## GTK apps
+
+Nautilus and the other GTK apps read two things. The palette comes from
+`gtk.css`, linked into both `~/.config/gtk-3.0/gtk.css` and
+`~/.config/gtk-4.0/gtk.css`, which redefines the libadwaita named colors
+(`window_bg_color`, `headerbar_bg_color`, `accent_bg_color` and the rest) so a
+stock Adwaita app is drawn in the theme's own colors. The light or dark
+preference comes from `blob-theme-gtk`, which reads the theme's `mode` and sets
+`org.gnome.desktop.interface color-scheme` and `gtk-theme` through `gsettings`.
+
+The preference applies to running apps immediately; the CSS is read at startup,
+so an app that was already open keeps its old colors until it is restarted.
 
 Adding a template for another app means dropping a `.tpl` in `default/themed/`
 and, if it cannot include a file, adding an applier to that list.

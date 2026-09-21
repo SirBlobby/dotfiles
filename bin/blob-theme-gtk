@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# blob:summary=Apply the current Blob theme's light or dark preference to GTK apps
+# blob:hidden=true
+
+blob-cmd-present gsettings || exit 0
+
+colors_toml=$HOME/.local/state/blob/current/theme/colors.toml
+[[ -f $colors_toml ]] || exit 0
+
+mode=$(blob-theme-color --file "$colors_toml" mode)
+
+if [[ $mode == "light" ]]; then
+  color_scheme="prefer-light"
+  gtk_theme="Adwaita"
+else
+  color_scheme="prefer-dark"
+  gtk_theme="Adwaita-dark"
+fi
+
+gsettings set org.gnome.desktop.interface color-scheme "$color_scheme" 2>/dev/null || true
+gsettings set org.gnome.desktop.interface gtk-theme "$gtk_theme" 2>/dev/null || true

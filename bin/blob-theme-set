@@ -321,6 +321,7 @@ post_theme_commands=(
   blob-restart-btop
   blob-theme-foot
   blob-theme-browser
+  blob-theme-gtk
 )
 
 if [[ $THEME_HEADLESS != "1" ]]; then

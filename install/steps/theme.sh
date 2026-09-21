@@ -131,6 +131,8 @@ link_theme_file() {
 # creating the tree would be inventing a layout the user has not chosen.
 link_app_themes() {
   link_theme_file btop.theme "$config_dir/btop/themes/current.theme" "btop theme"
+  link_theme_file gtk.css "$config_dir/gtk-3.0/gtk.css" "gtk-3.0 theme"
+  link_theme_file gtk.css "$config_dir/gtk-4.0/gtk.css" "gtk-4.0 theme"
 
   if [[ -d $config_dir/nvim/lua/plugins ]]; then
     link_theme_file neovim.lua "$config_dir/nvim/lua/plugins/theme.lua" "neovim theme"
