@@ -39,8 +39,12 @@ BarWidget {
   Process {
     id: updateProc
     command: ["blob-update-available"]
-    onExited: function(exitCode) {
-      root.updateAvailable = exitCode === 0
+    stdout: StdioCollector {
+      waitForEnd: true
+      onStreamFinished: {
+        const pending = parseInt(String(text).trim(), 10)
+        root.updateAvailable = !isNaN(pending) && pending > 0
+      }
     }
   }
 
