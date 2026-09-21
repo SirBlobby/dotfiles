@@ -14,7 +14,7 @@ theme[hi_fg]="{{ accent }}"
 theme[selected_bg]="{{ selection }}"
 
 # Foreground color of selected item in processes box
-theme[selected_fg]="{{ accent }}"
+theme[selected_fg]="{{ selection_foreground }}"
 
 # Color of inactive/disabled text
 theme[inactive_fg]="{{ muted }}"
@@ -23,7 +23,7 @@ theme[inactive_fg]="{{ muted }}"
 theme[graph_text]="{{ light_foreground }}"
 
 # Background color of the percentage meters
-theme[meter_bg]="{{ selection }}"
+theme[meter_bg]="{{ lighter_background }}"
 
 # Misc colors for processes box including mini cpu graphs, details memory graph and details status text
 theme[proc_misc]="{{ light_foreground }}"
