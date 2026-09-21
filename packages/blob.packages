@@ -22,6 +22,7 @@ wl-clipboard
 wtype
 socat
 inotify-tools
+plymouth
 polkit
 
 # Shell widget backends

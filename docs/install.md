@@ -74,9 +74,10 @@ with `--check`.
    avahi, docker, power-profiles-daemon, and oomd.
    `NetworkManager-wait-online.service` is masked so a slow DHCP lease cannot
    hold up the login screen, and `plymouth-start.service` and
-   `plymouth-quit-wait.service` are masked because Blob configures no boot
-   splash: an unconfigured plymouth holds the console and leaves the machine
-   with neither a greeter nor a TTY. See [packages.md](packages.md).
+   `plymouth-quit-wait.service` are masked because an unconfigured plymouth
+   holds the console and leaves the machine with neither a greeter nor a TTY.
+   `blob boot` unmasks them when it sets the splash up. See
+   [packages.md](packages.md#the-boot-splash).
 9. **The login screen** is SDDM. It has to be installed first: if
    `sddm.service` is not there, the installer says whether the package is
    missing or whether systemd has simply not re-read its units yet, and carries

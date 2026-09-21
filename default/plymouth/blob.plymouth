@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Blob
+Description=Blob boot splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/blob
+ScriptFile=/usr/share/plymouth/themes/blob/blob.script

@@ -3,7 +3,9 @@
 # blob-boot - boot splash and bootloader management.
 #
 #   blob-boot [image]   Apply a Plymouth boot splash image (default action)
-#   blob-boot grub      Migrate from Limine back to GRUB, detecting every OS
+#   blob-boot grub      Install GRUB and detect every other OS on the machine.
+#                          Migrates off Limine when it is there; on a machine
+#                          that never had it, only GRUB is installed
 #                          --purge removes Limine in the same run instead of
 #                          keeping it for one fallback boot
 #   blob-boot detect    Rescan for other operating systems, rebuild the menu
@@ -16,8 +18,12 @@
 
 set -euo pipefail
 
-DEFAULT_IMAGE="$HOME/Documents/dotfiles/branding/boot_flash.png"
-PLYMOUTH_LOGO="/usr/share/plymouth/themes/blob/logo.png"
+BLOB_PATH="${BLOB_PATH:-$HOME/.local/share/blob}"
+DEFAULT_IMAGE="$BLOB_PATH/branding/boot_flash.png"
+THEME_SOURCE="$BLOB_PATH/default/plymouth"
+THEME_DIR="/usr/share/plymouth/themes/blob"
+PLYMOUTH_LOGO="$THEME_DIR/logo.png"
+MKINITCPIO_DROPIN="/etc/mkinitcpio.conf.d/blob-plymouth.conf"
 
 log()  { printf '\n\033[1;36m==> %s\033[0m\n' "$*"; }
 info() { printf '    %s\n' "$*"; }
@@ -43,16 +49,23 @@ apply_splash() {
     fi
 
     [ -f "$image_path" ] || die "File '$image_path' does not exist."
-    [ -d "$(dirname "$PLYMOUTH_LOGO")" ] || die "Plymouth blob theme is not installed."
+    command -v plymouth-set-default-theme >/dev/null \
+        || die "The 'plymouth' package is not installed. Install it with: sudo pacman -S plymouth"
 
     log "Applying boot splash image: $image_path"
     require_sudo
 
-    sudo cp "$image_path" "$PLYMOUTH_LOGO"
-    sudo chmod 644 "$PLYMOUTH_LOGO"
+    install_theme "$image_path"
+    install_initramfs_hook
+    enable_plymouth_units
+
+    log "Setting the default Plymouth theme"
+    sudo plymouth-set-default-theme blob
 
     log "Rebuilding initramfs"
     rebuild_initramfs
+
+    report_kernel_cmdline
 
     # Under GRUB the menu references the initramfs by path, so it only needs
     # regenerating if the file set changed - but it is cheap and keeps the menu
@@ -63,6 +76,80 @@ apply_splash() {
     fi
 
     ok "Boot splash successfully updated!"
+}
+
+install_theme() {
+    local image_path=$1
+
+    [ -d "$THEME_SOURCE" ] || die "Theme source '$THEME_SOURCE' is missing from the checkout."
+
+    sudo install -d -m 0755 "$THEME_DIR"
+    sudo install -m 0644 "$THEME_SOURCE/blob.plymouth" "$THEME_DIR/blob.plymouth"
+    sudo install -m 0644 "$THEME_SOURCE/blob.script" "$THEME_DIR/blob.script"
+    sudo install -m 0644 "$image_path" "$PLYMOUTH_LOGO"
+    info "installed the blob theme to $THEME_DIR"
+}
+
+# A drop-in rather than an edit of HOOKS: mkinitcpio.conf.d is sourced after
+# the main config, so the hook can be inserted without rewriting a line the
+# user or another tool owns. plymouth has to come after udev, which starts the
+# devices it draws on.
+install_initramfs_hook() {
+    sudo install -d -m 0755 "$(dirname "$MKINITCPIO_DROPIN")"
+    sudo tee "$MKINITCPIO_DROPIN" >/dev/null <<'DROPIN'
+# Written by blob-boot. Adds the plymouth hook after udev, once.
+if [[ " ${HOOKS[*]} " != *" plymouth "* ]]; then
+    _hooks=()
+    for _hook in "${HOOKS[@]}"; do
+        _hooks+=("$_hook")
+        [[ $_hook == "udev" || $_hook == "systemd" ]] && _hooks+=("plymouth")
+    done
+    HOOKS=("${_hooks[@]}")
+    unset _hooks _hook
+fi
+DROPIN
+    info "wrote $MKINITCPIO_DROPIN"
+}
+
+# install.sh masks these so an unconfigured plymouth cannot hold the console and
+# leave the machine with no greeter and no TTY. A configured one needs them: if
+# plymouth-quit-wait stays masked the splash never hands the display back.
+enable_plymouth_units() {
+    local unit
+    for unit in plymouth-start.service plymouth-quit-wait.service; do
+        if [ "$(systemctl is-enabled "$unit" 2>/dev/null)" = "masked" ]; then
+            sudo systemctl unmask "$unit" >/dev/null
+            info "unmasked $unit"
+        fi
+    done
+}
+
+# plymouth only draws when the kernel was told to be quiet and to splash. The
+# bootloader owns that line, so report rather than rewrite anything but GRUB's.
+report_kernel_cmdline() {
+    local params="quiet splash vt.global_cursor_default=0"
+
+    if grep -qw splash /proc/cmdline; then
+        info "kernel command line already carries 'splash'"
+        return 0
+    fi
+
+    log "One step left: the kernel command line"
+    if using_grub; then
+        warn "GRUB is in charge. Add to GRUB_CMDLINE_LINUX_DEFAULT in /etc/default/grub:"
+        warn "    $params"
+        warn "then: sudo grub-mkconfig -o /boot/grub/grub.cfg"
+    elif [ -f /boot/limine.conf ]; then
+        warn "Limine is in charge. Add to the cmdline in /boot/limine.conf:"
+        warn "    $params"
+    elif [ -d /boot/loader/entries ]; then
+        warn "systemd-boot is in charge. Add to the options line in /boot/loader/entries/*.conf:"
+        warn "    $params"
+    else
+        warn "Add these to your bootloader's kernel command line:"
+        warn "    $params"
+    fi
+    warn "Without them the splash is drawn over by kernel messages."
 }
 
 # Call mkinitcpio directly: limine-mkinitcpio-hook installs a wrapper at
@@ -82,6 +169,26 @@ using_grub() {
     [ -f /boot/grub/grub.cfg ] && [ -f /boot/EFI/GRUB/grubx64.efi ]
 }
 
+# Everything Limine-specific below is skipped on a machine that never had it:
+# reclaiming its space, removing its hooks, and rewriting the mkinitcpio preset
+# its hooks needed. Rewriting that preset elsewhere would drop the fallback
+# initramfs for no reason.
+limine_present() {
+    pacman -Qq limine &>/dev/null || [ -f /boot/limine.conf ] || [ -d /boot/EFI/limine ]
+}
+
+install_grub_packages() {
+    local missing=()
+    command -v grub-install >/dev/null || missing+=(grub)
+    command -v os-prober >/dev/null || missing+=(os-prober)
+
+    (( ${#missing[@]} == 0 )) && return 0
+
+    log "Installing ${missing[*]}"
+    sudo pacman -S --needed --noconfirm "${missing[@]}" \
+        || die "Could not install: ${missing[*]}"
+}
+
 # --------------------------------------------------------------------------
 # Limine -> GRUB migration
 # --------------------------------------------------------------------------
@@ -92,10 +199,9 @@ migrate_to_grub() {
 
     [ -d /sys/firmware/efi ] || die "Not booted in UEFI mode; this script assumes UEFI."
     mountpoint -q /boot || die "/boot is not mounted."
-    command -v grub-install >/dev/null || die "The 'grub' package is not installed."
-    command -v os-prober   >/dev/null || die "The 'os-prober' package is not installed."
 
     require_sudo
+    install_grub_packages
 
     local machine_id esp_uuid backup
     machine_id=$(</etc/machine-id)
@@ -111,8 +217,14 @@ migrate_to_grub() {
     sudo efibootmgr -v | sudo tee "$backup/efibootmgr-before.txt" >/dev/null 2>&1 || true
     info "saved."
 
-    reclaim_esp_space "$machine_id" "$backup"
-    restore_standard_initramfs
+    if limine_present; then
+        reclaim_esp_space "$machine_id" "$backup"
+        restore_standard_initramfs
+    else
+        info "Limine is not installed; leaving the initramfs layout alone"
+        log "Building the initramfs"
+        rebuild_initramfs
+    fi
     configure_grub_scripts
     install_grub "$esp_uuid"
     fix_failing_boot_units
@@ -529,6 +641,12 @@ set_boot_order() {
 
 # Delete every trace of Limine and hand its EFI fallback path to GRUB.
 purge_limine() {
+    if ! limine_present; then
+        log "Claiming the removable EFI fallback path for GRUB"
+        sudo grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --removable --recheck
+        return 0
+    fi
+
     log "Removing Limine"
 
     drop_limine_pkgs limine limine-mkinitcpio-hook limine-snapper-sync

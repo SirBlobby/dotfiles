@@ -72,7 +72,7 @@ Two are worth knowing about:
 `install.sh` installs what is missing before it writes any config:
 
 ```
-packages/blob.packages       121 packages from core, extra, multilib
+packages/blob.packages       123 packages from core, extra, multilib
 packages/blob-aur.packages    11 packages with no official equivalent
 ```
 
@@ -136,22 +136,26 @@ Omarchy's own package list, because they were installed by hand on this machine:
 
 `playerctl` is in official `extra`, so it sits in the repo list.
 
-## No boot splash
+## The boot splash
 
-`plymouth` is deliberately not on either list. Blob configures no splash: there
-is no mkinitcpio hook, no kernel command line, and `default/plymouth/` ships no
-theme assets, so `blob-plymouth-set` has nothing to publish either. An installed
-but unconfigured plymouth is not harmless - it takes the console at boot and
-never hands it back, and `getty@tty1` waits on `plymouth-quit-wait.service`, so
-the machine reaches neither the greeter nor a TTY.
-
-`install.sh` masks `plymouth-start.service` and `plymouth-quit-wait.service` for
-that reason, which un-breaks a machine that already has the package. To go
-further:
+`plymouth` is installed but left inert, and the splash is opt-in through one
+command:
 
 ```
-sudo pacman -Rns plymouth
+blob boot                    # branding/boot_flash.png
+blob boot ~/some/image.png   # or any other image
 ```
+
+The reason it is opt-in is that an installed but *unconfigured* plymouth is not
+harmless: it takes the console at boot and never hands it back, and
+`getty@tty1` waits on `plymouth-quit-wait.service`, so the machine reaches
+neither the greeter nor a TTY. `install.sh` therefore masks
+`plymouth-start.service` and `plymouth-quit-wait.service`, and `blob boot`
+unmasks them as part of configuring everything else - the theme in
+`default/plymouth/`, the `plymouth` mkinitcpio hook, and the initramfs rebuild.
+It finishes by printing the kernel parameters your bootloader still needs
+(`quiet splash vt.global_cursor_default=0`), because that line is the one thing
+it will not rewrite for a bootloader other than GRUB.
 
 ## Updating
 
