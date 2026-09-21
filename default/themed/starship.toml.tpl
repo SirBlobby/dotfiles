@@ -1,6 +1,6 @@
 add_newline = true
 command_timeout = 200
-format = "[$directory$git_branch$git_status]($style)$character"
+format = "$directory$git_branch$git_status$character"
 palette = "blob"
 
 [palettes.blob]
@@ -27,7 +27,7 @@ format = "[$branch]($style) "
 style = "italic accent"
 
 [git_status]
-format     = '[$all_status]($style)'
+format     = '[$all_status ]($style)'
 style      = "warning"
 ahead      = "⇡${count} "
 diverged   = "⇕⇡${ahead_count}⇣${behind_count} "
