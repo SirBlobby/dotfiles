@@ -48,7 +48,7 @@ BarWidget {
     horizontalMargin: 7.5
     onPressed: function(button) {
       if (!root.bar) return
-      if (button === Qt.RightButton) root.bar.run("xdg-terminal-exec")
+      if (button === Qt.RightButton) root.bar.run("blob-terminal-exec")
       else root.bar.run("blob-shell shell toggle blob.menu '{\"menu\":\"root\"}'")
     }
 

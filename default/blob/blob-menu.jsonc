@@ -254,8 +254,8 @@
   "setup.direct-boot": {"icon":"","label":"Direct Boot","action":"blob-launch-floating blob-setup-direct-boot"},
 
   // Install
-  "install.package": {"icon":"󰣇","label":"Package","action":"xdg-terminal-exec --app-id=org.blob.terminal blob-pkg-install"},
-  "install.aur": {"icon":"󰣇","label":"AUR","action":"xdg-terminal-exec --app-id=org.blob.terminal blob-pkg-aur-install"},
+  "install.package": {"icon":"󰣇","label":"Package","action":"blob-terminal-exec --app-id=org.blob.terminal blob-pkg-install"},
+  "install.aur": {"icon":"󰣇","label":"AUR","action":"blob-terminal-exec --app-id=org.blob.terminal blob-pkg-aur-install"},
   "install.tui": {"icon":"","label":"TUI","action":"blob-launch-floating blob-tui-install"},
   "install.style": {"icon":"","label":"Style"},
   "install.style.theme": {"icon":"󰸌","label":"Theme","action":"blob-launch-floating blob-theme-install"},
@@ -269,8 +269,8 @@
   "install.style.font.iosevka": {"icon":"","label":"Iosevka","action":"blob-install-font Iosevka ttf-iosevka-nerd 'Iosevka Nerd Font Mono'"},
 
   // Remove
-  "remove.package": {"icon":"󰣇","label":"Package","action":"xdg-terminal-exec --app-id=org.blob.terminal blob-pkg-remove"},
-  "remove.tui": {"icon":"","label":"TUI","when":"grep -qE '^Exec=.*(\\$TERMINAL|xdg-terminal-exec).*-e' $HOME/.local/share/applications/*.desktop","action":"blob-tui-remove"},
+  "remove.package": {"icon":"󰣇","label":"Package","action":"blob-terminal-exec --app-id=org.blob.terminal blob-pkg-remove"},
+  "remove.tui": {"icon":"","label":"TUI","when":"grep -qE '^Exec=.*(\\$TERMINAL|xdg-terminal-exec|blob-terminal-exec).*-e' $HOME/.local/share/applications/*.desktop","action":"blob-tui-remove"},
   "remove.theme": {"icon":"󰸌","label":"Theme","action":"blob-theme-remove"},
 
   // Update

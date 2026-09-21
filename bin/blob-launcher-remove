@@ -67,7 +67,7 @@ desktop_name="${desktop_file##*/}"
 desktop_name="${desktop_name%.desktop}"
 exec_line="$(sed -n 's/^Exec=//p' "$desktop_file" | head -1)"
 
-if [[ $exec_line =~ (^|[[:space:]])(\$TERMINAL|xdg-terminal-exec)[[:space:]].*-e([[:space:]]|$) ]]; then
+if [[ $exec_line =~ (^|[[:space:]])(\$TERMINAL|xdg-terminal-exec|blob-terminal-exec)[[:space:]].*-e([[:space:]]|$) ]]; then
   BLOB_REMOVE_NOTIFY=false blob-tui-remove "$desktop_name"
   exit 0
 fi

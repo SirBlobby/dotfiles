@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# blob:summary=Run a command in the default terminal
+# blob:args=[--print-id] [--app-id=<app-id>] [--title=<title>] [-e] <command> [args...]
+# blob:hidden=true
+
+terminal=""
+for candidate in xdg-terminal-exec foot kitty; do
+  if command -v "$candidate" &>/dev/null; then
+    terminal=$candidate
+    break
+  fi
+done
+
+if [[ -z $terminal ]]; then
+  blob-notify-send "No terminal installed" "Install xdg-terminal-exec, foot or kitty."
+  exit 1
+fi
+
+if [[ $terminal == "xdg-terminal-exec" ]]; then
+  exec xdg-terminal-exec "$@"
+fi
+
+app_id=""
+title=""
+command_args=()
+
+while (( $# > 0 )); do
+  case "$1" in
+    --print-id)
+      printf '%s\n' "$terminal"
+      exit 0
+      ;;
+    --app-id=*)
+      app_id=${1#--app-id=}
+      shift
+      ;;
+    --title=*)
+      title=${1#--title=}
+      shift
+      ;;
+    -e)
+      shift
+      command_args+=("$@")
+      break
+      ;;
+    *)
+      command_args+=("$1")
+      shift
+      ;;
+  esac
+done
+
+launch=("$terminal")
+
+case "$terminal" in
+  foot)
+    [[ -n $app_id ]] && launch+=("--app-id=$app_id")
+    ;;
+  kitty)
+    [[ -n $app_id ]] && launch+=("--class=$app_id")
+    ;;
+esac
+
+[[ -n $title ]] && launch+=("--title=$title")
+
+exec "${launch[@]}" "${command_args[@]}"

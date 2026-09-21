@@ -58,8 +58,11 @@ than usual.
 
 Two are worth knowing about:
 
-- `xdg-terminal-exec` is load-bearing. Every TUI launcher's `Exec=` line calls
-  it, so if its AUR build ever fails, TUI shortcuts stop opening.
+- `xdg-terminal-exec` used to be load-bearing: every TUI launcher, the floating
+  launcher behind most of the menu, and `$TERMINAL` called it by name, so a
+  failed AUR build silently broke about half the menu. They all go through
+  `blob-terminal-exec` now, which prefers it and falls back to `foot`, then
+  `kitty`, both from the official repositories.
 - `aether` is in the AUR at a version newer than the one the repository shipped.
 
 `quickshell` never came from the Omarchy repository - it is in official `extra`.

@@ -12,7 +12,7 @@ echo "Scanning for TUIs in $APP_DIR..."
 
 tui_desktop_files=()
 while IFS= read -r -d '' file; do
-  if grep -q "Exec=xdg-terminal-exec --app-id=TUI\." "$file" 2>/dev/null; then
+  if grep -qE "Exec=(xdg|blob)-terminal-exec --app-id=TUI\." "$file" 2>/dev/null; then
     tui_desktop_files+=("$file")
   fi
 done < <(find "$APP_DIR" -maxdepth 1 -name "*.desktop" -print0 2>/dev/null)

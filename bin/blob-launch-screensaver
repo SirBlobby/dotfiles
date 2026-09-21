@@ -16,7 +16,7 @@ if blob-toggle-enabled screensaver-off && [[ $1 != "force" ]]; then
 fi
 
 focused=$(blob-hypr-monitor-focused)
-terminal=$(xdg-terminal-exec --print-id)
+terminal=$(blob-terminal-exec --print-id)
 
 case $terminal in
 *Alacritty* | *ghostty* | *foot* | *kitty*) ;;

@@ -10,4 +10,4 @@ source blob-restart-gum
 cmd="$*"
 presentation_script="blob-show-logo; $cmd; if (( \$? != 130 )); then blob-show-done; fi"
 
-exec setsid uwsm-app -- xdg-terminal-exec --app-id=org.blob.terminal --title=Blob -e bash -c "$presentation_script"
+exec setsid uwsm-app -- blob-terminal-exec --app-id=org.blob.terminal --title=Blob -e bash -c "$presentation_script"

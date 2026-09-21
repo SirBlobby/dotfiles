@@ -533,6 +533,7 @@ of the `blob` listing.
 
 | Command | Does | Arguments |
 | --- | --- | --- |
+| `blob-terminal-exec` | Run a command in the default terminal (hidden) | [--print-id] [--app-id=<app-id>] [--title=<title>] [-e] <command> [args...] |
 | `blob-theme-browser` | Apply the current theme color to Chromium, Chrome, Edge, and Brave (hidden) | - |
 | `blob-theme-browser-policy` | Write the current theme color into the browser policy directories (hidden) | <rrggbb> |
 | `blob-theme-color` | Resolve semantic colors from an Blob theme colors.toml (hidden) | [--file <colors.toml>] (--all \| --raw \| <key> [fallback]) |
