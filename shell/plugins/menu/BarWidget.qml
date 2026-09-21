@@ -8,7 +8,7 @@ BarWidget {
   id: root
   moduleName: "blob.menu"
 
-  readonly property string iconPath: Quickshell.env("HOME") + "/.config/blob/branding/blob_icon.svg"
+  readonly property string iconPath: Quickshell.env("HOME") + "/.config/blob/branding/chai.svg"
   readonly property int iconSize: Math.round(Style.font.body * 1.35)
 
   property string iconSvg: ""
