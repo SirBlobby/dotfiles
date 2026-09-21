@@ -134,6 +134,7 @@ link_app_themes() {
   link_theme_file gtk.css "$config_dir/gtk-3.0/gtk.css" "gtk-3.0 theme"
   link_theme_file gtk.css "$config_dir/gtk-4.0/gtk.css" "gtk-4.0 theme"
   link_theme_file starship.toml "$config_dir/starship.toml" "starship prompt"
+  link_theme_file fastfetch.jsonc "$config_dir/fastfetch/config.jsonc" "fastfetch"
 
   if [[ -d $config_dir/nvim/lua/plugins ]]; then
     link_theme_file neovim.lua "$config_dir/nvim/lua/plugins/theme.lua" "neovim theme"

@@ -12,9 +12,11 @@ LOGO_FILE="$HOME/.config/blob/branding/about.txt"
 FIT_FILE="$HOME/.local/state/blob/windows/about.fit"
 
 # A user-level fastfetch config can relocate or restyle the logo in ways this
-# measurement cannot see, so leave sizing to the float rule in that case.
+# measurement cannot see, so leave sizing to the float rule in that case. Blob's
+# own config is the symlink the installer makes into the current theme, and the
+# measurements below are written against it.
 custom_fastfetch_config() {
-  [[ -f $HOME/.config/fastfetch/config.jsonc ]]
+  [[ -f $HOME/.config/fastfetch/config.jsonc && ! -L $HOME/.config/fastfetch/config.jsonc ]]
 }
 
 # wc -L counts display columns only in a UTF-8 locale. A session that never set

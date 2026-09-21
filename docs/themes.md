@@ -30,13 +30,14 @@ the shell and the CLI never disagree about what a slot means.
 Each rendered file is picked up differently: `foot.ini` and `kitty.conf` by an
 `include` in the shipped terminal config, `hyprland.lua` through Hyprland's Lua
 module path, `shell.toml` and `chromium.theme` read straight from the state
-directory, and `btop.theme`, `neovim.lua`, `gtk.css` and `starship.toml`
-through symlinks the installer makes into those apps' own config trees.
+directory, and `btop.theme`, `neovim.lua`, `gtk.css`, `starship.toml` and
+`fastfetch.jsonc` through symlinks the installer makes into those apps' own
+config trees.
 
 `default/themed/*.tpl` are rendered per theme into
-`~/.local/state/blob/current/theme/`. Eleven ship: foot, kitty, btop, chromium,
-hyprland, the screenshare picker, neovim, `shell.toml`, zen, `gtk.css`, and
-`starship.toml`.
+`~/.local/state/blob/current/theme/`. Twelve ship: foot, kitty, btop, chromium,
+hyprland, the screenshare picker, neovim, `shell.toml`, zen, `gtk.css`,
+`starship.toml`, and `fastfetch.jsonc`.
 
 An app picks its colors up in one of two ways. Most include the generated file
 directly, so nothing has to run:
@@ -65,6 +66,24 @@ so an app that was already open keeps its old colors until it is restarted.
 
 Adding a template for another app means dropping a `.tpl` in `default/themed/`
 and, if it cannot include a file, adding an applier to that list.
+
+## Tokens
+
+A template may reference `{{ key }}` for any resolved palette key, plus three
+derived forms: `{{ key_strip }}` without the leading `#`, `{{ key_rgb }}` as
+`R,G,B`, and `{{ key_ansi }}` as `38;2;R;G;B`, which is what a terminal program
+that takes a raw escape sequence rather than a hex color needs.
+
+## About
+
+`fastfetch.jsonc` is linked to `~/.config/fastfetch/config.jsonc`. It draws
+`~/.config/blob/branding/about.txt` as the logo, with 2 columns of padding to
+its left and 6 between it and the modules - the exact numbers
+`blob-launch-about` measures the About window against, so replacing the logo
+resizes the window to fit it. Title and keys take the theme's accent.
+
+A config of your own at that path is a regular file rather than the symlink, and
+`blob-launch-about` leaves the window sizing alone when it finds one.
 
 ## The prompt
 

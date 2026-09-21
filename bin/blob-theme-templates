@@ -203,6 +203,7 @@ add_template_value() {
   if [[ $value =~ ^#[0-9A-Fa-f]{6}$ ]]; then
     rgb=$(hex_to_rgb "$value")
     printf 's|{{ %s_rgb }}|%s|g\n' "$key" "$rgb" >>"$sed_script"
+    printf 's|{{ %s_ansi }}|38;2;%s|g\n' "$key" "${rgb//,/;}" >>"$sed_script"
   fi
 }
 
