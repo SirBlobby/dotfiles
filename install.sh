@@ -81,6 +81,7 @@ install_login_config
 install_session_entry
 install_autologin
 enable_display_manager
+report_greeter_compositor
 report_login_conflicts
 report_desktop_essentials
 

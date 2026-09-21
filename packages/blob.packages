@@ -6,6 +6,7 @@
 
 # Compositor and shell
 hyprland
+mesa
 quickshell
 uwsm
 sddm

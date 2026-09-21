@@ -8,6 +8,7 @@ greeter_compositor_config=/etc/sddm/hyprland-greeter.lua
 # ISO, or a previous desktop left behind.
 blob_greeter_conf="$greeter_config_dir/zz-blob.conf"
 blob_autologin_conf="$greeter_config_dir/zzz-blob-autologin.conf"
+greeter_gpu_detector=/usr/local/bin/blob-hw-gpu-accelerated
 
 # SDDM's stock Wayland greeter runs on weston, which Blob does not install.
 # Point it at Hyprland with a greeter-only config instead. That config is Lua:
@@ -18,6 +19,8 @@ install_login_config() {
     "$greeter_compositor_config" "sddm/hyprland-greeter.lua"
   install_root_file "$repo_dir/default/sddm/zz-blob.conf" \
     "$blob_greeter_conf" "sddm.conf.d/zz-blob.conf"
+  install_root_file "$repo_dir/bin/blob-hw-gpu-accelerated" \
+    "$greeter_gpu_detector" "blob-hw-gpu-accelerated" 0755
 }
 
 install_session_entry() {
@@ -52,6 +55,22 @@ setting_value() {
   local file="$1" key="$2"
 
   sed -n "s/^[[:space:]]*$key[[:space:]]*=[[:space:]]*//p" "$file" | tail -1
+}
+
+# SDDM runs CompositorCommand to get a Wayland greeter on screen. When that
+# binary is not installed SDDM fails with no greeter at all, which reads as a
+# machine that boots to a console for no reason, so name it here instead.
+report_greeter_compositor() {
+  local command_line binary
+
+  command_line="$(setting_value "$repo_dir/default/sddm/zz-blob.conf" CompositorCommand)"
+  binary="${command_line%% *}"
+
+  [[ -n $binary ]] || return 0
+  command -v "$binary" &>/dev/null && return 0
+
+  say "WARN  the greeter's compositor command '$binary' is not installed"
+  say "      SDDM cannot draw a greeter without it; it is set in $blob_greeter_conf"
 }
 
 # zz-blob.conf blanks Theme and Autologin, so a leftover drop-in cannot point the

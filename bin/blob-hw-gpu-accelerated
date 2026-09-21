@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# blob:summary=Detect whether a DRM device with an accelerated driver is present.
+
+drm_path="${BLOB_DRM_PATH:-/sys/class/drm}"
+
+accelerated_drivers=(
+  amdgpu
+  i915
+  nouveau
+  nvidia
+  nvidia-drm
+  radeon
+  xe
+)
+
+shopt -s nullglob
+
+for card in "$drm_path"/card[0-9]*; do
+  [[ -L $card/device/driver ]] || continue
+  driver=$(basename "$(readlink -f "$card/device/driver")")
+
+  for accelerated in "${accelerated_drivers[@]}"; do
+    [[ $driver == "$accelerated" ]] && exit 0
+  done
+done
+
+exit 1

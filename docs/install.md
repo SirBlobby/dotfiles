@@ -86,10 +86,14 @@ with `--check`.
    | `/usr/local/share/wayland-sessions/blob.desktop` | the session SDDM offers |
    | `/etc/sddm.conf.d/zz-blob.conf` | Wayland greeter, run on Hyprland, stock theme, remember the last session |
    | `/etc/sddm/hyprland-greeter.lua` | the greeter's own tiny Hyprland config |
+   | `/usr/local/bin/blob-hw-gpu-accelerated` | the renderer check that config runs, where SDDM's user can read it |
 
    The greeter config matters more than it looks: SDDM's stock Wayland greeter
    runs on `weston`, which Blob does not install, so a default SDDM would fail
-   to draw anything. That greeter config has to be Lua: Hyprland dropped the old
+   to draw anything. The installer checks that the `CompositorCommand` named in
+   `zz-blob.conf` is actually installed and warns when it is not, because SDDM
+   with a compositor command it cannot run starts, fails, and leaves the machine
+   sitting at a text console with no explanation. That greeter config has to be Lua: Hyprland dropped the old
    hyprlang format, and a config it cannot parse leaves the greeter with no
    compositor and the screen black. `sddm.service` is enabled and the default
    systemd target is set to `graphical.target`, which an Arch install without a
@@ -130,6 +134,52 @@ with `--check`.
 | `--skip-packages` | directories, config and services only |
 | `--autologin` | skip the SDDM prompt for this user |
 | `--no-launch` | leave the login screen for the next reboot |
+
+## Choosing a renderer
+
+Hyprland renders through Mesa, and on an adapter Mesa has no driver for it exits
+with `failed to create dri2 screen` instead of drawing. The greeter is Hyprland
+too, so that is a black screen at boot and a second one after login, which is
+how a machine with no real GPU behind its display arrives.
+
+`blob-hw-gpu-accelerated` decides which way to go. It reads the kernel driver of
+each `/sys/class/drm/card*` from sysfs, not from `lspci`, which reads PCI config
+space and resumes runtime-suspended GPUs. A card driven by `amdgpu`, `i915`,
+`nouveau`, `nvidia`, `nvidia-drm`, `radeon` or `xe` is a real integrated or
+dedicated GPU and hardware rendering is left alone. Everything else - `vmwgfx`,
+`vboxvideo`, `qxl`, `bochs-drm`, `cirrus`, `simpledrm`, `vkms`, `virtio_gpu` -
+is virtual or framebuffer-only, and two settings are applied:
+
+| Setting | Effect |
+| --- | --- |
+| `LIBGL_ALWAYS_SOFTWARE=1` | Mesa uses llvmpipe, which renders on the CPU |
+| `WLR_NO_HARDWARE_CURSORS=1`, `cursor:no_hardware_cursors` | the cursor is drawn by the compositor, since there is no plane to put it on |
+
+llvmpipe is slow and it draws. A machine with a real GPU never touches it.
+
+Two places read the detector, because they run as different users:
+
+| Where | How |
+| --- | --- |
+| the session | `default/hypr/renderer.lua`, required from `envs.lua` beside `nvidia.lua`, through `$BLOB_PATH/bin` |
+| the greeter | `default/sddm/hyprland-greeter.lua`, through `/usr/local/bin/blob-hw-gpu-accelerated` |
+
+The greeter runs as SDDM's own user, with no `BLOB_PATH` and no read access to
+your home directory, so `install.sh` copies the detector to `/usr/local/bin`.
+A detector that is not there yet reads as no acceleration, which is the fallback
+that always draws.
+
+To add a driver to the accelerated list, edit `accelerated_drivers` in
+`bin/blob-hw-gpu-accelerated` and rerun `./install.sh` so the greeter's copy
+follows. `virtio_gpu` is deliberately not on it: QEMU only accelerates it when
+the host enables virgl, and Mesa fails the same way when it does not.
+
+To see the difference by hand, from a console:
+
+```bash
+Hyprland                          # fails with the dri2 error
+LIBGL_ALWAYS_SOFTWARE=1 Hyprland  # starts
+```
 
 ## Uninstall
 

@@ -206,6 +206,7 @@ of the `blob` listing.
 | `blob-hw-display` | Print the most likely display backlight device. | - |
 | `blob-hw-external` | Returns true when an external monitor is physically connected. | - |
 | `blob-hw-fingerprint` | Returns true when a fingerprint reader is present (hidden) | - |
+| `blob-hw-gpu-accelerated` | Detect whether a DRM device with an accelerated driver is present. | - |
 | `blob-hw-hybrid-gpu` | Detect whether the system has an active hybrid GPU configuration | - |
 | `blob-hw-laptop` | Returns true when running on a laptop (has a lid or laptop chassis). | - |
 | `blob-hw-laptop-closed` | Returns true when the laptop lid is closed (hidden) | - |
