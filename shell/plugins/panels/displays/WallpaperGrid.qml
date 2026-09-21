@@ -20,7 +20,7 @@ Item {
   Process {
     id: listProc
     command: ["bash", "-c",
-      'find "$1" -maxdepth 1 -type f \\( -iname "*.jpg" -o -iname "*.jpeg" ' +
+      'find -L "$1" -maxdepth 1 -type f \\( -iname "*.jpg" -o -iname "*.jpeg" ' +
       '-o -iname "*.png" -o -iname "*.webp" -o -iname "*.gif" \\) | sort',
       "--", root.directory]
     stdout: StdioCollector {
