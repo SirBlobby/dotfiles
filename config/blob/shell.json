@@ -30,7 +30,17 @@
         { "id": "blob.network" },
         { "id": "blob.audio" },
         { "id": "blob.monitor" },
-        { "id": "blob.power" }
+        { "id": "blob.power" },
+        {
+          "id": "blob.notifications",
+          "type": "command",
+          "exec": "blob-notification-bell",
+          "interval": 3,
+          "text": "\uf0f3",
+          "tooltip": "Notifications",
+          "onClick": "blob-shell shell toggle blob.notification-center",
+          "onRightClick": "blob-toggle-silencing"
+        }
       ]
     }
   },

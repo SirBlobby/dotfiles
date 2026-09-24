@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# blob:summary=Print the bar bell for the notification centre as module JSON
+# blob:hidden=true
+
+if [[ $(blob-shell notifications dndState 2>/dev/null) == on ]]; then
+  printf '{"text":"","tooltip":"Notifications silenced"}\n'
+else
+  printf '{"text":"","tooltip":"Notifications"}\n'
+fi

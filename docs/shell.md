@@ -54,7 +54,9 @@ entirely rather than merging.
 `blob.clock` and `blob.notifications` are `type: "command"` modules, which is how
 they carry their own click actions: the clock opens quick settings on left click,
 the shell's calendar on middle, and the timezone picker on right; the bell opens
-the notification centre on left and toggles silencing on right.
+the notification centre on left and toggles silencing on right. The bell runs
+`blob-notification-bell` every 3 seconds and turns into a crossed-out bell while
+notifications are silenced.
 
 The centre module named by `centerAnchor` cannot be dragged out of the centre.
 Every other widget still reorders.

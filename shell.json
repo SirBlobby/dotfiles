@@ -34,7 +34,9 @@
         {
           "id": "blob.notifications",
           "type": "command",
-          "text": "",
+          "exec": "blob-notification-bell",
+          "interval": 3,
+          "text": "\uf0f3",
           "tooltip": "Notifications",
           "onClick": "blob-shell shell toggle blob.notification-center",
           "onRightClick": "blob-toggle-silencing"

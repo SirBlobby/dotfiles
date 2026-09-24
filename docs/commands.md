@@ -333,6 +333,7 @@ of the `blob` listing.
 | Command | Does | Arguments |
 | --- | --- | --- |
 | `blob-notification-battery` | Show the current battery status notification | - |
+| `blob-notification-bell` | Print the bar bell for the notification centre as module JSON (hidden) | - |
 | `blob-notification-time` | Show the current time and date notification | - |
 | `blob-notification-wait` | Wait for the desktop notification server to accept notifications (hidden) | [timeout-seconds] |
 | `blob-notification-weather` | Toggle the current weather panel | - |

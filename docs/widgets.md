@@ -38,7 +38,7 @@ falling back to `accent` for themes that define neither. `color0` is
 | Panel | Opened by |
 | --- | --- |
 | Quick settings | left-click the bar clock, or `Super + Ctrl + Q` |
-| Notification centre | left-click the bar bell |
+| Notification centre | left-click the bar bell; right-click silences notifications, and the bell is crossed out while they are |
 | System monitor | `Super + Ctrl + M` |
 
 Both new bar click actions are already in `shell.json`. The system monitor had no
