@@ -56,6 +56,20 @@ BarWidget {
     onTriggered: root.refresh()
   }
 
+  FileView {
+    path: "/var/log/pacman.log"
+    preload: false
+    watchChanges: true
+    printErrors: false
+    onFileChanged: packageChangeDelay.restart()
+  }
+
+  Timer {
+    id: packageChangeDelay
+    interval: 5000
+    onTriggered: root.refresh()
+  }
+
   BarIconButton {
     id: button
     anchors.fill: parent
