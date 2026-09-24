@@ -61,6 +61,33 @@ notifications are silenced.
 The centre module named by `centerAnchor` cannot be dragged out of the centre.
 Every other widget still reorders.
 
+## Calendar
+
+The clock's calendar popup and the Quick Settings card share one component,
+`CalendarView` in `shell/Ui`, with its date math in `Ui/CalendarModel.js`.
+
+- Today is filled with the accent color; days from the neighbouring months are
+  dimmed.
+- Clicking a day selects it, and the line under the grid gives its weekday,
+  day of the year, and how far it is from today. Clicking a day from the
+  previous or next month moves the view there.
+- Clicking the month label opens a month picker; the chevrons then step whole
+  years, and clicking a month jumps to it.
+- The scroll wheel steps months, or years while the picker is open.
+
+Keys in the clock popup:
+
+| Key | Action |
+| --- | --- |
+| arrows / `hjkl` | move the selected day (a week up or down), or the month cursor in the picker |
+| `[` `]` | previous or next month |
+| `{` `}` | previous or next year |
+| `m` | open or close the month picker |
+| `t` | back to today |
+| `w` | toggle the week start between Monday and Sunday |
+| Enter | back to today, or pick the highlighted month |
+| Esc | close the month picker, then the popup |
+
 ## Differences from upstream
 
 This shell was forked from Omarchy 4.0.4 and is not tracked against it. The

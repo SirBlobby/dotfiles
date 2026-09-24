@@ -38,3 +38,7 @@ CardHeader 1.0 CardHeader.qml
 StatRow 1.0 StatRow.qml
 CardIconButton 1.0 CardIconButton.qml
 Chip 1.0 Chip.qml
+CalendarModel 1.0 CalendarModel.js
+CalendarView 1.0 CalendarView.qml
+CalendarDays 1.0 CalendarDays.qml
+CalendarMonthPicker 1.0 CalendarMonthPicker.qml

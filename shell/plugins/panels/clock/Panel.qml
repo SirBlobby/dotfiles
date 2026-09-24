@@ -8,9 +8,9 @@ import "Model.js" as Model
 // sit beside the weather panel — same hero-over-detail composition, same
 // spacing scale, same small-caps labels.
 //
-// The grid is a read-out rather than a picker: today is the only marked
-// day, and the only thing that moves is which month is on screen —
-// chevrons, the scroll wheel, and the arrow keys all step it.
+// The grid itself is the shared CalendarView from qs.Ui: days can be
+// selected with the pointer or the arrow keys, the month label opens a
+// month picker, and today is filled with the accent color.
 //
 // BarWidget.qml owns the bar label and hands this panel the button to
 // anchor against.
@@ -33,20 +33,11 @@ Panel {
   // ---- Today. SystemClock keeps this honest across midnight so the
   //      highlight rolls over without the panel being reopened.
   property date today: new Date()
-  readonly property string todayKey: Model.keyForDate(today)
-
-  // The month on screen. Stepping moves this and nothing else: the grid is
-  // a read-out, not a picker, so there is no per-day cursor to keep in sync.
-  property int viewYear: today.getFullYear()
-  property int viewMonth: today.getMonth()
-
-  readonly property date viewDate: new Date(viewYear, viewMonth, 1)
-  readonly property bool viewingCurrentMonth: viewYear === today.getFullYear() && viewMonth === today.getMonth()
 
   // Pinned to today, not to the month being browsed — stepping through the
   // calendar does not change how much of the year is gone.
-  readonly property real yearDone: Model.yearProgress(today.getFullYear(), today.getMonth(), today.getDate())
-  readonly property int yearDonePercent: Model.yearProgressPercent(today.getFullYear(), today.getMonth(), today.getDate())
+  readonly property real yearDone: CalendarModel.yearProgress(today.getFullYear(), today.getMonth(), today.getDate())
+  readonly property int yearDonePercent: CalendarModel.yearProgressPercent(today.getFullYear(), today.getMonth(), today.getDate())
 
   // Memento mori, for anyone who goes looking: double-tapping the year bar
   // asks for a birth year and a life expectancy, and a second bar tracks one
@@ -63,26 +54,17 @@ Panel {
   // starts out matching the rest of the desktop rather than a hardcoded
   // convention. Clicking the grid's "W" heading writes the choice back to
   // shell.json.
-  readonly property int weekStart: Model.normalizedWeekStart(setting("weekStartDay", null), Qt.locale().firstDayOfWeek)
+  readonly property int weekStart: CalendarModel.normalizedWeekStart(setting("weekStartDay", null), Qt.locale().firstDayOfWeek)
   // The interface is English throughout, so day names are not taken from the
   // system locale. Where the week starts still is: that is a regional
   // convention rather than a translation, and it stays overridable above.
   readonly property var labelLocale: Qt.locale("en_US")
-  readonly property string nextWeekStartLabel: labelLocale.dayName(Model.toggledWeekStart(weekStart), Locale.LongFormat)
-  readonly property var weekdays: Model.weekdayOrder(weekStart)
-  readonly property var weeks: Model.monthGrid(viewYear, viewMonth, weekStart, todayKey)
-
+  readonly property string nextWeekStartLabel: labelLocale.dayName(CalendarModel.toggledWeekStart(weekStart), Locale.LongFormat)
 
   // Guarded so the widget renders before the bar is injected (the bar-widget
   // contract instantiates it bare).
   readonly property color contentForeground: bar ? bar.foreground : Color.foreground
   readonly property string contentFontFamily: bar ? bar.fontFamily : Style.font.family
-
-  readonly property int cellWidth: Style.space(52)
-  readonly property int cellHeight: Style.space(34)
-  readonly property int cellSpacing: Style.space(2)
-  readonly property int weekColumnWidth: Style.space(32)
-  readonly property int gutterWidth: Style.space(14)
 
   function open() {
     refresh()
@@ -127,22 +109,7 @@ Panel {
 
   function refresh() {
     root.today = new Date()
-    root.goToToday()
-  }
-
-  function goToToday() {
-    root.viewYear = today.getFullYear()
-    root.viewMonth = today.getMonth()
-  }
-
-  function moveMonth(delta) {
-    var next = Model.stepMonth(viewYear, viewMonth, delta)
-    root.viewYear = next.year
-    root.viewMonth = next.month
-  }
-
-  function moveYear(delta) {
-    moveMonth(delta * 12)
+    calendar.goToToday()
   }
 
   // Applied locally first so the panel redraws on the click itself; the
@@ -163,9 +130,9 @@ Panel {
   }
 
   function setWeekStart(day) {
-    var next = Model.normalizedWeekStart(day, root.weekStart)
+    var next = CalendarModel.normalizedWeekStart(day, root.weekStart)
     if (next === root.weekStart) return
-    persistSettings({ weekStartDay: Model.weekStartSettingName(next) })
+    persistSettings({ weekStartDay: CalendarModel.weekStartSettingName(next) })
   }
 
   function startEditingLife() {
@@ -216,22 +183,21 @@ Panel {
   }
 
   function toggleWeekStart() {
-    setWeekStart(Model.toggledWeekStart(root.weekStart))
+    setWeekStart(CalendarModel.toggledWeekStart(root.weekStart))
   }
 
-  // English short day names, matching the rest of the interface.
-  function weekdayLabel(weekday) {
-    return String(labelLocale.dayName(weekday, Locale.ShortFormat)).toUpperCase()
+  function closeOrDismissPicker() {
+    if (!calendar.dismissPicker()) root.close()
   }
 
   SystemClock {
     id: clock
     precision: SystemClock.Minutes
     onDateChanged: {
-      if (Model.keyForDate(clock.date) === String(root.todayKey)) return
-      var followToday = root.viewingCurrentMonth
+      if (CalendarModel.keyForDate(clock.date) === CalendarModel.keyForDate(root.today)) return
+      var followToday = calendar.selectionIsToday
       root.today = clock.date
-      if (followToday) root.goToToday()
+      if (followToday) calendar.goToToday()
     }
   }
 
@@ -250,19 +216,17 @@ Panel {
       id: keyCatcher
       anchors.fill: parent
       blocked: root.editingLife
-      onMoveRequested: function(dx, dy) {
-        if (dx !== 0) root.moveMonth(dx)
-        if (dy !== 0) root.moveYear(dy)
-      }
-      onActivateRequested: root.goToToday()
-      onCloseRequested: root.close()
+      onMoveRequested: function(dx, dy) { calendar.handleMove(dx, dy) }
+      onActivateRequested: calendar.activate()
+      onCloseRequested: root.closeOrDismissPicker()
       onTabRequested: function(direction) { root.switchPanel(direction) }
       onTextKey: function(t) {
-        if (t === "[") root.moveMonth(-1)
-        else if (t === "]") root.moveMonth(1)
-        else if (t === "{") root.moveYear(-1)
-        else if (t === "}") root.moveYear(1)
-        else if (t === "t" || t === "T") root.goToToday()
+        if (t === "[") calendar.moveMonth(-1)
+        else if (t === "]") calendar.moveMonth(1)
+        else if (t === "{") calendar.moveYear(-1)
+        else if (t === "}") calendar.moveYear(1)
+        else if (t === "t" || t === "T") calendar.goToToday()
+        else if (t === "m" || t === "M") calendar.togglePicker()
         else if (t === "w" || t === "W") root.toggleWeekStart()
       }
 
@@ -280,7 +244,7 @@ Panel {
           // Never narrower than the grid. The popup width is capped to what
           // the screen allows, and a fixed seven-column grid would otherwise
           // lose its last days off the edge instead of scrolling.
-          width: Math.max(calendarScroll.width, gridColumn.width)
+          width: Math.max(calendarScroll.width, calendar.gridWidth)
           spacing: Style.space(8)
 
           // ---- Hero: today, centered. Once the view has stepped back
@@ -331,10 +295,10 @@ Panel {
               y: heroRow.y
               width: heroRow.width
               height: heroRow.height
-              enabled: !root.viewingCurrentMonth
+              enabled: !calendar.selectionIsToday || calendar.pickingMonth
               hoverEnabled: enabled
               cursorShape: Qt.PointingHandCursor
-              onClicked: root.goToToday()
+              onClicked: calendar.goToToday()
 
               PanelToolTip {
                 visible: heroMouse.containsMouse
@@ -355,7 +319,7 @@ Panel {
               id: yearBlock
               y: Style.space(6)
               anchors.horizontalCenter: parent.horizontalCenter
-              width: gridColumn.width
+              width: calendar.gridWidth
               height: Math.max(yearLabel.implicitHeight, Style.space(10))
 
               TapHandler {
@@ -474,7 +438,7 @@ Panel {
             Item {
               id: lifeBlock
               anchors.horizontalCenter: parent.horizontalCenter
-              width: gridColumn.width
+              width: calendar.gridWidth
               height: Math.max(lifeLabel.implicitHeight, Style.space(10))
 
               Text {
@@ -538,222 +502,23 @@ Panel {
             }
           }
 
-          // ---- Month grid: week numbers down a gutter on the left, then
-          //      the seven day columns. Always six rows, so the popup is
-          //      exactly as tall in February as it is in August.
-          Item {
+          CalendarView {
+            id: calendar
             width: parent.width
-            height: gridColumn.y + gridColumn.height
-
-            WheelHandler {
-              onWheel: function(event) {
-                // Horizontal wheels and touchpad side-scrolls report y === 0;
-                // without this they would every one read as "next month".
-                if (event.angleDelta.y === 0) return
-                root.moveMonth(event.angleDelta.y > 0 ? -1 : 1)
-              }
-            }
-
-            Column {
-              id: gridColumn
-              // The meter above is a solid rule; the grid needs room to
-              // read as its own block rather than hanging off it.
-              y: Style.space(18)
-              anchors.horizontalCenter: parent.horizontalCenter
-              spacing: Style.space(3)
-
-              Row {
-                id: headerRow
-                spacing: root.cellSpacing
-
-                // The week-number heading doubles as the week-start toggle.
-                // It is the one control in the panel whose meaning is not
-                // self-evident, so it carries a tooltip naming the day the
-                // click will switch to.
-                Rectangle {
-                  width: root.weekColumnWidth
-                  height: Style.space(16)
-                  radius: Style.cornerRadius
-                  color: weekStartMouse.containsMouse
-                    ? Style.hoverFillFor(root.contentForeground, Color.accent)
-                    : "transparent"
-
-                  Text {
-                    anchors.centerIn: parent
-                    text: "W"
-                    color: weekStartMouse.containsMouse
-                      ? Style.hoverStateColor(root.contentForeground, Color.accent)
-                      : Qt.darker(root.contentForeground, 1.9)
-                    font.family: root.contentFontFamily
-                    font.pixelSize: Style.font.caption
-                    font.letterSpacing: 1
-                    font.bold: true
-                  }
-
-                  MouseArea {
-                    id: weekStartMouse
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: root.toggleWeekStart()
-                  }
-
-                  PanelToolTip {
-                    visible: weekStartMouse.containsMouse
-                    text: "Start weeks on " + root.nextWeekStartLabel
-                    fontFamily: root.contentFontFamily
-                  }
-                }
-
-                Item {
-                  width: root.gutterWidth
-                  height: Style.space(16)
-                }
-
-                Repeater {
-                  model: root.weekdays
-
-                  Text {
-                    textFormat: Text.PlainText
-                    required property var modelData
-                    width: root.cellWidth
-                    height: Style.space(16)
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    text: root.weekdayLabel(modelData)
-                    color: Qt.darker(root.contentForeground, 1.5)
-                    font.family: root.contentFontFamily
-                    font.pixelSize: Style.font.caption
-                    font.letterSpacing: 1
-                    font.bold: true
-                  }
-                }
-              }
-
-              Repeater {
-                model: root.weeks
-
-                Row {
-                  required property var modelData
-                  spacing: root.cellSpacing
-
-                  Text {
-                    textFormat: Text.PlainText
-                    width: root.weekColumnWidth
-                    height: root.cellHeight
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    text: modelData.week
-                    color: Qt.darker(root.contentForeground, 1.9)
-                    font.family: root.contentFontFamily
-                    font.pixelSize: Style.font.caption
-                  }
-
-                  Item {
-                    width: root.gutterWidth
-                    height: root.cellHeight
-                  }
-
-                  Repeater {
-                    model: modelData.days
-
-                    Rectangle {
-                      required property var modelData
-
-                      width: root.cellWidth
-                      height: root.cellHeight
-                      radius: Style.cornerRadius
-                      // Today is outlined, not filled: a lit-up block shouts
-                      // over a grid this quiet.
-                      color: "transparent"
-                      border.width: modelData.today ? Style.spacing.hairline : 0
-                      border.color: Style.normalBorderFor(root.contentForeground, Color.accent)
-
-                      Text {
-                        textFormat: Text.PlainText
-                        anchors.centerIn: parent
-                        text: modelData.day
-                        color: modelData.inMonth
-                          ? (modelData.weekend ? Qt.darker(root.contentForeground, 1.45) : root.contentForeground)
-                          : Qt.darker(root.contentForeground, 2.2)
-                        font.family: root.contentFontFamily
-                        font.pixelSize: Style.font.body
-                        font.bold: modelData.today
-                      }
-                    }
-                  }
-                }
-              }
-            }
-
-            // Hairline down the week-number gutter, drawn only beside the
-            // day rows so it does not cut through the header band.
-            Rectangle {
-              x: gridColumn.x + root.weekColumnWidth + root.cellSpacing + Math.round((root.gutterWidth - width) / 2)
-              y: gridColumn.y + headerRow.height + gridColumn.spacing
-              width: Style.spacing.hairline
-              height: gridColumn.height - headerRow.height - gridColumn.spacing
-              color: root.contentForeground
-              opacity: 0.1
-            }
-          }
-
-          // ---- Month stepping, spanning the grid it drives. The chevrons
-          //      sit on the grid's outer bounds, the same edges the year
-          //      rail above uses, so the row reads as the panel's other
-          //      full-width rail instead of a cluster floating in space.
-          //      The label is centered and fixed-width, so it holds still
-          //      from "MAY" to "SEPTEMBER".
-          Item {
-            width: parent.width
-            height: monthNav.height
-
-            Item {
-              id: monthNav
-              anchors.horizontalCenter: parent.horizontalCenter
-              width: gridColumn.width
-              height: monthLabel.implicitHeight + Style.space(10)
-
-              Text {
-                id: monthLabel
-                textFormat: Text.PlainText
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                // Fixed width so the chevrons hold still between a
-                // "MAY 2026" and a "SEPTEMBER 2026".
-                width: Style.space(130)
-                horizontalAlignment: Text.AlignHCenter
-                text: Qt.formatDate(root.viewDate, "MMMM yyyy").toUpperCase()
-                color: Qt.darker(root.contentForeground, 1.4)
-                font.family: root.contentFontFamily
-                font.pixelSize: Style.font.body
-                font.letterSpacing: 1
-              }
-
-              PanelActionButton {
-                // Pulled out by the button's own padding so the glyph, not
-                // its hit box, lines up with the "2026" on the year rail.
-                anchors.left: parent.left
-                anchors.leftMargin: -Style.space(8)
-                anchors.verticalCenter: parent.verticalCenter
-                iconText: "󰅁"
-                tooltipText: "Previous month"
-                foreground: root.contentForeground
-                fontFamily: root.contentFontFamily
-                onClicked: root.moveMonth(-1)
-              }
-
-              PanelActionButton {
-                anchors.right: parent.right
-                anchors.rightMargin: -Style.space(8)
-                anchors.verticalCenter: parent.verticalCenter
-                iconText: "󰅂"
-                tooltipText: "Next month"
-                foreground: root.contentForeground
-                fontFamily: root.contentFontFamily
-                onClicked: root.moveMonth(1)
-              }
-            }
+            topPadding: Style.space(10)
+            today: root.today
+            weekStart: root.weekStart
+            foreground: root.contentForeground
+            fontFamily: root.contentFontFamily
+            showWeekNumbers: true
+            navigationAtBottom: true
+            weekHeaderTooltip: "Start weeks on " + root.nextWeekStartLabel
+            cellWidth: Style.space(52)
+            cellHeight: Style.space(34)
+            cellSpacing: Style.space(2)
+            weekColumnWidth: Style.space(32)
+            gutterWidth: Style.space(14)
+            onWeekHeaderClicked: root.toggleWeekStart()
           }
         }
       }
