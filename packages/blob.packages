@@ -126,11 +126,18 @@ tesseract-data-eng
 qrencode
 zbar
 
-# Media
+# Media: video and audio player, image viewer, PDF viewer
 mpv
 mpv-mpris
 imv
 evince
+
+# Office and video editing
+libreoffice-fresh
+kdenlive
+
+# Default application associations, set by install/steps/apps.sh
+xdg-utils
 
 # Files
 nautilus

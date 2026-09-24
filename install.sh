@@ -51,6 +51,7 @@ source "$repo_dir/install/steps/config.sh"
 source "$repo_dir/install/steps/services.sh"
 source "$repo_dir/install/steps/boot.sh"
 source "$repo_dir/install/steps/theme.sh"
+source "$repo_dir/install/steps/apps.sh"
 source "$repo_dir/install/steps/login.sh"
 source "$repo_dir/install/steps/reload.sh"
 
@@ -73,6 +74,7 @@ install_bash_integration
 install_user_units
 install_systemd_dropins
 install_zen_config
+install_default_apps
 
 link_wallpapers
 install_default_theme

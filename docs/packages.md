@@ -136,6 +136,23 @@ Omarchy's own package list, because they were installed by hand on this machine:
 
 `playerctl` is in official `extra`, so it sits in the repo list.
 
+## Desktop applications
+
+The everyday apps come from the official repositories with everything else:
+
+| Package | Opens |
+| --- | --- |
+| `imv` | images |
+| `mpv` | video and audio |
+| `evince` | PDFs |
+| `libreoffice-fresh` | documents, spreadsheets and presentations (Writer, Calc, Impress) |
+| `kdenlive` | video editing |
+
+`install.sh` makes them the default for their file types through `xdg-mime`,
+which writes `~/.config/mimeapps.list`. A type that already has a default in
+that file is left alone, so a choice you made yourself always wins, and an app
+that is not installed is skipped.
+
 ## The boot splash
 
 `install.sh` sets the splash to `branding/blob_boot.png`. To change it later:
