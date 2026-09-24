@@ -229,7 +229,7 @@
   "setup.default.editor": {"icon":"","label":"Editor","title":"Default Editor"},
   "setup.default.editor.neovim": {"icon":"","label":"Neovim","when":"blob-cmd-present nvim","checked":"[[ \"$(blob-default-editor)\" == \"nvim\" ]]","action":"blob-default-editor nvim"},
   "setup.default.editor.vscode": {"icon":"","label":"VSCode","when":"blob-cmd-present code","checked":"[[ \"$(blob-default-editor)\" == \"code\" ]]","action":"blob-default-editor code"},
-  "setup.default.editor.cursor": {"icon":"","iconFont":"blob","label":"Cursor","when":"blob-cmd-present cursor","checked":"[[ \"$(blob-default-editor)\" == \"cursor\" ]]","action":"blob-default-editor cursor"},
+  "setup.default.editor.cursor": {"icon":"󰆿","label":"Cursor","when":"blob-cmd-present cursor","checked":"[[ \"$(blob-default-editor)\" == \"cursor\" ]]","action":"blob-default-editor cursor"},
   "setup.default.editor.zed": {"icon":"","label":"Zed","when":"blob-cmd-present zeditor","checked":"[[ \"$(blob-default-editor)\" == \"zeditor\" ]]","action":"blob-default-editor zed"},
   "setup.default.editor.sublime": {"icon":"","label":"Sublime Text","when":"blob-cmd-present sublime_text","checked":"[[ \"$(blob-default-editor)\" == \"sublime_text\" ]]","action":"blob-default-editor sublime_text"},
   "setup.default.editor.helix": {"icon":"","label":"Helix","when":"blob-cmd-present helix","checked":"[[ \"$(blob-default-editor)\" == \"helix\" ]]","action":"blob-default-editor helix"},

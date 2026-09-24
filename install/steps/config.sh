@@ -60,7 +60,21 @@ install_shipped_config() {
   install_file "$repo_dir/shell.json" "$config_dir/blob/shell.json" "shell.json"
   install_file "$repo_dir/session/uwsm/default" "$config_dir/uwsm/default" "uwsm/default"
   install_file "$repo_dir/session/uwsm/env.d/10-blob" "$config_dir/uwsm/env.d/10-blob" "uwsm/env.d/10-blob"
-  install_file "$repo_dir/fonts/omarchy.ttf" "$font_dir/omarchy.ttf" "fonts/omarchy.ttf"
+}
+
+remove_omarchy_font() {
+  local omarchy_font="$font_dir/omarchy.ttf"
+
+  [[ -f $omarchy_font ]] || return 0
+
+  note_change
+  if [[ $check == true ]]; then
+    say "would remove $omarchy_font"
+    return 0
+  fi
+
+  rm -f "$omarchy_font"
+  say "rm    fonts/omarchy.ttf"
 }
 
 bashrc_line='[ -r "$HOME/.local/share/blob/session/bashrc" ] && . "$HOME/.local/share/blob/session/bashrc"'

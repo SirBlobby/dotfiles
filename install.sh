@@ -63,6 +63,7 @@ link_blob_path
 install_packages
 
 install_shipped_config
+remove_omarchy_font
 refresh_font_cache
 install_shell_profile
 install_bash_integration
