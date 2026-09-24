@@ -55,7 +55,8 @@ accent colour. The Wallpaper tile opens `blob.displays`, the Theme tile opens
 
 ## Notification centre
 
-`blob.notification-center` lists the notification history, newest first. A
+`blob.notification-center` lists the notification history, newest first. It
+opens at the top right, just below the bar rather than over it. A
 toast that expires unseen moves into history; a toast you close or click is
 deleted instead, so the centre only holds what you missed. The x on an entry
 removes it through `blob-shell notifications remove <file>`, the bell button
