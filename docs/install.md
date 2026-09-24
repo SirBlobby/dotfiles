@@ -15,7 +15,7 @@ with `--check`.
 | `install/steps/packages.sh` | repo and AUR packages, and the yay bootstrap |
 | `install/steps/config.sh` | the `BLOB_PATH` symlink, everything under `~/.config`, and the login shell profile |
 | `install/steps/services.sh` | system services, systemd drop-ins, user units |
-| `install/steps/boot.sh` | the Plymouth boot splash |
+| `install/steps/boot.sh` | the Plymouth boot splash, GRUB, and other-OS detection |
 | `install/steps/theme.sh` | the wallpaper link, the first theme, the first background |
 | `install/steps/login.sh` | SDDM, the session entry, and the first launch |
 | `install/steps/reload.sh` | reloading systemd, the user services, and a running session |
@@ -81,7 +81,8 @@ with `--check`.
    holds the console and leaves the machine with neither a greeter nor a TTY.
    The installer then applies `branding/blob_boot.png` as the boot splash
    through `blob boot`, which installs the theme, adds the mkinitcpio hook,
-   unmasks the plymouth units and rebuilds the initramfs. It is skipped when
+   unmasks the plymouth units, rebuilds the initramfs, and sets GRUB up with
+   os-prober so other installed systems appear in the boot menu. It is skipped when
    the blob theme is already the default with the same image, and once it is
    in place the plymouth units are no longer masked on later runs. See
    [packages.md](packages.md#the-boot-splash).

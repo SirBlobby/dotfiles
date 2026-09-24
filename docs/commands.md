@@ -60,7 +60,7 @@ of the `blob` listing.
 
 | Command | Does | Arguments |
 | --- | --- | --- |
-| `blob-boot` | - | - |
+| `blob-boot` | Apply a boot splash, set up GRUB, and detect other operating systems | [image] \| grub [--purge] \| detect \| cleanup \| status |
 
 ## branding
 

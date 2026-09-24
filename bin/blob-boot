@@ -2,7 +2,7 @@
 #
 # blob-boot - boot splash and bootloader management.
 #
-#   blob-boot [image]   Apply a Plymouth boot splash image (default action)
+#   blob-boot [image]   Apply a boot splash, set up GRUB, detect other OSes
 #   blob-boot grub      Install GRUB and detect every other OS on the machine.
 #                          Migrates off Limine when it is there; on a machine
 #                          that never had it, only GRUB is installed
@@ -65,17 +65,62 @@ apply_splash() {
     log "Rebuilding initramfs"
     rebuild_initramfs
 
-    report_kernel_cmdline
-
-    # Under GRUB the menu references the initramfs by path, so it only needs
-    # regenerating if the file set changed - but it is cheap and keeps the menu
-    # honest after a kernel or os-prober change.
-    if using_grub; then
-        log "Refreshing the GRUB menu"
-        sudo grub-mkconfig -o /boot/grub/grub.cfg
-    fi
+    setup_grub_boot
 
     ok "Boot splash successfully updated!"
+}
+
+setup_grub_boot() {
+    if [ ! -d /sys/firmware/efi ]; then
+        warn "Not booted in UEFI mode, so GRUB is not set up automatically."
+        report_kernel_cmdline
+        return 0
+    fi
+
+    if ! using_grub; then
+        log "GRUB is not installed; installing it and detecting other systems"
+        migrate_to_grub
+        return 0
+    fi
+
+    install_grub_packages
+    configure_grub_scripts
+    ensure_grub_splash_settings
+    generate_menu
+    echo
+    info "GRUB menu entries:"
+    list_menu_entries
+}
+
+ensure_grub_splash_settings() {
+    log "Checking the GRUB settings"
+    set_grub_key GRUB_DISABLE_OS_PROBER 'false'
+
+    local current param missing=()
+    current=$(sed -n 's/^GRUB_CMDLINE_LINUX_DEFAULT=//p' /etc/default/grub | tail -n 1 | tr -d "\"'")
+    for param in quiet splash vt.global_cursor_default=0; do
+        [[ " $current " == *" $param "* ]] || missing+=("$param")
+    done
+
+    if (( ${#missing[@]} == 0 )); then
+        info "kernel command line already carries the splash parameters"
+        return 0
+    fi
+
+    local updated="$current ${missing[*]}"
+    set_grub_key GRUB_CMDLINE_LINUX_DEFAULT "\"${updated# }\""
+}
+
+set_grub_key() {
+    local key=$1 val=$2
+    if grep -q "^${key}=" /etc/default/grub; then
+        sudo sed -i "s|^${key}=.*|${key}=${val}|" /etc/default/grub
+    elif grep -qE "^#\s*${key}=" /etc/default/grub; then
+        sudo sed -i "0,/^#\s*${key}=.*/s||${key}=${val}|" /etc/default/grub
+    else
+        echo "${key}=${val}" | sudo tee -a /etc/default/grub >/dev/null
+    fi
+    info "${key}=${val}"
 }
 
 install_theme() {
@@ -443,18 +488,6 @@ configure_grub_scripts() {
 install_grub() {
     local esp_uuid=$1
     log "Configuring GRUB"
-
-    set_grub_key() {
-        local key=$1 val=$2
-        if grep -q "^${key}=" /etc/default/grub; then
-            sudo sed -i "s|^${key}=.*|${key}=${val}|" /etc/default/grub
-        elif grep -qE "^#\s*${key}=" /etc/default/grub; then
-            sudo sed -i "0,/^#\s*${key}=.*/s||${key}=${val}|" /etc/default/grub
-        else
-            echo "${key}=${val}" | sudo tee -a /etc/default/grub >/dev/null
-        fi
-        info "${key}=${val}"
-    }
 
     # Carry over the exact kernel command line Limine was booting, so Plymouth
     # and the quiet splash behave the way they do today.

@@ -152,9 +152,24 @@ TTY. `install.sh` therefore masks `plymouth-start.service` and
 `plymouth-quit-wait.service` until the splash is configured, and `blob boot`
 unmasks them as part of configuring everything else - the theme in
 `default/plymouth/`, the `plymouth` mkinitcpio hook, and the initramfs rebuild.
-It finishes by printing the kernel parameters your bootloader still needs
-(`quiet splash vt.global_cursor_default=0`), because that line is the one thing
-it will not rewrite for a bootloader other than GRUB.
+
+Every splash update then sets GRUB up to boot the machine and everything else
+on it:
+
+- With GRUB already installed, it makes sure `os-prober` is installed and
+  `GRUB_DISABLE_OS_PROBER=false`, adds whichever of `quiet splash
+  vt.global_cursor_default=0` is missing from `GRUB_CMDLINE_LINUX_DEFAULT`
+  without touching the rest of the line, and regenerates the menu. os-prober
+  finds other systems, Windows gets an explicit chainload entry when os-prober
+  misses it on a shared ESP, and the run stops if the menu has no Arch entry.
+- Without GRUB, it runs the same migration as `blob boot grub`: GRUB is
+  installed, other systems are detected, and GRUB is armed for one test boot
+  with Limine left as the standing default. Once that boot works,
+  `blob boot cleanup` retires Limine.
+- On a machine not booted in UEFI mode GRUB is left alone and the kernel
+  parameters the bootloader still needs are printed instead.
+
+`blob boot detect` reruns only the OS detection.
 
 ## Updating
 
