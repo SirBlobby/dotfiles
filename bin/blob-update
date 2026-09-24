@@ -4,33 +4,232 @@
 # blob:args=[--no-confirm]
 # blob:requires-sudo=true
 
-set -e
+set -eE
 
 confirm=true
 [[ ${1-} == --no-confirm ]] && confirm=false
 
-if [[ $confirm == true ]]; then
-  read -rp "Update system and AUR packages? [y/N] " answer
-  [[ $answer == [yY] ]] || exit 0
+accent_color=4
+muted_color=8
+success_color=2
+failure_color=1
+
+total_steps=4
+current_step=0
+current_label="Checking for updates"
+started_at=$SECONDS
+
+repo_updates=""
+aur_updates=""
+counts_known=false
+aur_reachable=false
+reboot_needed=false
+orphan_count=0
+
+has_gum() {
+  command -v gum &>/dev/null
+}
+
+styled() {
+  local color="$1"
+  shift
+  if has_gum; then
+    gum style --foreground "$color" "$@"
+  else
+    local argument
+    for argument in "$@"; do
+      [[ $argument == --* ]] || printf '%s\n' "$argument"
+    done
+  fi
+}
+
+line_count() {
+  [[ -n $1 ]] || { echo 0; return; }
+  grep -c . <<<"$1"
+}
+
+show_header() {
+  if has_gum; then
+    gum style --border rounded --border-foreground "$accent_color" --padding "0 2" --margin "1 0" \
+      --bold "Blob Update" "$(date '+%A %-d %B, %H:%M')"
+  else
+    printf '\nBlob Update - %s\n\n' "$(date '+%A %-d %B, %H:%M')"
+  fi
+}
+
+begin_step() {
+  current_step=$((current_step + 1))
+  current_label="$1"
+  echo
+  styled "$accent_color" --bold "[$current_step/$total_steps] $1"
+}
+
+skip_step() {
+  begin_step "$1"
+  styled "$muted_color" "  $2"
+}
+
+report_failure() {
+  trap - ERR
+  echo
+  styled "$failure_color" --bold "Update failed while: $current_label"
+  blob-notify-send -u critical "Update failed" "Stopped while: $current_label" || true
+  exit 1
+}
+
+trap report_failure ERR
+
+print_update_list() {
+  local title="$1" updates="$2"
+  styled "$accent_color" --bold "$title ($(line_count "$updates"))"
+  if [[ -z $updates ]]; then
+    styled "$muted_color" "  none"
+    return
+  fi
+  awk '{ printf "  %-34s %s -> %s\n", $1, $2, $4 }' <<<"$updates"
+}
+
+gather_pending() {
+  if has_gum; then
+    gum spin --spinner dot --title "Checking the AUR..." -- blob-pkg-aur && aur_reachable=true || true
+  else
+    echo "Checking the AUR..."
+    blob-pkg-aur && aur_reachable=true || true
+  fi
+
+  blob-cmd-present checkupdates || return 0
+  counts_known=true
+
+  local check_status=0
+  if has_gum; then
+    repo_updates=$(gum spin --spinner dot --title "Checking for system updates..." --show-output -- checkupdates 2>/dev/null) || check_status=$?
+  else
+    echo "Checking for system updates..."
+    repo_updates=$(checkupdates 2>/dev/null) || check_status=$?
+  fi
+
+  if (( check_status == 1 )); then
+    counts_known=false
+    repo_updates=""
+    styled "$muted_color" "Could not check for system updates; updating anyway."
+    return 0
+  fi
+
+  if blob-cmd-present yay && [[ $aur_reachable == true ]]; then
+    aur_updates=$(yay -Qua 2>/dev/null || true)
+  fi
+
+  if grep -qE '^linux(-lts|-zen|-hardened)? ' <<<"$repo_updates"; then
+    reboot_needed=true
+  fi
+}
+
+show_pending() {
+  [[ $counts_known == true ]] || return 0
+  echo
+  print_update_list "System packages" "$repo_updates"
+  echo
+  if blob-cmd-present yay && [[ $aur_reachable == true ]]; then
+    print_update_list "AUR packages" "$aur_updates"
+  else
+    styled "$muted_color" "AUR packages: not checked"
+  fi
+}
+
+confirm_update() {
+  [[ $confirm == true ]] || return 0
+  echo
+  local question="Update system and AUR packages?"
+  if [[ $counts_known == true ]]; then
+    question="Install $(( $(line_count "$repo_updates") + $(line_count "$aur_updates") )) update(s)?"
+  fi
+  if has_gum; then
+    gum confirm "$question" || exit 0
+  else
+    local answer
+    read -rp "$question [y/N] " answer
+    [[ $answer == [yY] ]] || exit 0
+  fi
+}
+
+format_duration() {
+  local seconds=$1
+  if (( seconds >= 60 )); then
+    printf '%dm %ds' $((seconds / 60)) $((seconds % 60))
+  else
+    printf '%ds' "$seconds"
+  fi
+}
+
+show_summary() {
+  local elapsed
+  elapsed=$(format_duration $((SECONDS - started_at)))
+
+  echo
+  if has_gum; then
+    local summary_lines=()
+    if [[ $counts_known == true ]]; then
+      summary_lines+=("System packages   $(line_count "$repo_updates")")
+      summary_lines+=("AUR packages      $(line_count "$aur_updates")")
+    fi
+    summary_lines+=("Orphans removed   $orphan_count")
+    summary_lines+=("Time              $elapsed")
+    gum style --border rounded --border-foreground "$success_color" --padding "0 2" \
+      "$(gum style --foreground "$success_color" --bold "Update complete")" "" "${summary_lines[@]}"
+  else
+    echo "Update complete in $elapsed."
+    [[ $counts_known == true ]] && echo "System: $(line_count "$repo_updates"), AUR: $(line_count "$aur_updates"), orphans removed: $orphan_count"
+  fi
+
+  if [[ $reboot_needed == true ]]; then
+    echo
+    styled "$accent_color" --bold "A new kernel was installed. Reboot to start using it."
+  fi
+}
+
+show_header
+gather_pending
+
+if [[ $counts_known == true && -z $repo_updates && -z $aur_updates ]]; then
+  echo
+  styled "$success_color" --bold "Everything is up to date."
+  if blob-cmd-present yay && [[ $aur_reachable != true ]]; then
+    styled "$muted_color" "The AUR was not reachable, so AUR packages were not checked."
+  fi
+  exit 0
 fi
+
+show_pending
+confirm_update
 
 blob-sudo-keepalive
 
-echo "Refreshing the keyring..."
+begin_step "Refreshing the keyring"
 sudo pacman -Sy --needed --noconfirm archlinux-keyring
 
-echo "Updating system packages..."
+begin_step "Updating system packages"
 sudo pacman -Syu --noconfirm
 
-if blob-cmd-present yay && blob-pkg-aur; then
-  echo "Updating AUR packages..."
+if ! blob-cmd-present yay; then
+  skip_step "Updating AUR packages" "Skipped: yay is not installed"
+elif [[ $aur_reachable != true ]]; then
+  skip_step "Updating AUR packages" "Skipped: the AUR is not reachable"
+else
+  begin_step "Updating AUR packages"
   yay -Sua --noconfirm
 fi
 
+begin_step "Removing orphaned packages"
 orphans=$(pacman -Qtdq 2>/dev/null || true)
 if [[ -n $orphans ]]; then
-  echo "Removing orphaned packages..."
+  orphan_count=$(line_count "$orphans")
   printf '%s\n' "$orphans" | sudo pacman -Rns --noconfirm -
+else
+  styled "$muted_color" "  None to remove"
 fi
 
-blob-notify-send "Update complete" "System and AUR packages are up to date"
+show_summary
+
+notify_body="System and AUR packages are up to date"
+[[ $reboot_needed == true ]] && notify_body="$notify_body. Reboot to use the new kernel."
+blob-notify-send "Update complete" "$notify_body"
