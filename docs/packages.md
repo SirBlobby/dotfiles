@@ -171,7 +171,8 @@ ships a templated `netbird@.service` whose socket lives at
 `/var/run/netbird/<instance>.sock`, while the `netbird` CLI and the tray app
 look for `/var/run/netbird.sock`. `install.sh` adds a drop-in that moves the
 socket to the default path and enables `netbird@main.service`, so
-`netbird up` and the tray app work with no extra flags. The service starts on
+`netbird up` and the tray app work with no extra flags. The tray app starts
+with the session when it is installed. The service starts on
 the next boot, or now with `sudo systemctl start netbird@main`.
 
 `install.sh` makes them the default for their file types through `xdg-mime`,
