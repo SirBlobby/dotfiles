@@ -35,7 +35,7 @@ and nothing to re-apply after somebody else's release.
 | `themes/` | colour themes |
 | `config/` | shipped app configs |
 | `shell.json` | bar layout and idle timings |
-| `hooks/` | event hooks, such as retinting on theme change |
+| `hooks/` | optional user hook templates (`.sample`), copied to `~/.config/blob/hooks` and run by `blob-hook` once renamed |
 | `branding/` | icon, ASCII art, boot splash |
 | `wallpapers/` | 103 wallpapers, previewed in [the gallery](wallpaper-gallery/index.md) |
 | `session/` | wayland session entry and uwsm environment |
@@ -53,6 +53,7 @@ and nothing to re-apply after somebody else's release.
 | [widgets.md](docs/widgets.md) | the ported GTK widgets and where they went |
 | [menu.md](docs/menu.md) | the menu tree and what was trimmed |
 | [install.md](docs/install.md) | what the installer does, step by step |
+| [hooks.md](docs/hooks.md) | the optional user hooks and when each one runs |
 | [packages.md](docs/packages.md) | leaving the Omarchy repository, and updating |
 | [upstream.md](docs/upstream.md) | the fork base, for diffing later |
 

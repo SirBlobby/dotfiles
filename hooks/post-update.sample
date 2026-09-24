@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This hook is called after an Blob system update has been performed.
+# This hook is called after `blob update` finishes successfully.
 # To put it into use, remove .sample from the name.
 
 # Example: Show notification after the system has been updated.

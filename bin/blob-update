@@ -233,3 +233,5 @@ show_summary
 notify_body="System and AUR packages are up to date"
 [[ $reboot_needed == true ]] && notify_body="$notify_body. Reboot to use the new kernel."
 blob-notify-send "Update complete" "$notify_body"
+
+blob-hook post-update
