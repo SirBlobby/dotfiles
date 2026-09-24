@@ -317,13 +317,30 @@ function canForgetNetwork(network) {
 // must never be an argument (printf is a bash builtin, so no process spawns
 // with it either).
 var enterpriseConnectScript =
-  "u=$(uuidgen); IFS= read -r pw;" +
+  "u=$(uuidgen); IFS= read -r pw; server_check=();" +
+  " [ -n \"$5\" ] && server_check=(802-1x.system-ca-certs yes 802-1x.domain-suffix-match \"$5\");" +
   " nmcli connection add type wifi con-name \"$1\" ssid \"$1\" connection.uuid \"$u\"" +
-  " wifi-sec.key-mgmt wpa-eap 802-1x.eap peap 802-1x.phase2-auth mschapv2" +
-  " 802-1x.identity \"$2\" 802-1x.auth-timeout 8 >/dev/null" +
+  " wifi-sec.key-mgmt wpa-eap 802-1x.eap \"$3\" 802-1x.phase2-auth \"$4\"" +
+  " 802-1x.identity \"$2\" 802-1x.auth-timeout 8 \"${server_check[@]}\" >/dev/null" +
   " && printf 'set 802-1x.password %s\\nsave\\nquit\\n' \"$pw\" | nmcli connection edit uuid \"$u\" >/dev/null" +
   " && nmcli connection up uuid \"$u\"" +
   " || { nmcli connection delete uuid \"$u\" >/dev/null 2>&1; false; }"
+
+var eapMethods = [
+  { value: "peap", label: "PEAP", tooltip: "PEAP with MSCHAPv2", eap: "peap", phase2: "mschapv2" },
+  { value: "ttls", label: "TTLS", tooltip: "TTLS with PAP", eap: "ttls", phase2: "pap" }
+]
+
+function eapMethodFor(value) {
+  for (var i = 0; i < eapMethods.length; i++) {
+    if (eapMethods[i].value === value) return eapMethods[i]
+  }
+  return eapMethods[0]
+}
+
+function isEnterpriseSecurity(security, enterpriseSecurityTypes) {
+  return (enterpriseSecurityTypes || []).indexOf(security) !== -1
+}
 
 function networkFailureReason(reason, needsCredentials, reasons) {
   var r = reasons || {}
@@ -374,6 +391,9 @@ if (typeof module !== "undefined") {
     requiresCredentials: requiresCredentials,
     canForgetNetwork: canForgetNetwork,
     enterpriseConnectScript: enterpriseConnectScript,
+    eapMethods: eapMethods,
+    eapMethodFor: eapMethodFor,
+    isEnterpriseSecurity: isEnterpriseSecurity,
     networkFailureReason: networkFailureReason,
     shouldRepromptPassphrase: shouldRepromptPassphrase
   }

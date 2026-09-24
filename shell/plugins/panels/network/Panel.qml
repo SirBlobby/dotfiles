@@ -26,6 +26,8 @@ Panel {
     passwordSsid = ""
     passwordText = ""
     identityText = ""
+    serverDomainText = ""
+    eapMethod = "peap"
   }
 
   // Live connection details from `ip` / /sys / iw.
@@ -97,6 +99,14 @@ Panel {
   property string passwordSsid: ""
   property string passwordText: ""
   property string identityText: ""
+  property string serverDomainText: ""
+  property string eapMethod: "peap"
+
+  readonly property var enterpriseSecurityTypes: [
+    WifiSecurityType.WpaEap,
+    WifiSecurityType.Wpa2Eap,
+    WifiSecurityType.Wpa3SuiteB192
+  ]
 
   // ConnectionFailReason values as a plain object, so Model.js helpers stay
   // pure JS and Node-testable.
@@ -403,7 +413,11 @@ Panel {
 
   function canShareNetwork(net) {
     if (!net || !net.connected) return false
-    return net.security !== WifiSecurityType.Wpa2Eap && net.security !== WifiSecurityType.WpaEap
+    return !isEnterpriseSecurity(net.security)
+  }
+
+  function isEnterpriseSecurity(security) {
+    return Model.isEnterpriseSecurity(security, enterpriseSecurityTypes)
   }
 
   function selectWifiActionByDelta(delta) {
@@ -685,9 +699,17 @@ Panel {
   }
 
   function openPasswordPrompt(ssid) {
+    var network = networkForSsid(ssid)
+    if (network && network.security === WifiSecurityType.Wpa3SuiteB192) {
+      failureSsid = ssid
+      failureReason = "Needs a certificate, use nm-connection-editor"
+      return
+    }
     if (passwordSsid !== ssid) {
       passwordText = ""
       identityText = ""
+      serverDomainText = ""
+      eapMethod = "peap"
     }
     passwordSsid = ssid
   }
@@ -766,8 +788,10 @@ Panel {
 
   function connectEnterprise(ssid, identity, passphrase) {
     runNetworkAction("connect", networkForSsid(ssid), function(network) {
+      var method = Model.eapMethodFor(root.eapMethod)
       enterpriseConnect.secret = passphrase
-      enterpriseConnect.command = ["bash", "-c", Model.enterpriseConnectScript, "nmcli-eap", ssid, identity]
+      enterpriseConnect.command = ["bash", "-c", Model.enterpriseConnectScript, "nmcli-eap",
+        ssid, identity, method.eap, method.phase2, root.serverDomainText.trim()]
       enterpriseConnect.running = true
     })
   }
@@ -781,6 +805,9 @@ Panel {
     onStarted: {
       write(secret + "\n")
       secret = ""
+    }
+    onExited: function(exitCode) {
+      if (exitCode !== 0 && root.actionKind === "connect") root.failNetworkAction(root.networkForSsid(root.actionSsid), -1)
     }
   }
 
@@ -1601,9 +1628,7 @@ Panel {
     readonly property bool isConnected: net && net.connected
     readonly property bool isKnown: !!(net && net.known)
     readonly property bool requiresCredentials: net ? root.requiresCredentials(net.security) : false
-    readonly property bool isEnterprise: net
-      ? (net.security === WifiSecurityType.Wpa2Eap || net.security === WifiSecurityType.WpaEap)
-      : false
+    readonly property bool isEnterprise: net ? root.isEnterpriseSecurity(net.security) : false
     readonly property bool canForget: root.canForgetNetwork(net)
     readonly property bool isSelected: root.focusSection === "wifi" && root.selectedIndex === index
     readonly property bool forgetFocused: isSelected && root.wifiActionFocused && canForget
@@ -1835,15 +1860,33 @@ Panel {
       anchors.leftMargin: Style.space(10)
       anchors.rightMargin: Style.space(10)
       anchors.topMargin: Style.space(4)
-      implicitHeight: (idField.visible ? idField.implicitHeight + Style.space(4) : 0) + pwField.implicitHeight + Style.spacing.rowGap
+      readonly property bool enterpriseFieldsVisible: row.isEnterprise && !row.isBusy && !row.isFailed
+      readonly property real enterpriseFieldsHeight: methodGroup.implicitHeight + idField.implicitHeight
+        + domainField.implicitHeight + Style.space(4) * 3
+      implicitHeight: (enterpriseFieldsVisible ? enterpriseFieldsHeight : 0) + pwField.implicitHeight + Style.spacing.rowGap
       height: implicitHeight
+
+      ButtonGroup {
+        id: methodGroup
+        visible: passwordPanel.enterpriseFieldsVisible
+        anchors.left: parent.left
+        anchors.top: parent.top
+        options: Model.eapMethods
+        value: root.eapMethod
+        foreground: root.bar.foreground
+        fontFamily: root.bar.fontFamily
+        fontSize: Style.font.bodySmall
+        focusable: false
+        onChanged: function(selectedMethod) { root.eapMethod = selectedMethod }
+      }
 
       TextField {
         id: idField
-        visible: row.isEnterprise && !row.isBusy && !row.isFailed
+        visible: passwordPanel.enterpriseFieldsVisible
         anchors.left: parent.left
         anchors.right: connectPwBtn.left
-        anchors.top: parent.top
+        anchors.top: methodGroup.bottom
+        anchors.topMargin: Style.space(4)
         anchors.rightMargin: Style.space(6)
         placeholderText: "Identity (user@domain)"
         font.family: Style.font.family
@@ -1854,12 +1897,34 @@ Panel {
         enabled: !row.isBusy
         text: row.isPasswordOpen ? root.identityText : ""
 
-        onAccepted: pwField.forceActiveFocus()
+        onAccepted: domainField.forceActiveFocus()
         onTextChanged: if (row.isPasswordOpen && text !== root.identityText) root.identityText = text
         Keys.onEscapePressed: root.cancelPasswordPrompt()
 
         onVisibleChanged: if (visible) Qt.callLater(forceActiveFocus)
         Component.onCompleted: if (visible) Qt.callLater(forceActiveFocus)
+      }
+
+      TextField {
+        id: domainField
+        visible: passwordPanel.enterpriseFieldsVisible
+        anchors.left: parent.left
+        anchors.right: connectPwBtn.left
+        anchors.top: idField.bottom
+        anchors.topMargin: Style.space(4)
+        anchors.rightMargin: Style.space(6)
+        placeholderText: "Server domain (optional, verifies the network)"
+        font.family: Style.font.family
+        font.pixelSize: Style.font.body
+        foreground: root.bar.foreground
+        horizontalPadding: Style.spacing.controlGap
+        verticalPadding: Style.spacing.controlPaddingY
+        enabled: !row.isBusy
+        text: row.isPasswordOpen ? root.serverDomainText : ""
+
+        onAccepted: pwField.forceActiveFocus()
+        onTextChanged: if (row.isPasswordOpen && text !== root.serverDomainText) root.serverDomainText = text
+        Keys.onEscapePressed: root.cancelPasswordPrompt()
       }
 
       TextField {
@@ -1904,7 +1969,7 @@ Panel {
           anchors.fill: parent
           horizontalAlignment: Text.AlignHCenter
           verticalAlignment: Text.AlignVCenter
-          text: row.isFailed ? "Wrong password" : "Connecting..."
+          text: row.isFailed ? (root.failureReason || "Failed to connect") : "Connecting..."
           color: row.isFailed ? root.bar.urgent : root.bar.foreground
           font.family: root.bar.fontFamily
           font.pixelSize: Style.font.bodySmall
@@ -1918,7 +1983,7 @@ Panel {
         id: connectPwBtn
         visible: !row.isBusy && !row.isFailed
         anchors.right: parent.right
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenter: pwField.verticalCenter
         enabled: row.net && pwField.text.length > 0 && (!row.isEnterprise || idField.text.length > 0)
         iconText: "󰄬"
         tooltipText: "Connect"
