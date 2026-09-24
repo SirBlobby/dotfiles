@@ -158,6 +158,7 @@ The everyday apps come from the official repositories with everything else:
 | `gnome-system-monitor` | processes and resources |
 | `pavucontrol` | audio mixer |
 | `network-manager-applet` | network connections (`nm-connection-editor`) |
+| `obsidian` | notes; `Super + Shift + O` opens or focuses it |
 
 `hunspell-en_us` gives LibreOffice spell checking, and `ttf-liberation` gives it
 metric-compatible replacements for Arial, Times New Roman and Courier New, so

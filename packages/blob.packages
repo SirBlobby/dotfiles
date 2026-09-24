@@ -138,7 +138,7 @@ hunspell-en_us
 ttf-liberation
 kdenlive
 
-# Everyday desktop apps: text editor, calculator, archives, disk usage, system monitor, audio mixer
+# Everyday desktop apps: text editor, calculator, archives, disk usage, system monitor, audio mixer, notes
 gnome-text-editor
 gnome-calculator
 file-roller
@@ -146,6 +146,7 @@ baobab
 gnome-system-monitor
 pavucontrol
 network-manager-applet
+obsidian
 
 # Archive formats for file-roller and the command line
 7zip
