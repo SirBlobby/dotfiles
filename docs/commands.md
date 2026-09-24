@@ -26,7 +26,7 @@ of the `blob` listing.
 
 | Command | Does | Arguments |
 | --- | --- | --- |
-| `blob-bar` | Configure the bar and its widget layout | use <id> \| reset \| defaults \| position <top\|bottom\|left\|right> \| transparent <true\|false\|toggle> \| put <id> [placement] \| move <id> [placement] \| set <id> <key> <value> [--json] [placement] |
+| `blob-bar` | Configure the bar and its widget layout | use <id> \| reset \| defaults \| transparent <true\|false\|toggle> \| put <id> [placement] \| move <id> [placement] \| set <id> <key> <value> [--json] [placement] |
 | `blob-bar-color` | Choose a legible transparent bar text color (hidden) | - |
 
 ## battery

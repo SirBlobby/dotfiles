@@ -239,7 +239,6 @@ becomes the authoritative file — we do **not** deep-merge defaults back in.
   },
   "bar": {
     "id": "blob.bar",
-    "position": "top",
     "transparent": false,
     "centerAnchor": "blob.clock",
     "layout": {
@@ -259,6 +258,7 @@ becomes the authoritative file — we do **not** deep-merge defaults back in.
 1. **The active bar option is `bar.id`.** Omit it or set it to `blob.bar`
    to use the built-in bar. Set it to another plugin id whose manifest declares
    `kind: "bar"` to replace the full bar.
+   The built-in bar is locked to the top edge and has no position option.
 2. **Every plugin instance is one entry.** Either in `bar.layout.<section>`
    for bar widgets, or in `plugins[]` for panels, overlays, services,
    menus, and anything else non-bar.

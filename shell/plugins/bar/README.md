@@ -10,13 +10,13 @@ the shell for its whole session.
 - `widgets/` holds simple first-party bar widgets with sibling manifests.
 - Feature plugins such as `../panels/audio/`, `../panels/network/`, and `../panels/power/` provide richer popup bar plugins.
 - The bar receives its config from the host shell as a `barConfig` property; the host loads it from `~/.config/blob/shell.json` (or `config/blob/shell.json` when the user has no file).
-- `blob bar position` updates only the user shell.json file.
+- The bar is locked to the top edge. A `bar.position` left in shell.json is ignored.
 
 ## Customizing
 
 The bar config lives under the `bar:` key of [`~/.config/blob/shell.json`](../../README.md#shelljson-shape). Out of the box the shell uses [`config/blob/shell.json`](../../../config/blob/shell.json). Once you customize anything via the bar gestures, `blob bar ...`, or by editing shell.json directly, your file is canonical — there is no deep-merge.
 
-The bar is configured directly on the bar itself: drag empty bar space (or click-and-hold) to move the bar to another screen edge, double-left-click empty center-bar space to toggle transparency, and drag widgets to reorder them. The `blob bar position`, `blob bar transparent`, `blob bar move`, and `blob bar set` commands do the same from scripts. Enable or disable widgets with `blob plugin enable` and `blob plugin disable` (widget ids come from `blob plugin list`).
+The bar is configured directly on the bar itself: double-left-click empty center-bar space to toggle transparency, and drag widgets to reorder them. The `blob bar transparent`, `blob bar move`, and `blob bar set` commands do the same from scripts. Enable or disable widgets with `blob plugin enable` and `blob plugin disable` (widget ids come from `blob plugin list`).
 
 Example `shell.json` (bar subtree only shown):
 
@@ -24,7 +24,6 @@ Example `shell.json` (bar subtree only shown):
 {
   "version": 1,
   "bar": {
-    "position": "top",
     "transparent": false,
     "centerAnchor": "blob.clock",
     "layout": {
@@ -54,7 +53,7 @@ Example `shell.json` (bar subtree only shown):
 
 | Name | What it does | Interactions |
 |---|---|---|
-| `blob.menu` | Blob menu launcher, drawn from `branding/chai.svg` in the bar colour | left = menu · right = terminal |
+| `blob.menu` | Blob menu launcher, drawn from `~/.config/blob/branding/chai.svg`, or the repo's `branding/chai.svg` when that is missing, in the bar colour | left = menu · right = terminal |
 | `blob.workspaces` | Hyprland workspace switcher | left = focus workspace |
 | `blob.clock` | Date/time label + popup with a month grid, ISO week numbers, and month stepping | left = popup · right = cycle label format · middle = timezone selector |
 | `blob.media` | MPRIS now-playing — scrolling track + artist, cover-art popup | left = play/pause · middle = next · scroll = prev/next · right = popup |
@@ -74,7 +73,7 @@ The `blob.indicators` widget loads individual bar indicators from `indicators/`.
 
 ## Orientation
 
-All widgets work in `top`, `bottom`, `left`, and `right` positions. Popups anchor on the side opposite the bar edge, sliding into the workspace. Vertical bars use 28px width; widgets that show text fall back to compact icon-only forms (e.g. `media` hides its scrolling label).
+The bar is locked to the top edge and cannot be dragged or moved by command. Popups open below it, sliding into the workspace.
 
 ## Custom user modules
 
@@ -155,7 +154,7 @@ Widgets receive `bar` (the shell root), `moduleName` (string), and `settings` (o
 
 - `bar.foreground`, `bar.background`, `bar.urgent` — theme colors (live-updated)
 - `bar.fontFamily` — current monospace family
-- `bar.position` — `"top" | "bottom" | "left" | "right"`
+- `bar.position` — always `"top"`
 - `bar.vertical` — boolean shortcut
 - `bar.barSize` — 26 horizontal / 28 vertical
 - `bar.run(command)` — fire-and-forget bash exec
