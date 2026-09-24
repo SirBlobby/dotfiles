@@ -274,7 +274,7 @@
   "remove.theme": {"icon":"󰸌","label":"Theme","action":"blob-theme-remove"},
 
   // Update
-  "update.blob": {"icon":"","iconFont":"blob","label":"Blob","action":"blob-launch-floating blob-update"},
+  "update.blob": {"icon":"󰚰","label":"Blob","action":"blob-launch-floating blob-update"},
   "update.config": {"icon":"","label":"Config","title":"Reset to default"},
   "update.themes": {"icon":"󰸌","label":"Extra Themes","when":"blob-theme-extras","action":"blob-launch-floating blob-theme-update"},
   "update.process": {"icon":"","label":"Process","title":"Restart"},

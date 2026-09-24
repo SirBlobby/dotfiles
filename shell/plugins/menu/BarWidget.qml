@@ -41,10 +41,8 @@ BarWidget {
     id: button
     anchors.fill: parent
     bar: root.bar
-    text: ""
-    fontFamily: "omarchy"
-    labelVisible: !root.iconReady
-    fixedWidth: root.iconReady ? root.iconSize + Style.spaceReal(15) : -1
+    labelVisible: false
+    fixedWidth: root.iconSize + Style.spaceReal(15)
     horizontalMargin: 7.5
     onPressed: function(button) {
       if (!root.bar) return
