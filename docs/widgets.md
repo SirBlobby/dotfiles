@@ -9,7 +9,7 @@ autostarted.
 
 | Was | Is | Note |
 | --- | --- | --- |
-| `QuickSettings.tsx` (523 lines) | `shell/plugins/panels/quick-settings/` | split across 13 files, none over 350 lines, with four tabs |
+| `QuickSettings.tsx` (523 lines) | `shell/plugins/panels/quick-settings/` | split across 15 files, none over 350 lines, with four tabs |
 | `SysMonitor.tsx` (142) | `shell/plugins/panels/sysmon/` | CPU, memory, disk, temperature; the probes and bars are `Ui/SystemStats.qml` and `Ui/MetricBar.qml`, shared with the Performance tab |
 | `Notifications.tsx` (160) | `shell/plugins/notification-center/` | reads the notification service's own history files |
 | `WallPicker.tsx` (106) | the existing image picker | `blob-wallpaper-set --menu` now calls `blob-menu-images`, so wallpapers get the image grid instead of a text list |
@@ -41,12 +41,19 @@ running `pamixer` and `playerctl` every second.
 
 | Tab | Holds |
 | --- | --- |
-| General | the calendar and the brightness slider |
+| General | the calendar, the brightness slider, and the screensaver and lock timeouts |
 | Sound & Music | output and microphone volume (click the icon to mute), the media row with its controls, and buttons for the audio panel (picking devices) and the pavucontrol mixer |
 | Performance | CPU, memory, disk and temperature bars, the load average, the power profile (Power saver, Balanced, Performance, whichever the machine offers), and a button that opens btop |
 | Quick Settings | the toggle tiles: Wi-Fi, Bluetooth, Wallpaper, Silence, Night Light, Record, Stay Awake, Pick Color, Theme, Tablet Lock |
 
 The weather card beside it is not part of the tabs and stays visible.
+
+The two timeouts on the General tab are the `idle.screensaver` and `idle.lock`
+values in `~/.config/blob/shell.json`, in seconds. The minus and plus buttons
+step through 1, 2, 5, 10, 15, 30 and 60 minutes (and 2 hours for the lock),
+starting from whatever the file holds, and the idle service picks the new value
+up straight away. A value set by hand that is not a preset is shown as it is.
+While Stay Awake is on, the tab says so, since neither timeout runs then.
 
 ## Opening them
 

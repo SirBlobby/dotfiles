@@ -27,6 +27,11 @@ Item {
   readonly property bool performanceVisible: opened && currentTab === "performance"
   readonly property bool quickVisible: opened && currentTab === "quick"
 
+  readonly property var idleConfig: root.shell && root.shell.shellConfig && root.shell.shellConfig.idle
+    ? root.shell.shellConfig.idle : ({})
+  readonly property int screensaverSeconds: root.timeoutSeconds(idleConfig.screensaver, 150)
+  readonly property int lockSeconds: root.timeoutSeconds(idleConfig.lock, 300)
+
   readonly property int barInset: {
     var bar = root.shell ? root.shell.bar : null
     if (!bar || bar.barHidden === true) return 0
@@ -78,6 +83,19 @@ Item {
     mediaValue.refresh()
   }
 
+  function timeoutSeconds(value, fallback) {
+    var seconds = Number(value)
+    return isFinite(seconds) && seconds >= 0 ? Math.floor(seconds) : fallback
+  }
+
+  function setIdleTimeout(key, seconds) {
+    if (!root.shell || typeof root.shell.mutateShellConfig !== "function") return
+    root.shell.mutateShellConfig(function(config) {
+      if (!config.idle || typeof config.idle !== "object") config.idle = {}
+      config.idle[key] = seconds
+    })
+  }
+
   function toggleAndRefresh(command) {
     root.run(command)
     stateSettleTimer.restart()
@@ -109,7 +127,7 @@ Item {
 
   PolledFlag {
     id: stayAwakeFlag
-    polling: root.quickVisible
+    polling: root.quickVisible || root.generalVisible
     command: "blob-toggle-idle status 2>/dev/null | grep -q '\"enabled\":true' && echo on || echo off"
   }
 
@@ -256,25 +274,19 @@ Item {
         onTabRequested: function(tabId) { root.currentTab = tabId }
       }
 
-      Column {
+      GeneralTab {
         width: parent.width
         visible: root.currentTab === "general"
-        spacing: Style.spaceReal(12)
-
-        Calendar {
-          width: parent.width
-          polling: root.generalVisible
+        polling: root.generalVisible
+        brightness: Number(brightnessValue.value) || 0
+        screensaverSeconds: root.screensaverSeconds
+        lockSeconds: root.lockSeconds
+        stayAwake: stayAwakeFlag.value
+        onBrightnessRequested: function(next) {
+          root.run("brightnessctl set " + next + "%")
+          brightnessValue.value = String(next)
         }
-
-        SliderRow {
-          width: parent.width
-          icon: "\uf185"
-          value: Number(brightnessValue.value) || 0
-          onValueRequested: function(next) {
-            root.run("brightnessctl set " + next + "%")
-            brightnessValue.value = String(next)
-          }
-        }
+        onTimeoutRequested: function(key, seconds) { root.setIdleTimeout(key, seconds) }
       }
 
       SoundTab {
