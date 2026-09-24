@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# blob:summary=Apply a boot splash, set up GRUB, and detect other operating systems
+# blob:args=[image] | grub [--purge] | detect | cleanup | status
 #
 # blob-boot - boot splash and bootloader management.
 #
@@ -785,7 +788,7 @@ case "${1:-}" in
     cleanup)       cleanup_limine ;;
     status)        show_status ;;
     -h|--help|help)
-        sed -n '3,11p' "$0" | sed 's/^# \?//'
+        sed -n '6,16p' "$0" | sed 's/^# \?//'
         ;;
     *)             apply_splash "${1:-}" ;;
 esac
