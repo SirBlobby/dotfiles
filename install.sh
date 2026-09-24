@@ -19,7 +19,8 @@ usage() {
 Usage: ./install.sh [OPTIONS]
 
 Creates every directory Blob needs, installs the packages that are missing,
-writes the config, enables the services, and opens the login screen.
+writes the config, enables the services, reloads a running session so every
+change takes effect, and opens the login screen.
 
   --check           Report what would change, write nothing
   --force           Overwrite files that have local changes
@@ -50,6 +51,7 @@ source "$repo_dir/install/steps/config.sh"
 source "$repo_dir/install/steps/services.sh"
 source "$repo_dir/install/steps/theme.sh"
 source "$repo_dir/install/steps/login.sh"
+source "$repo_dir/install/steps/reload.sh"
 
 say "Blob installer"
 say "repo: $repo_dir"
@@ -87,6 +89,10 @@ enable_display_manager
 report_greeter_compositor
 report_login_conflicts
 report_desktop_essentials
+
+reload_system_services
+reload_user_services
+reload_session
 
 say ""
 if [[ $check == true ]]; then

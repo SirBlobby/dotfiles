@@ -17,6 +17,7 @@ with `--check`.
 | `install/steps/services.sh` | system services, systemd drop-ins, user units |
 | `install/steps/theme.sh` | the wallpaper link, the first theme, the first background |
 | `install/steps/login.sh` | SDDM, the session entry, and the first launch |
+| `install/steps/reload.sh` | reloading systemd, the user services, and a running session |
 
 ## Steps
 
@@ -128,7 +129,15 @@ with `--check`.
 
    `--autologin` writes `zzz-blob-autologin.conf`, the only file that sorts after
    `zz-blob.conf`.
-10. **Launch.** `sddm`, `hyprland`, `quickshell` and `uwsm` are checked one last
+10. **Reload.** systemd re-reads its units and `systemd-oomd` is restarted so
+    the new drop-ins apply. The user manager is reloaded and every Blob user
+    service that is running is restarted. When a Hyprland session is running
+    for this user, the current theme is rendered again with
+    `blob-theme-refresh`, Hyprland reloads its config, and the Blob shell
+    restarts, so an install over a live desktop takes effect without logging
+    out. The shell restart is refused while the screen is locked. Nothing that
+    was stopped is started, and `--check` only reports what would reload.
+11. **Launch.** `sddm`, `hyprland`, `quickshell` and `uwsm` are checked one last
     time and any that are missing are named, because that is the whole difference
     between a desktop and a console. Then, when the installer was run from a
     console and nothing graphical is running, it starts `sddm.service` so the

@@ -83,7 +83,8 @@ It runs these steps, in this order, and every one of them is idempotent:
 | 7. systemd drop-ins | writes the shutdown timeouts, oomd thresholds, plocate prune paths, and sleep hooks under `/etc` |
 | 8. System services | enables NetworkManager, resolved, bluetooth, cups, avahi, docker, power-profiles-daemon, and oomd, and masks `NetworkManager-wait-online` |
 | 9. Login screen | installs the session entry and the SDDM config, enables `sddm.service`, and sets the default target to `graphical.target` |
-| 10. Launch | starts the login screen, so the desktop comes up without a reboot |
+| 10. Reload | reloads systemd, restarts the running user services, and in a running session re-renders the theme, reloads Hyprland, and restarts the Blob shell |
+| 11. Launch | starts the login screen, so the desktop comes up without a reboot |
 
 Step 9 is the one a plain Arch install cannot do without: SDDM's stock Wayland
 greeter runs on `weston`, which Blob does not install, so the greeter is pointed
