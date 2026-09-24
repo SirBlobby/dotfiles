@@ -16,44 +16,51 @@ Grid {
   signal toggleRequested(string command)
 
   columns: 3
+  readonly property real tileWidth: (width - columnSpacing * (columns - 1)) / columns
   columnSpacing: Style.spaceReal(8)
   rowSpacing: Style.spaceReal(8)
 
   Tile {
-    icon: ""
+    width: root.tileWidth
+    icon: "\uf1eb"
     label: "Wi-Fi"
     onActivated: root.panelRequested("blob.network")
   }
 
   Tile {
-    icon: ""
+    width: root.tileWidth
+    icon: "\uf293"
     label: "Bluetooth"
     active: root.bluetoothOn
     onActivated: root.panelRequested("blob.bluetooth")
   }
 
   Tile {
-    icon: ""
+    width: root.tileWidth
+    icon: "\uf03e"
     label: "Wallpaper"
     onActivated: root.runRequested("blob-wallpaper-set --menu")
   }
 
   Tile {
-    icon: ""
+    width: root.tileWidth
+    icon: "\uf1f6"
     label: "Silence"
     active: root.doNotDisturb
     onActivated: root.toggleRequested("blob-shell notifications toggleDnd")
   }
 
   Tile {
-    icon: ""
+    width: root.tileWidth
+    icon: "\uf186"
     label: "Night Light"
     active: root.nightLight
     onActivated: root.toggleRequested("blob-toggle-nightlight")
   }
 
   Tile {
-    icon: ""
+    width: root.tileWidth
+    icon: "\uf03d"
     label: "Record"
     active: root.recording
     tooltip: root.recording ? "Stop screen recording" : "Start a screen recording"
@@ -63,6 +70,7 @@ Grid {
   }
 
   Tile {
+    width: root.tileWidth
     icon: "󰅶"
     label: "Stay Awake"
     active: root.stayAwake
@@ -71,19 +79,22 @@ Grid {
   }
 
   Tile {
-    icon: ""
+    width: root.tileWidth
+    icon: "\uf1fb"
     label: "Pick Color"
     onActivated: root.runRequested("hyprpicker -a")
   }
 
   Tile {
-    icon: ""
+    width: root.tileWidth
+    icon: "\uf1fc"
     label: "Theme"
     onActivated: root.runRequested("blob-theme-menu")
   }
 
   Tile {
-    icon: ""
+    width: root.tileWidth
+    icon: "\uf10a"
     label: "Tablet Lock"
     active: root.tabletFollow
     tooltip: root.tabletFollow ? "Tablet follows focused monitor" : "Tablet spans all monitors"

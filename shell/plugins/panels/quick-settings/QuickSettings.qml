@@ -227,6 +227,7 @@ Item {
       }
 
       Tiles {
+        width: parent.width
         bluetoothOn: bluetoothFlag.value
         doNotDisturb: dndFlag.value
         nightLight: nightLightFlag.value
@@ -240,7 +241,7 @@ Item {
 
       SliderRow {
         width: parent.width
-        icon: mutedFlag.value ? "" : ""
+        icon: mutedFlag.value ? "\uf026" : "\uf028"
         dimmed: mutedFlag.value
         value: Number(volumeValue.value) || 0
         onIconActivated: root.toggleAndRefresh("pamixer --toggle-mute")
@@ -252,7 +253,7 @@ Item {
 
       SliderRow {
         width: parent.width
-        icon: ""
+        icon: "\uf185"
         value: Number(brightnessValue.value) || 0
         onValueRequested: function(next) {
           root.run("brightnessctl set " + next + "%")

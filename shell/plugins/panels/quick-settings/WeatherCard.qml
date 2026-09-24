@@ -30,7 +30,7 @@ Card {
   StatRow {
     width: parent.width
     visible: root.available
-    icon: ""
+    icon: "\uf2c9"
     label: "Temperature"
     value: root.temperature
   }
@@ -38,7 +38,7 @@ Card {
   StatRow {
     width: parent.width
     visible: root.available
-    icon: ""
+    icon: "\udb81\udd9d"
     label: "Wind"
     value: root.wind
   }

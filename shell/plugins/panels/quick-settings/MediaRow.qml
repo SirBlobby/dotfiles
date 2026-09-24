@@ -52,17 +52,17 @@ Item {
     spacing: Style.spaceReal(8)
 
     CardIconButton {
-      icon: "⏮"
+      icon: "\uf048"
       onActivated: root.controlRequested("previous")
     }
 
     CardIconButton {
-      icon: root.playing ? "⏸" : "▶"
+      icon: root.playing ? "\uf04c" : "\uf04b"
       onActivated: root.controlRequested("play-pause")
     }
 
     CardIconButton {
-      icon: "⏭"
+      icon: "\uf051"
       onActivated: root.controlRequested("next")
     }
   }

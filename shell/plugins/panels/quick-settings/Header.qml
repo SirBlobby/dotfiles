@@ -44,12 +44,12 @@ Item {
     spacing: Style.spaceReal(4)
 
     CardIconButton {
-      icon: ""
+      icon: "\uf023"
       onActivated: root.lockRequested()
     }
 
     CardIconButton {
-      icon: ""
+      icon: "\uf08b"
       onActivated: root.logoutRequested()
     }
 
