@@ -1,10 +1,10 @@
 # Menu tree
 
-`menu/menu.jsonc` is the single source for both menus: the apps menu on
-`Super + Space` and the root menu on `Super + Alt + Space`. There is no default
-tree merged underneath it and no user extension file layered on top, so a row
-sits where the file puts it. That is why the `before:` hint machinery the old
-menu fork carried is gone.
+`default/blob/blob-menu.jsonc` is the source for both menus: the apps menu on
+`Super + Space` and the root menu on `Super + Alt + Space`. Rows keep the order
+the file lists them in, which is why Install opens with Package and AUR ahead
+of Development, Browser, Gaming and the rest. That is also why the `before:`
+hint machinery the old menu fork carried is gone.
 
 ## Trimmed from upstream
 
@@ -18,7 +18,7 @@ Upstream ships 338 rows. This tree has 260. What came out:
 | `update.channel.*` | 5 | release channels for a package that will not exist |
 | `learn.*` | 4 | Omarchy's manual and Discord, plus tmux and herdr keybindings |
 | `trigger.transcode` | 1 | transcode dropped |
-| `style.unlock` | 1 | plymouth theme switcher; `blob-boot-splash` covers splash images |
+| `style.unlock` | 1 | plymouth theme switcher; `blob boot` covers splash images |
 | `update.config.tmux` | 1 | tmux dropped |
 | `setup.reset` | 1 | factory reset restores Omarchy defaults, which is wrong here |
 
