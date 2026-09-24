@@ -130,6 +130,7 @@ Item {
   onOpenedChanged: if (root.opened) root.refresh()
 
   PanelWindow {
+    id: panelWindow
     visible: root.opened
     anchors { top: true; bottom: true; left: true; right: true }
     color: "transparent"
@@ -144,22 +145,32 @@ Item {
     }
 
     Card {
+      id: layoutCard
+
+      readonly property real screenMargin: Style.spaceReal(20)
+      readonly property real maxHeight: panelWindow.height - screenMargin * 2
+      readonly property real fixedContentHeight: header.height + hint.height + canvas.height
+        + actions.height + spacing * 4 + padding * 2
+
       anchors.centerIn: parent
-      implicitWidth: Style.spaceReal(720)
-      implicitHeight: Style.spaceReal(540)
+      implicitWidth: Math.min(Style.spaceReal(720), panelWindow.width - screenMargin * 2)
       fillColor: Util.alpha(Color.background, Style.panelFillAlpha)
       spacing: Style.spaceReal(10)
 
       Item {
+        id: header
         width: parent.width
         implicitHeight: Math.max(title.implicitHeight, closeButton.implicitHeight)
 
         Text {
           id: title
           anchors.left: parent.left
+          anchors.right: closeButton.left
+          anchors.rightMargin: Style.spaceReal(8)
           anchors.verticalCenter: parent.verticalCenter
           text: "Display layout"
           textFormat: Text.PlainText
+          elide: Text.ElideRight
           color: Color.foreground
           font.family: Style.font.family
           font.pixelSize: Style.font.body
@@ -170,12 +181,13 @@ Item {
           id: closeButton
           anchors.right: parent.right
           anchors.verticalCenter: parent.verticalCenter
-          icon: ""
+          icon: "\uf00d"
           onActivated: root.dismiss()
         }
       }
 
       Text {
+        id: hint
         width: parent.width
         wrapMode: Text.WordWrap
         text: "Drag a monitor to move it. Edges snap to a neighbour. Changes apply as you drop and last until the session ends."
@@ -186,6 +198,7 @@ Item {
       }
 
       MonitorCanvas {
+        id: canvas
         width: parent.width
         height: Style.spaceReal(220)
         monitors: root.monitors
@@ -195,29 +208,42 @@ Item {
         onLayoutSettled: root.applyMonitor(root.selectedName)
       }
 
-      MonitorControls {
+      Flickable {
+        id: controlsScroll
         width: parent.width
-        monitor: root.selectedMonitor
-        monitors: root.monitors
-        onScaleRequested: function(scale) {
-          root.replaceMonitor(root.selectedName, { scale: scale })
-          root.applyMonitor(root.selectedName)
-        }
-        onModeRequested: function(mode) {
-          root.replaceMonitor(root.selectedName, { mode: mode })
-          root.applyMonitor(root.selectedName)
-        }
-        onEnabledRequested: function(enabled) {
-          root.replaceMonitor(root.selectedName, { disabled: !enabled })
-          root.applyMonitor(root.selectedName)
-        }
-        onMirrorRequested: function(target) {
-          root.replaceMonitor(root.selectedName, { mirrorOf: target })
-          root.applyMonitor(root.selectedName)
+        height: Math.max(0, Math.min(controls.implicitHeight, layoutCard.maxHeight - layoutCard.fixedContentHeight))
+        contentWidth: width
+        contentHeight: controls.implicitHeight
+        clip: true
+        boundsBehavior: Flickable.StopAtBounds
+        interactive: contentHeight > height
+
+        MonitorControls {
+          id: controls
+          width: controlsScroll.width
+          monitor: root.selectedMonitor
+          monitors: root.monitors
+          onScaleRequested: function(scale) {
+            root.replaceMonitor(root.selectedName, { scale: scale })
+            root.applyMonitor(root.selectedName)
+          }
+          onModeRequested: function(mode) {
+            root.replaceMonitor(root.selectedName, { mode: mode })
+            root.applyMonitor(root.selectedName)
+          }
+          onEnabledRequested: function(enabled) {
+            root.replaceMonitor(root.selectedName, { disabled: !enabled })
+            root.applyMonitor(root.selectedName)
+          }
+          onMirrorRequested: function(target) {
+            root.replaceMonitor(root.selectedName, { mirrorOf: target })
+            root.applyMonitor(root.selectedName)
+          }
         }
       }
 
-      Row {
+      Flow {
+        id: actions
         width: parent.width
         spacing: Style.spaceReal(6)
 

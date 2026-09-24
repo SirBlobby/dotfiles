@@ -70,7 +70,9 @@ or the Blob menu's Display layout row.
 A scaled picture of the desktop, one draggable rectangle per monitor. Dropping
 one applies the new position immediately. Edges snap to a neighbour's edge
 within 60 logical pixels, so monitors end up touching exactly. Per-monitor
-controls: mode, scale, enable or disable, and mirror.
+controls: mode, scale, enable or disable, and mirror. The panel
+shrinks to fit the screen, and when a monitor reports more modes than fit, the
+controls scroll while the canvas and the apply buttons stay in view.
 
 **Scale options are filtered, not free.** Hyprland steps fractional scaling in
 1/120 and rejects a scale that does not land on a whole number of physical

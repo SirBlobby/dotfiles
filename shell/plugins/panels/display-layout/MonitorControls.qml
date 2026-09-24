@@ -20,8 +20,10 @@ Column {
   visible: !!monitor
 
   Text {
+    width: parent.width
     text: root.monitor ? root.monitor.name : ""
     textFormat: Text.PlainText
+    elide: Text.ElideRight
     color: Color.foreground
     font.family: Style.font.family
     font.pixelSize: Style.font.body
@@ -40,14 +42,14 @@ Column {
 
   StatRow {
     width: parent.width
-    icon: ""
+    icon: "\uf047"
     label: "Position"
     value: root.monitor ? root.monitor.x + ", " + root.monitor.y : ""
   }
 
   StatRow {
     width: parent.width
-    icon: ""
+    icon: "\uf108"
     label: "Logical size"
     value: root.monitor ? root.monitor.width + "x" + root.monitor.height : ""
   }
@@ -110,7 +112,8 @@ Column {
     font.pixelSize: Style.font.bodySmall
   }
 
-  Row {
+  Flow {
+    width: parent.width
     spacing: Style.spaceReal(6)
 
     Chip {

@@ -29,13 +29,17 @@ Rectangle {
     : Util.alpha(Color.background, Style.cardFillAlpha)
   border.width: Style.cardBorderWidth
   border.color: root.selected ? Color.accent : Util.alpha(Color.blue, Style.cardBorderAlpha)
+  clip: true
 
   Column {
     anchors.centerIn: parent
+    width: Math.max(0, root.width - Style.spaceReal(8))
     spacing: Style.spaceReal(2)
 
     Text {
-      anchors.horizontalCenter: parent.horizontalCenter
+      width: parent.width
+      horizontalAlignment: Text.AlignHCenter
+      elide: Text.ElideRight
       text: root.name
       textFormat: Text.PlainText
       color: Color.foreground
@@ -45,7 +49,9 @@ Rectangle {
     }
 
     Text {
-      anchors.horizontalCenter: parent.horizontalCenter
+      width: parent.width
+      horizontalAlignment: Text.AlignHCenter
+      elide: Text.ElideRight
       visible: root.height > Style.spaceReal(44)
       text: root.monitor ? root.monitor.width + "x" + root.monitor.height : ""
       textFormat: Text.PlainText
@@ -55,7 +61,9 @@ Rectangle {
     }
 
     Text {
-      anchors.horizontalCenter: parent.horizontalCenter
+      width: parent.width
+      horizontalAlignment: Text.AlignHCenter
+      elide: Text.ElideRight
       visible: root.monitor && root.monitor.focused && root.height > Style.spaceReal(58)
       text: "focused"
       textFormat: Text.PlainText

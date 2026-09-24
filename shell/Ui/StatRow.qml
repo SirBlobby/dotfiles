@@ -35,8 +35,12 @@ Item {
   }
 
   Text {
+    anchors.left: labelText.right
+    anchors.leftMargin: Style.spaceReal(8)
     anchors.right: parent.right
     anchors.verticalCenter: parent.verticalCenter
+    horizontalAlignment: Text.AlignRight
+    elide: Text.ElideRight
     text: root.value
     textFormat: Text.PlainText
     color: Color.foreground
