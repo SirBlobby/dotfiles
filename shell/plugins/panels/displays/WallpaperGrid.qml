@@ -43,8 +43,9 @@ Item {
     id: grid
     anchors.fill: parent
     clip: true
-    cellWidth: Style.spaceReal(120)
-    cellHeight: Style.spaceReal(80)
+    readonly property int columnCount: Math.max(1, Math.floor(width / Style.spaceReal(120)))
+    cellWidth: width / columnCount
+    cellHeight: cellWidth * 2 / 3
     model: root.wallpapers
 
     delegate: Item {
@@ -70,7 +71,7 @@ Item {
           fillMode: Image.PreserveAspectCrop
           asynchronous: true
           cache: true
-          sourceSize.width: Math.round(Style.spaceReal(120) * 1.5)
+          sourceSize.width: Math.round(grid.cellWidth * 1.5)
         }
 
         Rectangle {
