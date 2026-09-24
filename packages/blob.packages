@@ -127,15 +127,33 @@ qrencode
 zbar
 satty
 
-# Media: video and audio player, image viewer, PDF viewer
+# Media: video and audio player, image viewer, document viewer, webcam viewer
+loupe
 mpv
 mpv-mpris
 imv
 evince
+guvcview
 
 # Office and video editing
 libreoffice-fresh
+hunspell-en_us
+ttf-liberation
 kdenlive
+
+# Everyday desktop apps: text editor, calculator, archives, disk usage, system monitor, audio mixer
+gnome-text-editor
+gnome-calculator
+file-roller
+baobab
+gnome-system-monitor
+pavucontrol
+network-manager-applet
+
+# Archive formats for file-roller and the command line
+7zip
+unrar
+zip
 
 # Default application associations, set by install/steps/apps.sh
 xdg-utils
@@ -166,6 +184,10 @@ jq
 starship
 lazygit
 btop
+htop
+nvtop
+duf
+ncdu
 fastfetch
 inxi
 lua

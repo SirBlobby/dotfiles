@@ -72,8 +72,8 @@ Two are worth knowing about:
 `install.sh` installs what is missing before it writes any config:
 
 ```
-packages/blob.packages       123 packages from core, extra, multilib
-packages/blob-aur.packages    11 packages with no official equivalent
+packages/blob.packages       147 packages from core, extra, multilib
+packages/blob-aur.packages    13 packages with no official equivalent
 ```
 
 Only missing packages are touched, through `pacman -S --needed` and
@@ -142,11 +142,37 @@ The everyday apps come from the official repositories with everything else:
 
 | Package | Opens |
 | --- | --- |
-| `imv` | images |
+| `loupe` | images (GNOME Image Viewer) |
+| `imv` | images, keyboard-driven, for scripts and quick previews |
 | `mpv` | video and audio |
-| `evince` | PDFs |
+| `evince` | documents: PDF, PostScript, DjVu, XPS and comic books |
+| `guvcview` | webcam viewer and capture |
 | `libreoffice-fresh` | documents, spreadsheets and presentations (Writer, Calc, Impress) |
 | `kdenlive` | video editing |
+| `gnome-text-editor` | plain text and Markdown |
+| `file-roller` | archives (zip, 7z, rar, tar) |
+| `gnome-calculator` | calculator |
+| `baobab` | disk usage analyzer |
+| `gnome-disk-utility` | drives and partitions |
+| `gnome-system-monitor` | processes and resources |
+| `pavucontrol` | audio mixer |
+| `network-manager-applet` | network connections (`nm-connection-editor`) |
+
+`hunspell-en_us` gives LibreOffice spell checking, and `ttf-liberation` gives it
+metric-compatible replacements for Arial, Times New Roman and Courier New, so
+Microsoft Office documents keep their layout. `7zip`, `unrar` and `zip` are the
+archive backends `file-roller` needs.
+
+In the terminal: `btop`, `htop` and `nvtop` for system and GPU monitoring,
+`duf` for free disk space, and `ncdu` and `dua` for disk usage.
+
+NetBird comes from the AUR as `netbird-bin` and `netbird-ui-bin`. The package
+ships a templated `netbird@.service` whose socket lives at
+`/var/run/netbird/<instance>.sock`, while the `netbird` CLI and the tray app
+look for `/var/run/netbird.sock`. `install.sh` adds a drop-in that moves the
+socket to the default path and enables `netbird@main.service`, so
+`netbird up` and the tray app work with no extra flags. The service starts on
+the next boot, or now with `sudo systemctl start netbird@main`.
 
 `install.sh` makes them the default for their file types through `xdg-mime`,
 which writes `~/.config/mimeapps.list`. A type that already has a default in

@@ -20,6 +20,7 @@ root_files=(
   /etc/systemd/system/user@.service.d/10-blob.conf
   /etc/systemd/oomd.conf.d/10-blob.conf
   /etc/systemd/system/plocate-updatedb.service.d/10-blob.conf
+  /etc/systemd/system/netbird@.service.d/10-blob.conf
   /etc/systemd/system-sleep/keyboard-backlight
   /etc/systemd/system-sleep/unmount-fuse
 )

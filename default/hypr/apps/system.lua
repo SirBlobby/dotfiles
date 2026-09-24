@@ -35,13 +35,13 @@ o.window("org.blob.screensaver", { animation = "slide" })
 
 -- No transparency on media windows.
 o.window(
-  "^(zoom|vlc|mpv|org.kde.kdenlive|com.obsproject.Studio|com.github.PintaProject.Pinta|imv|org.gnome.NautilusPreviewer)$",
+  "^(zoom|vlc|mpv|org.kde.kdenlive|com.obsproject.Studio|com.github.PintaProject.Pinta|imv|org.gnome.Loupe|guvcview|org.gnome.NautilusPreviewer)$",
   {
     tag = "-default-opacity",
   }
 )
 o.window(
-  "^(zoom|vlc|mpv|org.kde.kdenlive|com.obsproject.Studio|com.github.PintaProject.Pinta|imv|org.gnome.NautilusPreviewer)$",
+  "^(zoom|vlc|mpv|org.kde.kdenlive|com.obsproject.Studio|com.github.PintaProject.Pinta|imv|org.gnome.Loupe|guvcview|org.gnome.NautilusPreviewer)$",
   {
     opacity = "1 1",
   }

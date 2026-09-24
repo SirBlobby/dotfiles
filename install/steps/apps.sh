@@ -1,12 +1,14 @@
 mimeapps_file="$config_dir/mimeapps.list"
 
 default_app_associations=(
-  "imv.desktop:image/png image/jpeg image/gif image/webp image/bmp image/tiff image/avif image/heif image/svg+xml"
+  "org.gnome.Loupe.desktop:image/png image/jpeg image/gif image/webp image/bmp image/tiff image/avif image/heif image/svg+xml"
   "mpv.desktop:video/mp4 video/x-matroska video/webm video/quicktime video/x-msvideo video/mpeg video/ogg audio/mpeg audio/flac audio/ogg audio/x-wav audio/mp4"
-  "org.gnome.Evince.desktop:application/pdf"
+  "org.gnome.Evince.desktop:application/pdf application/postscript image/vnd.djvu application/oxps application/vnd.comicbook+zip application/x-cbz"
   "libreoffice-writer.desktop:application/vnd.oasis.opendocument.text application/msword application/vnd.openxmlformats-officedocument.wordprocessingml.document application/rtf"
   "libreoffice-calc.desktop:application/vnd.oasis.opendocument.spreadsheet application/vnd.ms-excel application/vnd.openxmlformats-officedocument.spreadsheetml.sheet text/csv"
   "libreoffice-impress.desktop:application/vnd.oasis.opendocument.presentation application/vnd.ms-powerpoint application/vnd.openxmlformats-officedocument.presentationml.presentation"
+  "org.gnome.TextEditor.desktop:text/plain text/markdown"
+  "org.gnome.FileRoller.desktop:application/zip application/x-7z-compressed application/vnd.rar application/x-tar application/x-compressed-tar application/gzip application/x-xz application/x-bzip2 application/zstd"
 )
 
 mime_default_chosen() {

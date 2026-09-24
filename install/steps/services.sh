@@ -5,6 +5,7 @@ system_services=(
   cups.service
   avahi-daemon.service
   docker.socket
+  netbird@main.service
   power-profiles-daemon.service
   systemd-oomd.service
 )
@@ -104,6 +105,14 @@ install_systemd_dropins() {
       "systemd/plocate-updatedb.service.d/10-blob.conf"
   else
     say "SKIP  systemd/plocate-updatedb.service.d/10-blob.conf (plocate not installed)"
+  fi
+
+  if system_unit_exists netbird@.service; then
+    install_root_file "$systemd_dir/system/netbird@.service.d/10-blob.conf" \
+      /etc/systemd/system/netbird@.service.d/10-blob.conf \
+      "systemd/netbird@.service.d/10-blob.conf"
+  else
+    say "SKIP  systemd/netbird@.service.d/10-blob.conf (netbird not installed)"
   fi
 }
 

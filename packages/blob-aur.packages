@@ -26,6 +26,10 @@ yaru-icon-theme
 mise-bin
 ufw-docker
 
+# NetBird mesh VPN: the client daemon and its tray app
+netbird-bin|netbird
+netbird-ui-bin|netbird-ui
+
 # Only in the Omarchy repository as binaries; these are the AUR sources
 tzupdate
 localsend

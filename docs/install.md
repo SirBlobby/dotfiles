@@ -46,9 +46,10 @@ with `--check`.
    panels come up full of blanks. `fonts.conf` binds `monospace` to
    `JetBrainsMono Nerd Font`; `blob font set` rewrites the same file, and the
    installer then reports it as a local change and keeps your choice.
-   Default applications are set in `~/.config/mimeapps.list`: `imv` for
-   images, `mpv` for video and audio, `evince` for PDFs, and LibreOffice for
-   documents, spreadsheets and presentations. A file type that already has a
+   Default applications are set in `~/.config/mimeapps.list`: Loupe for
+   images, `mpv` for video and audio, `evince` for PDFs and other documents, LibreOffice for
+   documents, spreadsheets and presentations, GNOME Text Editor for text, and
+   File Roller for archives. A file type that already has a
    default there is left alone. See [packages.md](packages.md#desktop-applications).
    `~/.bashrc` gets one line sourcing `session/bashrc`. The line is added once,
    a `.bak` is kept, and a `~/.bashrc` that already has it is left alone.

@@ -78,7 +78,7 @@ It runs these steps, in this order, and every one of them is idempotent:
 | 1. Directories | creates the 19 directories the shell and scripts expect, before anything writes into them |
 | 2. `BLOB_PATH` | symlinks `~/.local/share/blob` to this checkout |
 | 3. Packages | installs what is missing from `packages/`, bootstrapping `yay` first on a machine that has no AUR helper |
-| 4. Config | copies `hypr/`, the themed app configs, `blob/shell.json`, and the uwsm environment into `~/.config`, sets the default apps for images, video, PDFs and office files, and writes `/etc/profile.d/blob.sh` so a login shell finds the `blob` command |
+| 4. Config | copies `hypr/`, the themed app configs, `blob/shell.json`, and the uwsm environment into `~/.config`, sets the default apps for images, video, PDFs, office files, text and archives, and writes `/etc/profile.d/blob.sh` so a login shell finds the `blob` command |
 | 5. First theme | links `~/wallpapers` to the checkout, applies `flats` headless, picks a background, and links the btop and Neovim theme files, so the first login is not a blank desktop |
 | 6. User units | installs the session services into `~/.config/systemd/user` and enables them |
 | 7. systemd drop-ins | writes the shutdown timeouts, oomd thresholds, plocate prune paths, and sleep hooks under `/etc` |
