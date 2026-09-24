@@ -13,14 +13,14 @@ reload_system_services() {
   fi
 
   if ! as_root systemctl daemon-reload; then
-    say "WARN  could not reload systemd"
+    warn "could not reload systemd"
     return 0
   fi
 
   local unit
   for unit in "${reloaded_system_services[@]}"; do
     system_unit_exists "$unit" || continue
-    as_root systemctl try-restart "$unit" || say "WARN  could not restart $unit"
+    as_root systemctl try-restart "$unit" || warn "could not restart $unit"
   done
 
   say "ok    system services reloaded"
@@ -45,7 +45,7 @@ reload_user_services() {
   done
 
   if (( ${#failed[@]} > 0 )); then
-    say "WARN  could not restart: ${failed[*]}"
+    warn "could not restart: ${failed[*]}"
   else
     say "ok    user services reloaded"
   fi
@@ -58,7 +58,7 @@ run_session_reload() {
   if BLOB_PATH="$blob_path" PATH="$blob_path/bin:$PATH" "$@" &>/dev/null; then
     say "ok    $label reloaded"
   else
-    say "WARN  could not reload $label"
+    warn "could not reload $label"
   fi
 }
 

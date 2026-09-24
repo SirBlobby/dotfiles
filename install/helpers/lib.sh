@@ -4,6 +4,28 @@ say() {
   printf '%s\n' "$1"
 }
 
+warnings=()
+
+warn() {
+  warnings+=("$1")
+  say "WARN  $1"
+}
+
+section() {
+  say ""
+  say "==> $1"
+}
+
+report_warnings() {
+  (( ${#warnings[@]} == 0 )) && return 0
+  say ""
+  say "${#warnings[@]} warning(s), details above:"
+  local message
+  for message in "${warnings[@]}"; do
+    say "  - $message"
+  done
+}
+
 note_change() {
   changes=$((changes + 1))
 }

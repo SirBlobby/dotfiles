@@ -8,8 +8,10 @@ with `--check`.
 
 | Path | Role |
 | --- | --- |
+| `bootstrap.sh` | one-command install on a bare machine: installs git, clones, runs `install.sh` |
 | `install.sh` | flags and the order the steps run in |
-| `install/helpers/lib.sh` | reporting, file copies, unit queries |
+| `install/helpers/lib.sh` | reporting, sections, the warning summary, file copies, unit queries |
+| `install/steps/preflight.sh` | the checks that stop a run early, and the sudo keepalive |
 | `install/helpers/as-root.sh` | `as_root`, a no-op when already root |
 | `install/steps/directories.sh` | the directories the shell and scripts expect |
 | `install/steps/packages.sh` | repo and AUR packages, and the yay bootstrap |
@@ -23,6 +25,16 @@ with `--check`.
 
 ## Steps
 
+0. **Preflight** stops before anything is written when the installer is run as
+   root (it installs into `$HOME`, and `makepkg` refuses to build as root), when
+   `pacman` is missing, when `sudo` does not accept the user, or when
+   `archlinux.org` cannot be reached and packages are wanted. It warns when
+   `systemd-networkd`, `iwd`, `dhcpcd` or `netctl` is enabled, because
+   NetworkManager is enabled below and two network managers fight over the same
+   interface after a reboot. `archinstall`'s "copy ISO network config" option
+   leaves exactly that behind. Once sudo is accepted it is refreshed every
+   minute in the background, so a long AUR build does not stop halfway for a
+   password.
 1. **Directories** are created first, because nothing below can write into a
    directory that is not there: `~/.config/blob`, `~/.config/systemd/user/app.slice.d`,
    `~/.local/state/blob`, `~/.local/share` and `~/.cache/blob`. A fresh Arch
@@ -32,9 +44,10 @@ with `--check`.
    create the parent of a link, so this step makes `~/.local/share` itself rather
    than assuming step 1 ran.
 3. **Packages** come from `packages/blob.packages` and
-   `packages/blob-aur.packages`. A machine with no AUR helper gets `yay-bin`
-   built once with `makepkg`. A failed batch refreshes the databases and retries,
-   then falls back to one package at a time, so a single name that no longer
+   `packages/blob-aur.packages`. Repo packages go in with a full
+   `pacman -Syu`, never a partial upgrade. A machine with no AUR helper gets
+   `yay-bin` built once with `makepkg`. A failed batch upgrades the system on
+   its own, then falls back to one package at a time, so a single name that no longer
    resolves cannot cost you the other hundred and the config, service and login
    steps below. See [packages.md](packages.md).
 4. **Config** is copied into `~/.config`: `hypr/`, the themed app configs,
@@ -152,8 +165,11 @@ with `--check`.
 11. **Launch.** `sddm`, `hyprland`, `quickshell` and `uwsm` are checked one last
     time and any that are missing are named, because that is the whole difference
     between a desktop and a console. Then, when the installer was run from a
-    console and nothing graphical is running, it starts `sddm.service` so the
-    desktop appears without a reboot. `--no-launch` prints the command instead.
+    console and nothing graphical is running, it offers a reboot, which brings
+    up NetworkManager, the boot splash and any new kernel modules together.
+    Declining starts `sddm.service` so the desktop appears without one.
+    `--no-launch` prints the command instead. Every warning from the run is
+    listed again just before this step.
     `--autologin` writes `/etc/sddm.conf.d/zzz-blob-autologin.conf` for the
     current user.
 

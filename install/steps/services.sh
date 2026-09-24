@@ -135,7 +135,7 @@ enable_user_units() {
   local unit
 
   if ! user_manager_available; then
-    say "WARN  no user systemd manager; skipping user services"
+    warn "no user systemd manager; skipping user services"
     return 0
   fi
 

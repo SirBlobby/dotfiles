@@ -45,6 +45,7 @@ while (( $# > 0 )); do
 done
 
 source "$repo_dir/install/helpers/lib.sh"
+source "$repo_dir/install/steps/preflight.sh"
 source "$repo_dir/install/steps/directories.sh"
 source "$repo_dir/install/steps/packages.sh"
 source "$repo_dir/install/steps/config.sh"
@@ -60,12 +61,18 @@ say "repo: $repo_dir"
 if [[ $check == true ]]; then
   say "mode: check (nothing will be written)"
 fi
-say ""
 
+section "Preflight"
+run_preflight
+
+section "Directories"
 create_directories
 link_blob_path
+
+section "Packages"
 install_packages
 
+section "Config"
 install_shipped_config
 remove_omarchy_font
 refresh_font_cache
@@ -76,16 +83,19 @@ install_systemd_dropins
 install_zen_config
 install_default_apps
 
+section "Theme"
 link_wallpapers
 install_default_theme
 install_default_background
 link_app_themes
 
+section "Services"
 enable_system_services
 mask_system_services
 install_boot_splash
 enable_user_units
 
+section "Login screen"
 install_login_config
 install_session_entry
 install_autologin
@@ -94,9 +104,12 @@ report_greeter_compositor
 report_login_conflicts
 report_desktop_essentials
 
+section "Reload"
 reload_system_services
 reload_user_services
 reload_session
+
+report_warnings
 
 say ""
 if [[ $check == true ]]; then

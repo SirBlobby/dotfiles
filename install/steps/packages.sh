@@ -54,8 +54,6 @@ install_packages() {
     return 0
   fi
 
-  blob_sudo_keepalive
-
   if (( ${#repo_missing[@]} )); then
     say "install ${#repo_missing[@]} repo package(s)"
     install_repo_packages "${repo_missing[@]}"
@@ -63,7 +61,7 @@ install_packages() {
 
   if (( ${#aur_missing[@]} )); then
     ensure_aur_helper || {
-      say "WARN  no AUR helper; skipping ${#aur_missing[@]} AUR package(s): ${aur_missing[*]}"
+      warn "no AUR helper; skipping ${#aur_missing[@]} AUR package(s): ${aur_missing[*]}"
       return 0
     }
     say "install ${#aur_missing[@]} AUR package(s)"
@@ -75,20 +73,17 @@ install_repo_packages() {
   local package
   local -a failed=()
 
-  as_root pacman -S --needed --noconfirm "$@" && return 0
+  as_root pacman -Syu --needed --noconfirm "$@" && return 0
 
-  say "WARN  the batch install failed; refreshing the package databases"
-  as_root pacman -Sy --noconfirm || true
-  as_root pacman -S --needed --noconfirm "$@" && return 0
-
-  say "WARN  still failing; retrying one package at a time"
+  say "      the batch install failed; upgrading the system, then one package at a time"
+  as_root pacman -Syu --noconfirm || true
   for package in "$@"; do
     as_root pacman -S --needed --noconfirm "$package" || failed+=("$package")
   done
 
   (( ${#failed[@]} == 0 )) && return 0
 
-  say "WARN  ${#failed[@]} repo package(s) failed to install: ${failed[*]}"
+  warn "${#failed[@]} repo package(s) failed to install: ${failed[*]}"
 }
 
 desktop_essentials=(sddm hyprland quickshell uwsm)
@@ -106,7 +101,7 @@ report_desktop_essentials() {
     return 0
   fi
 
-  say "WARN  the desktop cannot start without: ${missing[*]}"
+  warn "the desktop cannot start without: ${missing[*]}"
   say "      install them with 'sudo pacman -S ${missing[*]}', then ./install.sh again"
 }
 
@@ -120,8 +115,8 @@ install_aur_packages() {
 
   (( ${#failed[@]} == 0 )) && return 0
 
-  say "WARN  ${#failed[@]} AUR package(s) failed to build: ${failed[*]}"
-  say "WARN  the install continued; retry them with 'yay -S <name>'"
+  warn "${#failed[@]} AUR package(s) failed to build: ${failed[*]}"
+  say "      the install continued; retry them with 'yay -S <name>'"
 }
 
 # A fresh Arch install has no AUR helper, and yay is not in the official
@@ -147,8 +142,4 @@ ensure_aur_helper() {
 
   rm -rf "$build_dir"
   command -v yay &>/dev/null
-}
-
-blob_sudo_keepalive() {
-  sudo -v 2>/dev/null || true
 }

@@ -55,7 +55,7 @@ install_default_theme() {
     blob-theme-set "$default_theme" >/dev/null; then
     say "theme $default_theme"
   else
-    say "WARN  could not apply the $default_theme theme"
+    warn "could not apply the $default_theme theme"
     say "      the session will come up without a palette; run 'blob theme set $default_theme'"
   fi
 }

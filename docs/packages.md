@@ -84,10 +84,12 @@ packages pulled in under a different name no longer come back on every run. AUR
 packages are built one at a time, so a build that fails is reported at the end
 instead of stopping the install.
 
-Repo packages go in one `pacman` call. If that call fails the databases are
-refreshed with `pacman -Sy` and it is tried again, because a stale database is
-what turns an installed-and-present package into `target not found`. If it still
-fails the packages are installed one at a time, so one unresolvable name does not
+Repo packages go in one `pacman -Syu --needed` call, so the databases are
+fresh and the system is upgraded in the same transaction. Refreshing the
+databases without upgrading (`-Sy` then `-S`) is a partial upgrade, which Arch
+does not support and which breaks libraries on a fresh install whose ISO is a
+few weeks old. If that call fails the system is upgraded on its own and the
+packages are installed one at a time, so one unresolvable name does not
 block the other hundred - which is how a missing `sddm` used to turn into a
 machine with no login screen. `install.sh` ends by naming any of `sddm`,
 `hyprland`, `quickshell` and `uwsm` that are still not installed.

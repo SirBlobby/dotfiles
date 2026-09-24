@@ -32,6 +32,6 @@ install_boot_splash() {
   if BLOB_PATH="$blob_path" "$repo_dir/bin/blob-boot" "$boot_splash_image"; then
     say "set   boot splash to branding/blob_boot.png"
   else
-    say "WARN  could not set the boot splash; run 'blob boot' to retry"
+    warn "could not set the boot splash; run 'blob boot' to retry"
   fi
 }

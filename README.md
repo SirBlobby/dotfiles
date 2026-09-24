@@ -59,6 +59,17 @@ and nothing to re-apply after somebody else's release.
 
 ## Install
 
+On a fresh Arch install, logged in as your own user with sudo and a network
+connection:
+
+```bash
+curl -fsSL https://git.sirblob.co/SirBlob/blomarchy/raw/branch/main/bootstrap.sh | bash
+```
+
+`bootstrap.sh` installs `git`, clones this repository to `~/dotfiles` (or
+`BLOB_CHECKOUT_DIR`), and runs `install.sh`, passing any flags through with
+`bash -s -- --autologin`.
+
 `BLOB_PATH` is a symlink to this checkout, so `bin/`, `shell/`, `themes/` and
 `default/` are always the working tree and edits are live. Only the handful of
 files that must sit under `~/.config` get copied.
@@ -75,6 +86,7 @@ It runs these steps, in this order, and every one of them is idempotent:
 
 | Step | What it does |
 | --- | --- |
+| 0. Preflight | stops if run as root, off Arch, without working sudo, or offline, warns when another network manager is enabled next to NetworkManager, and keeps sudo alive for the whole run |
 | 1. Directories | creates the 19 directories the shell and scripts expect, before anything writes into them |
 | 2. `BLOB_PATH` | symlinks `~/.local/share/blob` to this checkout |
 | 3. Packages | installs what is missing from `packages/`, bootstrapping `yay` first on a machine that has no AUR helper |
@@ -85,7 +97,10 @@ It runs these steps, in this order, and every one of them is idempotent:
 | 8. System services | enables NetworkManager, resolved, bluetooth, cups, avahi, docker, power-profiles-daemon, and oomd, masks `NetworkManager-wait-online`, sets the boot splash to `branding/blob_boot.png`, and sets GRUB up with every other installed OS in its menu |
 | 9. Login screen | installs the session entry and the SDDM config, enables `sddm.service`, and sets the default target to `graphical.target` |
 | 10. Reload | reloads systemd, restarts the running user services, and in a running session re-renders the theme, reloads Hyprland, and restarts the Blob shell |
-| 11. Launch | starts the login screen, so the desktop comes up without a reboot |
+| 11. Launch | offers a reboot, or starts the login screen straight away if you decline |
+
+Output is grouped into sections, and every warning is repeated in a summary at
+the end so a failed AUR build is not lost in the scroll.
 
 Step 9 is the one a plain Arch install cannot do without: SDDM's stock Wayland
 greeter runs on `weston`, which Blob does not install, so the greeter is pointed

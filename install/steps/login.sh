@@ -71,7 +71,7 @@ report_greeter_compositor() {
   [[ -n $binary ]] || return 0
   command -v "$binary" &>/dev/null && return 0
 
-  say "WARN  the greeter's compositor command '$binary' is not installed"
+  warn "the greeter's compositor command '$binary' is not installed"
   say "      SDDM cannot draw a greeter without it; it is set in $blob_greeter_conf"
 }
 
@@ -93,7 +93,7 @@ report_login_conflicts() {
     session_entry_exists "$session" && continue
 
     found=true
-    say "WARN  $file autologs into $session, which is not installed"
+    warn "$file autologs into $session, which is not installed"
   done
 
   if [[ $found == true ]]; then
@@ -107,10 +107,10 @@ report_login_conflicts() {
 enable_display_manager() {
   if ! system_unit_exists sddm.service; then
     if package_installed sddm; then
-      say "WARN  sddm is installed but sddm.service is not visible to systemd"
+      warn "sddm is installed but sddm.service is not visible to systemd"
       say "      run 'sudo systemctl daemon-reload', then ./install.sh again"
     else
-      say "WARN  sddm is not installed; the desktop cannot start at boot"
+      warn "sddm is not installed; the desktop cannot start at boot"
       say "      install it with 'sudo pacman -S sddm', then ./install.sh again"
     fi
     return 0
@@ -144,7 +144,7 @@ enable_display_manager() {
     if as_root systemctl enable sddm.service; then
       say "enable sddm.service"
     else
-      say "WARN  could not enable sddm.service"
+      warn "could not enable sddm.service"
     fi
   fi
 
@@ -152,7 +152,7 @@ enable_display_manager() {
     if as_root systemctl set-default graphical.target; then
       say "set   default target to graphical.target"
     else
-      say "WARN  could not set the default target to graphical.target"
+      warn "could not set the default target to graphical.target"
     fi
   fi
 }
@@ -184,8 +184,22 @@ launch_desktop() {
     return 0
   fi
 
+  if reboot_chosen; then
+    say "Rebooting into Blob."
+    as_root systemctl reboot
+    return 0
+  fi
+
   say "Starting the login screen. Pick the Blob session to log in."
   as_root systemctl start sddm.service || {
-    say "WARN  sddm.service did not start; see 'systemctl status sddm'"
+    warn "sddm.service did not start; see 'systemctl status sddm'"
   }
+}
+
+reboot_chosen() {
+  [[ -r /dev/tty ]] || return 1
+  local answer
+  say "A reboot brings up the network, boot splash and new kernel modules together."
+  read -rp "Reboot now? [Y/n] " answer </dev/tty
+  [[ -z $answer || $answer == [yY]* ]]
 }

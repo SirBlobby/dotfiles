@@ -15,7 +15,7 @@ link_blob_path() {
   fi
 
   if [[ -e $blob_path && ! -L $blob_path ]]; then
-    say "WARN  $blob_path exists and is not a symlink; move it aside first"
+    warn "$blob_path exists and is not a symlink; move it aside first"
     note_change
     return 0
   fi
