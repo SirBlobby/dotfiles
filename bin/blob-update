@@ -212,7 +212,7 @@ fi
 show_pending
 confirm_update
 
-blob-sudo-keepalive
+source blob-sudo-keepalive
 
 begin_step "Refreshing the keyring"
 sudo pacman -Sy --needed --noconfirm archlinux-keyring

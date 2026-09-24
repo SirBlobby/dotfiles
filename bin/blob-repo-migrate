@@ -103,7 +103,7 @@ echo
 read -rp "Apply all of the above? [y/N] " answer
 [[ $answer == [yY] ]] || exit 0
 
-blob-sudo-keepalive
+source blob-sudo-keepalive
 
 for pair in "${substitutions[@]}"; do
   from=${pair%%:*}
