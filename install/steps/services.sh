@@ -12,10 +12,10 @@ system_services=(
 # network-online.target must not hold up graphical.target waiting for DHCP or
 # Wi-Fi association. Nothing in the session blocks on the network.
 #
-# Blob configures no boot splash: no mkinitcpio hook, no kernel command line,
-# and no theme. An unconfigured plymouth still takes the console at boot and
-# never hands it back, and getty@tty1 waits on plymouth-quit-wait.service, so
-# the machine comes up with no greeter and no TTY to fix it from.
+# An unconfigured plymouth takes the console at boot and never hands it back,
+# and getty@tty1 waits on plymouth-quit-wait.service, so the machine comes up
+# with no greeter and no TTY to fix it from. The plymouth units are masked
+# until install_boot_splash configures the blob theme, and left alone after.
 masked_services=(
   NetworkManager-wait-online.service
   plymouth-start.service
@@ -64,6 +64,7 @@ mask_system_services() {
 
   for unit in "${masked_services[@]}"; do
     system_unit_exists "$unit" || continue
+    [[ $unit == plymouth-* ]] && boot_splash_installed && continue
     [[ "$(system_unit_state "$unit")" == masked ]] && continue
     pending+=("$unit")
   done

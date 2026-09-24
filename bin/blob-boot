@@ -19,7 +19,7 @@
 set -euo pipefail
 
 BLOB_PATH="${BLOB_PATH:-$HOME/.local/share/blob}"
-DEFAULT_IMAGE="$BLOB_PATH/branding/boot_flash.png"
+DEFAULT_IMAGE="$BLOB_PATH/branding/blob_boot.png"
 THEME_SOURCE="$BLOB_PATH/default/plymouth"
 THEME_DIR="/usr/share/plymouth/themes/blob"
 PLYMOUTH_LOGO="$THEME_DIR/logo.png"

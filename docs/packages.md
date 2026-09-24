@@ -138,19 +138,18 @@ Omarchy's own package list, because they were installed by hand on this machine:
 
 ## The boot splash
 
-`plymouth` is installed but left inert, and the splash is opt-in through one
-command:
+`install.sh` sets the splash to `branding/blob_boot.png`. To change it later:
 
 ```
-blob boot                    # branding/boot_flash.png
+blob boot                    # branding/blob_boot.png
 blob boot ~/some/image.png   # or any other image
 ```
 
-The reason it is opt-in is that an installed but *unconfigured* plymouth is not
-harmless: it takes the console at boot and never hands it back, and
-`getty@tty1` waits on `plymouth-quit-wait.service`, so the machine reaches
-neither the greeter nor a TTY. `install.sh` therefore masks
-`plymouth-start.service` and `plymouth-quit-wait.service`, and `blob boot`
+An installed but *unconfigured* plymouth is not harmless: it takes the console
+at boot and never hands it back, and `getty@tty1` waits on
+`plymouth-quit-wait.service`, so the machine reaches neither the greeter nor a
+TTY. `install.sh` therefore masks `plymouth-start.service` and
+`plymouth-quit-wait.service` until the splash is configured, and `blob boot`
 unmasks them as part of configuring everything else - the theme in
 `default/plymouth/`, the `plymouth` mkinitcpio hook, and the initramfs rebuild.
 It finishes by printing the kernel parameters your bootloader still needs

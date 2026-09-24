@@ -49,6 +49,7 @@ source "$repo_dir/install/steps/directories.sh"
 source "$repo_dir/install/steps/packages.sh"
 source "$repo_dir/install/steps/config.sh"
 source "$repo_dir/install/steps/services.sh"
+source "$repo_dir/install/steps/boot.sh"
 source "$repo_dir/install/steps/theme.sh"
 source "$repo_dir/install/steps/login.sh"
 source "$repo_dir/install/steps/reload.sh"
@@ -80,6 +81,7 @@ link_app_themes
 
 enable_system_services
 mask_system_services
+install_boot_splash
 enable_user_units
 
 install_login_config
