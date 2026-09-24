@@ -71,12 +71,10 @@ changes beyond renaming:
 - The `Dictation` bar indicator removed with voice typing.
 - Persistent workspaces 1-9 instead of 1-5.
 - Menu cards 440 wide instead of 300, with the Blob icon on the bar button.
-- The lock screen shows a large clock and the date over the blurred, dimmed
-  wallpaper, then an avatar with the user's initial and name, and a rounded
-  password field with a lock icon and, when enrolled, a fingerprint icon. The
-  border goes to the blue slot while focused or typing and to urgent on a
-  failed attempt, when the field shakes and the line under it shows the error
-  and attempt count. `branding/screensaver.txt` sits faded at the bottom.
+- The lock screen carries `branding/screensaver.txt`, the time and date above
+  the password field, and an AGS-style password field: square corners, a 2px
+  border on the blue slot at half alpha going to solid accent once typing
+  starts, and urgent on a failed attempt.
 - `quick-settings`, `sysmon`, and `notification-center` are new, ported from the
   GTK widgets. See [widgets.md](widgets.md).
 
