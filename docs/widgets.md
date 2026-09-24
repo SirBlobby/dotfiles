@@ -44,6 +44,15 @@ falling back to `accent` for themes that define neither. `color0` is
 Both new bar click actions are already in `shell.json`. The system monitor had no
 bar entry point in the AGS setup either, so the keybinding is how it is reached.
 
+## Quick settings
+
+The control centre is centred on the screen, with the weather card to its left.
+Its tiles fill the card width in three columns, and every tile and card button
+draws a JetBrainsMono Nerd Font glyph over a light foreground fill with a thin
+border, so they read against the panel in any theme. An active tile takes the
+accent colour. The Wallpaper tile opens `blob.displays`, the Theme tile opens
+`blob theme menu`.
+
 ## Deliberately not ported
 
 The tiles still poll shell commands the way the GTK widgets did - `pamixer` for
@@ -83,10 +92,12 @@ correctly, but nothing in the widget sets it.
 
 ## Wallpapers
 
-`blob.displays` picks wallpapers. Opened with `Super + Alt + W` or the Blob
-menu's Wallpaper row.
+`blob.displays` picks wallpapers. Opened with `Super + Alt + W`, the quick
+settings Wallpaper tile, or the Blob menu's Wallpaper row.
 
-A thumbnail grid of `~/wallpapers`, with a row of chips selecting the target:
+A thumbnail grid of `~/wallpapers` that fits as many columns of at least 120px
+as the panel allows and stretches them to its full width, with a row of chips
+selecting the target:
 "All monitors" sets the global wallpaper through `blob-bg-set`, and a specific
 output assigns just that monitor through `blob-bg-monitor`, which symlinks the
 image under `~/.local/state/blob/backgrounds/<output>`. An output with its own

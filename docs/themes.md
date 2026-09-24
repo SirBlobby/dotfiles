@@ -103,7 +103,7 @@ sources `session/env-bootstrap` so `blob` is on `PATH` in any interactive shell.
 
 | Command | Does |
 | --- | --- |
-| `blob theme menu` | pick from the bundled and local sets |
+| `blob theme menu` | pick from the bundled and local sets, each row previewing the theme's background, foreground, accent and six palette colours as swatches |
 | `blob theme set <name>` | apply one by name |
 | `blob wallpaper set <image>` | extract a palette from a wallpaper with pywal, fix flat palettes with `blob-theme-contrast`, and apply it as `blob-dynamic` |
 | `blob theme share <link>` | fetch a shared palette and apply it as `blob-dynamic` |

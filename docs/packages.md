@@ -165,7 +165,9 @@ blob update
 
 Refreshes the keyring, runs `pacman -Syu`, runs `yay -Sua` when the AUR is
 reachable, prunes orphans, and sends a notification. `blob update-available`
-prints the pending count that the bar's update indicator reads.
+prints the pending count that the bar's update indicator reads. The indicator
+rechecks every six hours and a few seconds after any pacman transaction, so it
+clears as soon as an update, from `blob update` or by hand, finishes.
 
 This replaces 27 upstream scripts of channel, migration, and version-pinning
 machinery. There are no release channels: there is one repository set, which is

@@ -54,12 +54,12 @@ Example `shell.json` (bar subtree only shown):
 
 | Name | What it does | Interactions |
 |---|---|---|
-| `blob.menu` | Blob menu launcher | left = menu · right = terminal |
+| `blob.menu` | Blob menu launcher, drawn from `branding/chai.svg` in the bar colour | left = menu · right = terminal |
 | `blob.workspaces` | Hyprland workspace switcher | left = focus workspace |
 | `blob.clock` | Date/time label + popup with a month grid, ISO week numbers, and month stepping | left = popup · right = cycle label format · middle = timezone selector |
 | `blob.media` | MPRIS now-playing — scrolling track + artist, cover-art popup | left = play/pause · middle = next · scroll = prev/next · right = popup |
 | `blob.indicators` | Manual state indicators | left = indicator action |
-| `blob.system-update` | Available update indicator | left = update |
+| `blob.system-update` | Available update indicator, rechecked after every pacman transaction | left = update |
 | `blob.tray` | System tray | hover = reveal drawer · right on chevron = manage |
 | `blob.weather` | Weather icon + popup with forecast | left = popup · right = full notification |
 | `blob.microphone` | Mic icon + scroll volume | left = mute toggle · middle = audio panel · scroll = source volume |

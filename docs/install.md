@@ -35,9 +35,10 @@ with `--check`.
    resolves cannot cost you the other hundred and the config, service and login
    steps below. See [packages.md](packages.md).
 4. **Config** is copied into `~/.config`: `hypr/`, the themed app configs,
-   `blob/shell.json`, the uwsm environment, `fontconfig/fonts.conf`, and the
-   icon font, and the font cache is refreshed. The shell draws every icon as a
-   Nerd Font glyph in the `monospace` family, and on a fresh Arch install
+   `blob/shell.json`, the uwsm environment, and `fontconfig/fonts.conf`. A
+   leftover Omarchy icon font in `~/.local/share/fonts` is removed, and the
+   font cache is refreshed. The shell draws every icon as a Nerd Font glyph in
+   the `monospace` family, and on a fresh Arch install
    fontconfig resolves that to a font with no such glyphs, so the bar and its
    panels come up full of blanks. `fonts.conf` binds `monospace` to
    `JetBrainsMono Nerd Font`; `blob font set` rewrites the same file, and the
