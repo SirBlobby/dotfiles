@@ -48,6 +48,7 @@ BarWidget {
     anchors.fill: parent
     bar: root.bar
     labelVisible: false
+    hasVisualContent: root.iconReady
     fixedWidth: root.iconSize + Style.spaceReal(15)
     horizontalMargin: 7.5
     onPressed: function(button) {
