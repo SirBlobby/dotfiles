@@ -363,6 +363,7 @@ function displayRow(items, itemOrder, checkedResults, entry, detail, score, sect
     label: labelFor(entry, checkedResults),
     target: target,
     detail: detail || "",
+    swatches: "",
     path: pathFor(items, entry.id),
     childCount: (entry.kind === "menu" || entry.kind === "link") ? childCount(items, itemOrder, target) : 0,
     action: entry.action || "",

@@ -519,13 +519,15 @@ Item {
     var query = root.filterText.trim().toLowerCase()
     for (var i = 0; i < root.dmenuOptions.length; i++) {
       // An option is "<label>", "<glyph>\t<label>", or
-      // "<glyph>\t<label>\t<subtext>". The glyph never comes back with the
-      // selection; the subtext renders under the label, filters alongside it,
-      // and returns with the selection as a stable key for same-named rows.
+      // "<glyph>\t<label>\t<subtext>", optionally followed by
+      // "\t<swatches>". The glyph never comes back with the selection; the
+      // subtext renders under the label, filters alongside it, and returns
+      // with the selection as a stable key for same-named rows.
       var parts = String(root.dmenuOptions[i] || "").split("\t")
       var icon = parts.length > 1 ? parts.shift() : ""
       var label = parts.shift() || ""
-      var detail = parts.join("\t")
+      var detail = parts.shift() || ""
+      var swatches = parts.join(" ")
       if (query && label.toLowerCase().indexOf(query) < 0
           && detail.toLowerCase().indexOf(query) < 0) continue
       displayModel.append({
@@ -538,6 +540,7 @@ Item {
         label: label,
         target: "",
         detail: detail,
+        swatches: swatches,
         path: "",
         childCount: 0,
         action: "",
@@ -1209,6 +1212,7 @@ Item {
               required property string label
               required property string target
               required property string detail
+              required property string swatches
               required property string path
               required property string action
               required property int childCount
@@ -1272,7 +1276,7 @@ Item {
                 id: contentColumn
                 anchors.left: row.hasIcon ? iconText.right : parent.left
                 anchors.leftMargin: row.hasIcon ? Style.space(6) : root.rowReservedBorderLeft + Style.space(18)
-                anchors.right: trail.left
+                anchors.right: swatchRow.left
                 anchors.rightMargin: Style.space(6)
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: Style.space(3)
@@ -1299,6 +1303,28 @@ Item {
                   font.family: root.fontFamily
                   font.pixelSize: Style.font.bodySmall
                   elide: Text.ElideRight
+                }
+              }
+
+              Row {
+                id: swatchRow
+                anchors.right: trail.left
+                anchors.rightMargin: Style.space(6)
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: Style.space(4)
+
+                Repeater {
+                  model: row.swatches.split(" ").filter(function(color) { return color.length > 0 })
+
+                  Rectangle {
+                    required property string modelData
+                    width: Style.space(16)
+                    height: Style.space(16)
+                    radius: Style.space(4)
+                    color: modelData
+                    border.width: 1
+                    border.color: Util.alpha(row.hasCursor ? root.selectedText : root.foreground, 0.35)
+                  }
                 }
               }
 
