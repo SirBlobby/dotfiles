@@ -8,7 +8,10 @@ BarWidget {
   id: root
   moduleName: "blob.menu"
 
-  readonly property string iconPath: Quickshell.env("HOME") + "/.config/blob/branding/chai.svg"
+  readonly property string userIconPath: Quickshell.env("HOME") + "/.config/blob/branding/chai.svg"
+  readonly property string shippedIconPath: Quickshell.env("BLOB_PATH") + "/branding/chai.svg"
+  property bool useShippedIcon: false
+  readonly property string iconPath: useShippedIcon ? shippedIconPath : userIconPath
   readonly property int iconSize: Math.round(Style.font.body * 1.35)
 
   property string iconSvg: ""
@@ -33,7 +36,10 @@ BarWidget {
     watchChanges: true
     printErrors: false
     onLoaded: root.iconSvg = text()
-    onLoadFailed: root.iconSvg = ""
+    onLoadFailed: {
+      if (!root.useShippedIcon) root.useShippedIcon = true
+      else root.iconSvg = ""
+    }
     onFileChanged: reload()
   }
 

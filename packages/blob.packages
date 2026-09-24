@@ -18,6 +18,7 @@ xdg-desktop-portal-gtk
 gtk4-layer-shell
 qt6-wayland
 qt6-imageformats
+qt6-svg
 wl-clipboard
 wtype
 socat
