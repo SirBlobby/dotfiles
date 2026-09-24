@@ -114,9 +114,6 @@ libvips
 webp-pixbuf-loader
 ffmpegthumbnailer
 
-# Theming
-awww
-
 # Capture
 grim
 slurp

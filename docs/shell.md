@@ -88,6 +88,16 @@ Keys in the clock popup:
 | Enter | back to today, or pick the highlighted month |
 | Esc | close the month picker, then the popup |
 
+## Animated wallpapers
+
+The background plugin draws a GIF wallpaper with `AnimatedImage`, so it moves
+however it was set: the wallpaper picker, `blob wallpaper set`, `blob bg set`,
+or a theme's own background. The transition into it shows the first frame, and
+the animation starts once the transition finishes. Per-monitor wallpapers from
+`blob bg monitor` animate the same way. `awww` is no longer needed;
+`blob-wallpaper-set` and `blob-theme-menu` still stop a leftover `awww-daemon`
+so it cannot paint over the shell.
+
 ## Differences from upstream
 
 This shell was forked from Omarchy 4.0.4 and is not tracked against it. The

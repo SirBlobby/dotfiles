@@ -107,32 +107,9 @@ fi
 
 NEW_BACKGROUND="$THEME_DIR/backgrounds/$(basename "$IMAGE_PATH")"
 
-# Stop a gif daemon left over from a previous wallpaper. `awww kill` shuts the
-# daemon down via its own IPC so it cleans up its socket, unlike a raw `pkill`.
 awww kill --all >/dev/null 2>&1
 pkill -x awww-daemon 2>/dev/null
 
-# blob-bg-set updates ~/.local/state/blob/current/background and
-# tells the running Blob shell to repaint, which is what draws the desktop
-# background in Blob 4 (swaybg is no longer involved).
 blob-bg-set "$NEW_BACKGROUND"
-
-if [[ "${IMAGE_PATH,,}" == *.gif ]]; then
-    # The shell renders a still frame from the symlink above; awww layers the
-    # animation on top of it.
-    echo "GIF detected, using awww for animation..."
-    setsid uwsm-app -- awww-daemon >>"$HOME/.cache/awww-daemon.log" 2>&1 &
-
-    # Poll until the daemon's IPC socket is ready instead of guessing a fixed sleep
-    IMG_ERROR=""
-    for _ in {1..15}; do
-        IMG_ERROR=$(awww img "$NEW_BACKGROUND" 2>&1) && break
-        sleep 0.3
-    done
-    if [[ -n "$IMG_ERROR" ]]; then
-        echo "awww failed to set the wallpaper: $IMG_ERROR"
-        echo "See $HOME/.cache/awww-daemon.log for daemon output."
-    fi
-fi
 
 echo "Wallpaper and dynamic theme applied successfully: $IMAGE_PATH"

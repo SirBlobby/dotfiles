@@ -41,6 +41,10 @@ Item {
     return Util.fileUrl(path)
   }
 
+  function isAnimated(path) {
+    return /\.gif$/i.test(String(path || ""))
+  }
+
   function refreshBackground() {
     if (!readlinkProc.running) readlinkProc.running = true
     if (!monitorBackgroundProc.running) monitorBackgroundProc.running = true
@@ -272,6 +276,19 @@ Item {
             root.finishingTransition = false
           }
         }
+      }
+
+      AnimatedImage {
+        id: animatedBase
+        readonly property string path: panel.hasAssignment ? panel.assignedBackground : root.displayedBackground
+        readonly property bool wanted: root.isAnimated(path)
+        anchors.fill: parent
+        source: wanted ? root.imageUrl(path) : ""
+        fillMode: Image.PreserveAspectCrop
+        asynchronous: true
+        cache: false
+        visible: wanted && status === AnimatedImage.Ready
+        playing: visible
       }
 
       Image {

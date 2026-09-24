@@ -133,7 +133,6 @@ Omarchy's own package list, because they were installed by hand on this machine:
 | --- | --- |
 | `python-pywal16` | `blob-wallpaper-set`, palette extraction |
 | `python-terminaltexteffects` | `blob-screensaver`, the effects it draws |
-| `awww` | the wallpaper daemon `blob-wallpaper-set` and `blob-theme-menu` drive |
 | `playerctl` | the quick settings media row |
 
 `playerctl` is in official `extra`, so it sits in the repo list.
