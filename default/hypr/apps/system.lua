@@ -4,7 +4,7 @@ o.window({ tag = "floating-window" }, { center = true })
 o.window({ tag = "floating-window" }, { size = { 875, 600 } })
 
 o.window(
-  "(org.blob.btop|org.blob.terminal|org.blob.bash|org.codeberg.dnkl.foot|org.gnome.NautilusPreviewer|org.gnome.Evince|Blob|About|TUI.float|imv|mpv)",
+  "(org.blob.btop|org.blob.terminal|org.blob.bash|org.codeberg.dnkl.foot|org.gnome.NautilusPreviewer|org.gnome.Evince|Blob|About|TUI.float|imv|mpv|org.pulseaudio.pavucontrol)",
   {
     tag = "+floating-window",
   }

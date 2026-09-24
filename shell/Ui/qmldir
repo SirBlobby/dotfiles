@@ -42,3 +42,5 @@ CalendarModel 1.0 CalendarModel.js
 CalendarView 1.0 CalendarView.qml
 CalendarDays 1.0 CalendarDays.qml
 CalendarMonthPicker 1.0 CalendarMonthPicker.qml
+MetricBar 1.0 MetricBar.qml
+SystemStats 1.0 SystemStats.qml

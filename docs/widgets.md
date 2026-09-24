@@ -9,8 +9,8 @@ autostarted.
 
 | Was | Is | Note |
 | --- | --- | --- |
-| `QuickSettings.tsx` (523 lines) | `shell/plugins/panels/quick-settings/` | split across 9 files, none over 250 lines |
-| `SysMonitor.tsx` (142) | `shell/plugins/panels/sysmon/` | CPU, memory, disk, temperature |
+| `QuickSettings.tsx` (523 lines) | `shell/plugins/panels/quick-settings/` | split across 13 files, none over 350 lines, with four tabs |
+| `SysMonitor.tsx` (142) | `shell/plugins/panels/sysmon/` | CPU, memory, disk, temperature; the probes and bars are `Ui/SystemStats.qml` and `Ui/MetricBar.qml`, shared with the Performance tab |
 | `Notifications.tsx` (160) | `shell/plugins/notification-center/` | reads the notification service's own history files |
 | `WallPicker.tsx` (106) | the existing image picker | `blob-wallpaper-set --menu` now calls `blob-menu-images`, so wallpapers get the image grid instead of a text list |
 | `ThemePicker.tsx` (178) | the menu and `blob-theme-switcher` | the shell already had a theme switcher; a second picker was duplicate surface |
@@ -32,6 +32,21 @@ The CSS was written against pywal's `@color0`, `@color4` and `@color5` aliases.
 `Commons/Color.qml` now exposes `blue` and `magenta` with that same cascade,
 falling back to `accent` for themes that define neither. `color0` is
 `background`, which Color already had.
+
+## Quick settings tabs
+
+Under the header, a tab bar switches the card between four pages. Each page
+only polls the state it shows, so an open card on the General tab is not
+running `pamixer` and `playerctl` every second.
+
+| Tab | Holds |
+| --- | --- |
+| General | the calendar and the brightness slider |
+| Sound & Music | output and microphone volume (click the icon to mute), the media row with its controls, and buttons for the audio panel (picking devices) and the pavucontrol mixer |
+| Performance | CPU, memory, disk and temperature bars, the load average, the power profile (Power saver, Balanced, Performance, whichever the machine offers), and a button that opens btop |
+| Quick Settings | the toggle tiles: Wi-Fi, Bluetooth, Wallpaper, Silence, Night Light, Record, Stay Awake, Pick Color, Theme, Tablet Lock |
+
+The weather card beside it is not part of the tabs and stays visible.
 
 ## Opening them
 

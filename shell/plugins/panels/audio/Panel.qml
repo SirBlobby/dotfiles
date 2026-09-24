@@ -454,6 +454,11 @@ Panel {
   // The hero switch is the whole panel's on/off, so it carries both channels
   // at once. It reads as on while anything is still audible, which keeps
   // muting a single channel from the row below flipping the master switch.
+  function openMixer() {
+    root.close()
+    Quickshell.execDetached(["uwsm-app", "--", "pavucontrol"])
+  }
+
   function toggleAllMuted() {
     var mute = anyAudible
     if (hasOutput) volumeSink.audio.muted = mute
@@ -669,6 +674,7 @@ Panel {
       onCloseRequested: root.close()
       onTabRequested: function(direction) { root.switchPanel(direction) }
       onTextKey: function(t) {
+        if (t === "x" || t === "X") { root.openMixer(); return }
         // 'm' mutes whatever the cursor is on: focused section's slider
         // for output/input, the focused stream for streams.
         if (t === "m" || t === "M") {
@@ -741,12 +747,24 @@ Panel {
               }
             }
 
+            PanelActionButton {
+              id: mixerButton
+              anchors.right: powerSwitch.left
+              anchors.rightMargin: Style.space(8)
+              anchors.verticalCenter: parent.verticalCenter
+              iconText: ""
+              tooltipText: "Mixer (x)"
+              foreground: root.bar.foreground
+              fontFamily: root.bar.fontFamily
+              onClicked: root.openMixer()
+            }
+
             Column {
               id: heroLabels
               anchors.left: heroIcon.right
               anchors.leftMargin: Style.space(14)
-              anchors.right: parent.right
-              anchors.rightMargin: powerSwitch.width + Style.space(12)
+              anchors.right: mixerButton.left
+              anchors.rightMargin: Style.space(12)
               anchors.verticalCenter: parent.verticalCenter
               spacing: Style.space(2)
 
