@@ -15,6 +15,7 @@ Personal overrides in `hypr/bindings.lua` win over the defaults, and
 | `SUPER + CTRL + M` | System monitor |
 | `SUPER + CTRL + Q` | Quick settings |
 | `SUPER + SHIFT + CTRL + D` | Display layout |
+| `SUPER + SHIFT + W` | Draw |
 | `SUPER + SPACE` | Apps menu |
 
 ## Applications

@@ -59,6 +59,9 @@ with `--check`.
    panels come up full of blanks. `fonts.conf` binds `monospace` to
    `JetBrainsMono Nerd Font`; `blob font set` rewrites the same file, and the
    installer then reports it as a local change and keeps your choice.
+   Launcher entries in `applications/desktop/` go to `~/.local/share/applications`
+   and their icons in `applications/icons/` to `~/.local/share/icons/hicolor/32x32/apps`;
+   that is how the Draw web app is installed.
    Default applications are set in `~/.config/mimeapps.list`: Loupe for
    images, `mpv` for video and audio, `evince` for PDFs and other documents, LibreOffice for
    documents, spreadsheets and presentations, GNOME Text Editor for text, and

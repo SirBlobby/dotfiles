@@ -81,6 +81,7 @@ install_bash_integration
 install_user_units
 install_systemd_dropins
 install_zen_config
+install_desktop_apps
 install_default_apps
 
 section "Theme"

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Draw
+Comment=Draw in the browser
+Exec=blob-launch-webapp https://draw.sirblob.co/
+Terminal=false
+Type=Application
+Icon=Draw
+StartupNotify=true

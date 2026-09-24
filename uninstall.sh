@@ -3,6 +3,7 @@
 set -e
 
 blob_path="$HOME/.local/share/blob"
+repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 config_dir="$HOME/.config"
 session_entry="/usr/local/share/wayland-sessions/blob.desktop"
 
@@ -103,6 +104,16 @@ fi
 
 for relative in blob/shell.json uwsm/default uwsm/env.d/10-blob; do
   restore_or_remove "$config_dir/$relative" "$relative"
+done
+
+for desktop_file in "$repo_dir"/applications/desktop/*.desktop; do
+  [[ -e $desktop_file ]] || continue
+  restore_or_remove "$HOME/.local/share/applications/$(basename "$desktop_file")" "applications/$(basename "$desktop_file")"
+done
+
+for icon_file in "$repo_dir"/applications/icons/*; do
+  [[ -e $icon_file ]] || continue
+  restore_or_remove "$HOME/.local/share/icons/hicolor/32x32/apps/$(basename "$icon_file")" "icons/$(basename "$icon_file")"
 done
 
 if [[ -d $config_dir/blob ]]; then

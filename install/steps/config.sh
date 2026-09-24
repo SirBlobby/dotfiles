@@ -62,6 +62,14 @@ install_shipped_config() {
   install_file "$repo_dir/session/uwsm/env.d/10-blob" "$config_dir/uwsm/env.d/10-blob" "uwsm/env.d/10-blob"
 }
 
+desktop_entry_dir="$HOME/.local/share/applications"
+app_icon_dir="$HOME/.local/share/icons/hicolor/32x32/apps"
+
+install_desktop_apps() {
+  install_tree "$repo_dir/applications/desktop" "$desktop_entry_dir" "applications"
+  install_tree "$repo_dir/applications/icons" "$app_icon_dir" "icons"
+}
+
 remove_omarchy_font() {
   local omarchy_font="$font_dir/omarchy.ttf"
 
