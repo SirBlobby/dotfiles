@@ -194,12 +194,14 @@ on it:
 blob update
 ```
 
-Checks for updates first and lists every pending system and AUR package with
+Opens with the logo from `~/.config/blob/branding/screensaver.txt` (falling back
+to `branding/screensaver.txt`), the same text the screensaver draws, so
+`blob branding screensaver` changes both. It checks for updates first and lists every pending system and AUR package with
 its old and new version, then asks once with `gum confirm` (`--no-confirm`
 skips it). When nothing is pending it says so and stops. The update itself runs
 as four numbered steps: refresh the keyring, `pacman -Syu`, `yay -Sua` when the
 AUR is reachable, and prune orphans. It ends with a summary of what changed and
-how long it took, a reminder to reboot when a new kernel came in, and a
+how long it took, an offer to reboot when a new kernel came in, and a
 notification. A failed step is named on screen and in a critical notification. `blob update-available`
 prints the pending count that the bar's update indicator reads. The indicator
 rechecks every six hours and a few seconds after any pacman transaction, so it

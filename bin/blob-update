@@ -49,12 +49,9 @@ line_count() {
 }
 
 show_header() {
-  if has_gum; then
-    gum style --border rounded --border-foreground "$accent_color" --padding "0 2" --margin "1 0" \
-      --bold "Blob Update" "$(date '+%A %-d %B, %H:%M')"
-  else
-    printf '\nBlob Update - %s\n\n' "$(date '+%A %-d %B, %H:%M')"
-  fi
+  blob-show-logo
+  styled "$accent_color" --bold "Blob Update"
+  styled "$muted_color" "$(date '+%A %-d %B, %H:%M')"
 }
 
 begin_step() {
@@ -187,6 +184,19 @@ show_summary() {
   fi
 }
 
+offer_reboot() {
+  [[ $reboot_needed == true && $confirm == true ]] || return 0
+  echo
+  if has_gum; then
+    gum confirm "The kernel was updated. Reboot now?" || return 0
+  else
+    local answer
+    read -rp "The kernel was updated. Reboot now? [y/N] " answer
+    [[ $answer == [yY] ]] || return 0
+  fi
+  blob-system-reboot
+}
+
 show_header
 gather_pending
 
@@ -235,3 +245,4 @@ notify_body="System and AUR packages are up to date"
 blob-notify-send "Update complete" "$notify_body"
 
 blob-hook post-update
+offer_reboot

@@ -2,8 +2,16 @@
 
 # blob:summary=Display the Blob logo in the terminal using green color.
 
+user_logo_file="$HOME/.config/blob/branding/screensaver.txt"
+shipped_logo_file="$BLOB_PATH/branding/screensaver.txt"
+
+logo_file="$user_logo_file"
+[[ -s $logo_file ]] || logo_file="$shipped_logo_file"
+
 clear
-echo -e "\033[32m"
-cat <$BLOB_PATH/logo.txt
-echo -e "\033[0m"
+if [[ -s $logo_file ]]; then
+  echo -e "\033[32m"
+  cat <"$logo_file"
+  echo -e "\033[0m"
+fi
 echo

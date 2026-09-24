@@ -19,7 +19,7 @@ text)
   blob-launch-editor ~/.config/blob/branding/about.txt >/dev/null 2>&1 && blob-launch-about >/dev/null 2>&1
   ;;
 reset)
-  cp "$BLOB_PATH/icon.txt" ~/.config/blob/branding/about.txt && blob-launch-about >/dev/null 2>&1
+  cp "$BLOB_PATH/branding/about.txt" ~/.config/blob/branding/about.txt && blob-launch-about >/dev/null 2>&1
   ;;
 *)
   echo "Usage: blob-branding-about <image|text|reset>" >&2
