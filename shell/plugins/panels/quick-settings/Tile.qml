@@ -15,7 +15,9 @@ Rectangle {
   radius: Style.cardRadius
   color: root.active
     ? Color.accent
-    : (hover.hovered ? Util.alpha(Color.blue, 0.25) : Util.alpha(Color.background, Style.cardFillAlpha))
+    : (hover.hovered ? Util.alpha(Color.blue, 0.3) : Util.alpha(Color.foreground, 0.1))
+  border.width: 1
+  border.color: root.active ? Color.accent : Util.alpha(Color.foreground, 0.2)
 
   Behavior on color {
     ColorAnimation { duration: 150 }

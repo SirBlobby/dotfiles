@@ -13,7 +13,7 @@ Rectangle {
   radius: Style.cardRadius
   color: root.active
     ? Color.accent
-    : (hover.hovered ? Util.alpha(Color.blue, 0.25) : "transparent")
+    : (hover.hovered ? Util.alpha(Color.blue, 0.3) : Util.alpha(Color.foreground, 0.1))
 
   Text {
     anchors.centerIn: parent
