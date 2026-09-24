@@ -2,11 +2,6 @@ function isPlainObject(value) {
   return !!value && typeof value === "object" && !Array.isArray(value)
 }
 
-function normalizePosition(value) {
-  var next = String(value || "").trim()
-  return /^(top|bottom|left|right)$/.test(next) ? next : "top"
-}
-
 function entrySettings(entry) {
   if (!isPlainObject(entry)) return {}
   var copy = {}
@@ -214,7 +209,6 @@ if (typeof module !== "undefined") {
     pickDrawnSlot: pickDrawnSlot,
     pickPanelSlot: pickPanelSlot,
     nearestDropTarget: nearestDropTarget,
-    normalizePosition: normalizePosition,
     entrySettings: entrySettings,
     entryId: entryId,
     pinTrayToInner: pinTrayToInner,

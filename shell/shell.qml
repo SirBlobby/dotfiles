@@ -41,7 +41,6 @@ ShellRoot {
       lock: 300
     },
     bar: {
-      position: "top",
       transparent: false,
       centerAnchor: "blob.clock",
       layout: {

@@ -19,7 +19,7 @@ Item {
   // not otherwise need it, but declaring it keeps clone construction atomic.
   property var pluginRegistry: null
   // Injected by the host shell every time shell.json is reloaded. Holds the
-  // `bar:` subtree: position, centerAnchor, layout. The host owns file IO;
+  // `bar:` subtree: centerAnchor, layout. The host owns file IO;
   // the bar just renders whatever it's handed. The bar font follows the
   // OS-level fontconfig monospace binding — it is not stored in shell.json.
   property var barConfig: ({})
@@ -43,7 +43,6 @@ Item {
   property string stateHome: home + "/.local/state"
   property string blobConfigDir: home + "/.config/blob"
   property var fallbackBarConfig: ({
-    position: "top",
     transparent: false,
     centerAnchor: "blob.clock",
     layout: { left: [], center: [], right: [] }
@@ -64,7 +63,7 @@ Item {
   property bool centerSectionRevealHeld: false
   property bool centerHoverRevealSuppressed: false
   property int barConfigSerial: 0
-  property string position: "top"
+  readonly property string position: "top"
   // Resolves through fontconfig at paint time (Style.font.family defaults
   // to "monospace"), so changing the system font (via `blob-font-set`)
   // updates the bar without a reload.
@@ -103,10 +102,6 @@ Item {
   property real barDragScreenY: 0
   property real barDragOffsetX: 0
   property real barDragOffsetY: 0
-  property bool barMoveActive: false
-  property string barMoveCandidate: ""
-  property var barMoveWindow: null
-  property var barMoveScreen: null
   property var clickTargets: []
   property var moduleSlots: []
   property var pluginBarApis: ({})
@@ -469,63 +464,6 @@ Item {
     }
   }
 
-  // Split the screen along its diagonals (in normalized space, so widescreens
-  // don't bias toward left/right): whichever triangle holds the cursor names
-  // the candidate edge.
-  function nearestScreenEdge(point, screen) {
-    var nx = screen.width > 0 ? Util.clamp(point.x / screen.width, 0, 1) : 0.5
-    var ny = screen.height > 0 ? Util.clamp(point.y / screen.height, 0, 1) : 0.5
-
-    var edge = "top"
-    var best = ny
-    if (1 - ny < best) { edge = "bottom"; best = 1 - ny }
-    if (nx < best) { edge = "left"; best = nx }
-    if (1 - nx < best) { edge = "right"; best = 1 - nx }
-    return edge
-  }
-
-  function beginBarMove(window) {
-    barMoveWindow = window
-    barMoveScreen = window ? window.screen : null
-    barMoveCandidate = position
-    barMoveActive = true
-  }
-
-  function updateBarMove(screenPoint) {
-    if (!barMoveActive || !barMoveScreen) return
-    barMoveCandidate = nearestScreenEdge(screenPoint, barMoveScreen)
-  }
-
-  function clearBarMove() {
-    barMoveActive = false
-    barMoveCandidate = ""
-    barMoveWindow = null
-    barMoveScreen = null
-  }
-
-  function finishBarMove() {
-    var edge = barMoveCandidate
-    if (!barMoveActive || !edge || edge === position) {
-      clearBarMove()
-      return
-    }
-
-    clearBarMove()
-    setBarPosition(edge)
-  }
-
-  function setBarPosition(value) {
-    var next = normalizePosition(value)
-    if (root.shell && typeof root.shell.mutateShellConfig === "function") {
-      root.shell.mutateShellConfig(function(config) {
-        if (!Util.isPlainObject(config.bar)) config.bar = {}
-        config.bar.position = next
-      })
-    } else {
-      root.position = next
-    }
-  }
-
   function captureBarDragGhost(slot) {
     var item = slot && slot.activeItem ? slot.activeItem : null
     barDragImageUrl = ""
@@ -555,10 +493,6 @@ Item {
   readonly property bool vertical: position === "left" || position === "right"
   readonly property int barSize: vertical ? Style.bar.sizeVertical : Style.bar.sizeHorizontal
 
-  function normalizePosition(value) {
-    return BarModel.normalizePosition(value)
-  }
-
   // Apply tray-pinning on top of the shared layout normalization so the
   // bar host and scriptable config helpers can't drift on entry shape.
   function normalizeLayout(layout) {
@@ -581,7 +515,6 @@ Item {
   function applyBarConfig() {
     var config = Util.isPlainObject(barConfig) ? barConfig : fallbackBarConfig
 
-    position = normalizePosition(config.position)
     setRequestedTransparency(config.transparent === true)
     centerAnchor = Util.canonicalWidgetId(config.centerAnchor || "")
 
@@ -1218,19 +1151,6 @@ Item {
     }
   }
 
-  Variants {
-    model: Quickshell.screens
-
-    delegate: Component {
-      BarMoveGhostPanel {
-        required property var modelData
-
-        screen: modelData
-        ghostScreen: modelData
-      }
-    }
-  }
-
   component BarPanel: PanelWindow {
     id: barWindow
 
@@ -1462,59 +1382,6 @@ Item {
     }
   }
 
-  component BarMoveGhostPanel: PanelWindow {
-    id: moveGhostWindow
-
-    required property var ghostScreen
-    readonly property bool screenMatches: root.barMoveScreen === ghostScreen ||
-      (root.barMoveScreen && ghostScreen && root.barMoveScreen.name && ghostScreen.name && root.barMoveScreen.name === ghostScreen.name)
-    visible: root.barMoveActive && screenMatches
-    color: "transparent"
-    exclusionMode: ExclusionMode.Ignore
-    WlrLayershell.namespace: "blob-bar-move-ghost"
-    WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
-
-    anchors {
-      top: true
-      bottom: true
-      left: true
-      right: true
-    }
-
-    // Visual-only preview of the candidate edge. Keep the input region empty
-    // so the overlay never steals the gesture area's active pointer grab.
-    mask: Region {}
-
-    // One fixed-geometry slab per edge, crossfaded on candidate changes.
-    // Resizing a single slab between edges repaints mid-transition and
-    // flickers; fading between static ones does not.
-    Repeater {
-      model: ["top", "bottom", "left", "right"]
-
-      BorderSurface {
-        id: edgeSlab
-
-        required property string modelData
-        readonly property bool edgeVertical: modelData === "left" || modelData === "right"
-        readonly property int edgeSize: edgeVertical ? Style.bar.sizeVertical : Style.bar.sizeHorizontal
-
-        x: modelData === "right" ? parent.width - edgeSize : 0
-        y: modelData === "bottom" ? parent.height - edgeSize : 0
-        width: edgeVertical ? edgeSize : parent.width
-        height: edgeVertical ? parent.height : edgeSize
-        color: root.transparent ? "transparent" : root.background
-        borderSpec: Border.flat(root.barForeground, 1)
-        visible: opacity > 0
-        opacity: root.barMoveCandidate === modelData ? (root.transparent ? 0.45 : 0.7) : 0
-
-        Behavior on opacity {
-          NumberAnimation { duration: 140; easing.type: Easing.OutCubic }
-        }
-      }
-    }
-  }
-
   function findCenterAnchorEntry() {
     var entries = root.layoutEntries("center")
     var idx = root.entryIndex(entries, root.centerAnchor)
@@ -1635,84 +1502,11 @@ Item {
   }
 
   component CenterGestureArea: MouseArea {
-    id: gestureArea
-
-    property bool dragging: false
-    property bool suppressClick: false
-    property real pressedX: 0
-    property real pressedY: 0
-    readonly property real dragThreshold: Style.space(4)
-
     acceptedButtons: Qt.LeftButton
-    cursorShape: dragging ? Qt.ClosedHandCursor : Qt.ArrowCursor
-    pressAndHoldInterval: 200
-
-    function startDrag(x, y) {
-      if (dragging) return
-      dragging = true
-      root.beginBarMove(root.targetWindow(gestureArea))
-      var scenePoint = gestureArea.mapToItem(null, x, y)
-      root.updateBarMove(root.windowScreenPoint(scenePoint, root.barMoveWindow))
-    }
-
-    onPressed: function(mouse) {
-      dragging = false
-      suppressClick = false
-      pressedX = mouse.x
-      pressedY = mouse.y
-    }
-
-    onPressAndHold: function(mouse) {
-      // A widget above us propagates its composed press-and-hold down here without
-      // ever handing over the grab, so we'd get no release or cancel to end the move.
-      if (!gestureArea.pressed) return
-      startDrag(mouse.x, mouse.y)
-    }
-
-    onPositionChanged: function(mouse) {
-      if (!(mouse.buttons & Qt.LeftButton)) return
-
-      if (!dragging) {
-        var distance = Math.abs(mouse.x - pressedX) + Math.abs(mouse.y - pressedY)
-        if (distance < dragThreshold) return
-        startDrag(mouse.x, mouse.y)
-        return
-      }
-
-      var scenePoint = gestureArea.mapToItem(null, mouse.x, mouse.y)
-      root.updateBarMove(root.windowScreenPoint(scenePoint, root.barMoveWindow))
-    }
-
-    onReleased: function(mouse) {
-      if (!dragging) return
-      dragging = false
-      suppressClick = true
-      root.finishBarMove()
-      mouse.accepted = true
-    }
-
-    onCanceled: {
-      dragging = false
-      suppressClick = false
-      root.clearBarMove()
-    }
-
-    onClicked: function(mouse) {
-      if (suppressClick) {
-        suppressClick = false
-        mouse.accepted = true
-      }
-    }
 
     onDoubleClicked: function(mouse) {
-      if (suppressClick) {
-        suppressClick = false
-        return
-      }
-      if (mouse.button === Qt.LeftButton) {
-        root.toggleTransparency()
-        mouse.accepted = true
-      }
+      root.toggleTransparency()
+      mouse.accepted = true
     }
   }
 

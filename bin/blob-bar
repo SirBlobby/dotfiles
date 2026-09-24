@@ -2,7 +2,7 @@
 
 # blob:summary=Configure the bar and its widget layout
 # blob:group=bar
-# blob:args=use <id> | reset | defaults | position <top|bottom|left|right> | transparent <true|false|toggle> | put <id> [placement] | move <id> [placement] | set <id> <key> <value> [--json] [placement]
+# blob:args=use <id> | reset | defaults | transparent <true|false|toggle> | put <id> [placement] | move <id> [placement] | set <id> <key> <value> [--json] [placement]
 # blob:examples=blob bar use local.neon-bar | blob bar put blob.keyboard-layout --after blob.clock | blob bar move blob.clock --section center --index 0 | blob bar set blob.clock format HH:mm
 
 set -euo pipefail
@@ -16,7 +16,6 @@ Usage: blob bar <command> [args...]
   use <id>                             Use a bar option as the active bar
   reset                                Return to the built-in Blob bar
   defaults                             Restore the default bar and service widgets
-  position <top|bottom|left|right>     Bar position
   transparent <true|false|toggle>      Bar transparency
   put <id> [placement]                 Put a widget on the bar, leaving one
                                        that is already there where it is
@@ -195,15 +194,6 @@ cmd_defaults() {
   echo "Restored the default Blob bar"
 }
 
-cmd_position() {
-  local position="${1:-}"
-  [[ -n $position ]] || fail "position is required"
-  (( $# == 1 )) || fail "position takes a single value"
-  [[ $position =~ ^(top|bottom|left|right)$ ]] || fail "position must be top, bottom, left, or right"
-  commit "$NORMALIZE | .bar.position = \$position" --arg position "$position"
-  echo "Bar position set to $position"
-}
-
 cmd_transparent() {
   local transparent="${1:-}"
   [[ -n $transparent ]] || fail "transparent is required"
@@ -378,9 +368,6 @@ case "$command" in
     ;;
   defaults)
     cmd_defaults "$@"
-    ;;
-  position)
-    cmd_position "$@"
     ;;
   transparent)
     cmd_transparent "$@"

@@ -5,7 +5,6 @@
     "lock": 900
   },
   "bar": {
-    "position": "top",
     "transparent": false,
     "centerAnchor": "blob.clock",
     "layout": {
