@@ -125,6 +125,7 @@ tesseract
 tesseract-data-eng
 qrencode
 zbar
+satty
 
 # Media: video and audio player, image viewer, PDF viewer
 mpv

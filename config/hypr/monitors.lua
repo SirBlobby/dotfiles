@@ -1,10 +1,8 @@
 -- See https://wiki.hypr.land/Configuring/Basics/Monitors/
 -- List current monitors and supported resolutions with: hyprctl monitors all
 
-local blob_gdk_scale = 2
 local blob_monitor_scale = "auto"
 
-hl.env("GDK_SCALE", tostring(blob_gdk_scale))
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = blob_monitor_scale })
 
 -- Configure a specific monitor.

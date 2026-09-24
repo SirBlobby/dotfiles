@@ -83,6 +83,7 @@ of the `blob` listing.
 
 | Command | Does | Arguments |
 | --- | --- | --- |
+| `blob-capture-edit` | Annotate an image in Satty and save it in place | <image-path> |
 | `blob-capture-qr` | Decode a QR code from a screenshot region | - |
 | `blob-capture-record` | Start or stop screen recording | [--fullscreen] [--with-desktop-audio] [--with-microphone-audio] [--with-webcam] [--webcam-device=<device>] [--webcam-size=<small\|medium\|large>] [--resolution=<size>] [--stop-recording] |
 | `blob-capture-record-webcam` | Pick a webcam and start a screen recording with it | - |

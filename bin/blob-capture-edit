@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# blob:summary=Annotate an image in Satty and save it in place
+# blob:group=capture
+# blob:args=<image-path>
+
+image_path="${1:-}"
+
+if [[ -z $image_path || ! -r $image_path ]]; then
+  echo "Usage: blob-capture-edit <image-path>" >&2
+  exit 1
+fi
+
+exec satty --filename "$image_path" --output-filename "$image_path"

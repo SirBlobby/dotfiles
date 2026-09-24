@@ -1,7 +1,7 @@
 -- Learn how to configure Hyprland: https://wiki.hypr.land/Configuring/Start/
 
 -- Blob's bootstrap keeps path setup out of this user config.
-dofile((os.getenv("BLOB_PATH") or "$HOME/.local/share/blob") .. "/default/hypr/bootstrap.lua")
+dofile((os.getenv("BLOB_PATH") or (os.getenv("HOME") .. "/.local/share/blob")) .. "/default/hypr/bootstrap.lua")
 
 -- Disable all Blob default bindings. Add your own in hypr/bindings.lua.
 -- blob_default_bindings = false
