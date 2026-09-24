@@ -39,7 +39,7 @@ Grid {
     width: root.tileWidth
     icon: "\uf03e"
     label: "Wallpaper"
-    onActivated: root.runRequested("blob-wallpaper-set --menu")
+    onActivated: root.panelRequested("blob.displays")
   }
 
   Tile {
