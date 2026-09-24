@@ -19,7 +19,7 @@ with `--check`.
 | `install/steps/services.sh` | system services, systemd drop-ins, user units |
 | `install/steps/boot.sh` | the Plymouth boot splash, GRUB, and other-OS detection |
 | `install/steps/theme.sh` | the wallpaper link, the first theme, the first background |
-| `install/steps/apps.sh` | default applications for images, video, PDFs and office files |
+| `install/steps/apps.sh` | default applications for images, video, PDFs, office files, text and archives, with the file types read from `default/mime/` |
 | `install/steps/login.sh` | SDDM, the session entry, and the first launch |
 | `install/steps/reload.sh` | reloading systemd, the user services, and a running session |
 
@@ -66,7 +66,10 @@ with `--check`.
    images, `mpv` for video and audio, `evince` for PDFs and other documents, LibreOffice for
    documents, spreadsheets and presentations, GNOME Text Editor for text, and
    File Roller for archives. A file type that already has a
-   default there is left alone. See [packages.md](packages.md#desktop-applications).
+   default there is left alone. The file types for each group are listed in
+   `default/mime/<group>.types`, and Setup > Defaults in the Blob menu changes
+   the image viewer, video player and PDF viewer later. See
+   [packages.md](packages.md#desktop-applications).
    `~/.bashrc` gets one line sourcing `session/bashrc`. The line is added once,
    a `.bak` is kept, and a `~/.bashrc` that already has it is left alone.
    `session/profile.sh` also goes to `/etc/profile.d/blob.sh`, which sources

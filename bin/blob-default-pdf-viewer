@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# blob:summary=Set the default PDF and document viewer
+# blob:args=[evince|papers|okular|zathura|firefox|chromium]
+# blob:examples=blob default pdf-viewer evince | blob default pdf-viewer zathura
+
+if (($# == 0)); then
+  case "$(blob-default-mime pdf)" in
+  org.gnome.Evince.desktop) echo "evince" ;;
+  org.gnome.Papers.desktop) echo "papers" ;;
+  org.kde.okular.desktop) echo "okular" ;;
+  org.pwmt.zathura.desktop) echo "zathura" ;;
+  firefox.desktop) echo "firefox" ;;
+  chromium.desktop) echo "chromium" ;;
+  *) blob-default-mime pdf ;;
+  esac
+  exit 0
+fi
+
+case "$1" in
+evince) desktop_id="org.gnome.Evince.desktop"; name="Evince" ;;
+papers) desktop_id="org.gnome.Papers.desktop"; name="Papers" ;;
+okular) desktop_id="org.kde.okular.desktop"; name="Okular" ;;
+zathura) desktop_id="org.pwmt.zathura.desktop"; name="Zathura" ;;
+firefox) desktop_id="firefox.desktop"; name="Firefox" ;;
+chromium) desktop_id="chromium.desktop"; name="Chromium" ;;
+*)
+  echo "Usage: blob-default-pdf-viewer <evince|papers|okular|zathura|firefox|chromium>"
+  exit 1
+  ;;
+esac
+
+blob-default-mime pdf "$desktop_id" || exit 1
+
+blob-notify-send -g 󰈦 "$name is now the default PDF viewer"

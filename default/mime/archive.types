@@ -1,0 +1,9 @@
+application/zip
+application/x-7z-compressed
+application/vnd.rar
+application/x-tar
+application/x-compressed-tar
+application/gzip
+application/x-xz
+application/x-bzip2
+application/zstd

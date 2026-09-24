@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# blob:summary=Get or set the application that opens one group of file types
+# blob:args=<image|video|pdf|document|spreadsheet|presentation|text|archive> [desktop-id]
+# blob:examples=blob default mime image | blob default mime video vlc.desktop
+# blob:hidden=true
+
+kind="${1:-}"
+desktop_id="${2:-}"
+types_file="$BLOB_PATH/default/mime/$kind.types"
+
+if [[ -z $kind || ! -f $types_file ]]; then
+  echo "Usage: blob-default-mime <image|video|pdf|document|spreadsheet|presentation|text|archive> [desktop-id]" >&2
+  exit 1
+fi
+
+if [[ -z $desktop_id ]]; then
+  xdg-mime query default "$(head -1 "$types_file")"
+  exit 0
+fi
+
+mapfile -t mime_types < <(grep -v '^[[:space:]]*$' "$types_file")
+xdg-mime default "$desktop_id" "${mime_types[@]}"

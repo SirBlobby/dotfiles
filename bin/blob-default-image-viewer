@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# blob:summary=Set the default image viewer
+# blob:args=[loupe|imv|eog|gwenview]
+# blob:examples=blob default image-viewer loupe | blob default image-viewer imv
+
+if (($# == 0)); then
+  case "$(blob-default-mime image)" in
+  org.gnome.Loupe.desktop) echo "loupe" ;;
+  imv.desktop) echo "imv" ;;
+  org.gnome.eog.desktop) echo "eog" ;;
+  org.kde.gwenview.desktop) echo "gwenview" ;;
+  *) blob-default-mime image ;;
+  esac
+  exit 0
+fi
+
+case "$1" in
+loupe) desktop_id="org.gnome.Loupe.desktop"; name="Loupe" ;;
+imv) desktop_id="imv.desktop"; name="imv" ;;
+eog) desktop_id="org.gnome.eog.desktop"; name="Eye of GNOME" ;;
+gwenview) desktop_id="org.kde.gwenview.desktop"; name="Gwenview" ;;
+*)
+  echo "Usage: blob-default-image-viewer <loupe|imv|eog|gwenview>"
+  exit 1
+  ;;
+esac
+
+blob-default-mime image "$desktop_id" || exit 1
+
+blob-notify-send -g 󰋩 "$name is now the default image viewer"

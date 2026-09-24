@@ -128,7 +128,11 @@ of the `blob` listing.
 | --- | --- | --- |
 | `blob-default-browser` | Set the default browser for Blob and XDG handlers | [chromium\|chrome\|brave\|brave-origin\|edge\|firefox\|zen] |
 | `blob-default-editor` | Set the default editor used by blob-launch-editor | [code\|cursor\|zed\|sublime_text\|helix\|vim\|emacs\|nvim] |
+| `blob-default-image-viewer` | Set the default image viewer | [loupe\|imv\|eog\|gwenview] |
+| `blob-default-mime` | Get or set the application that opens one group of file types (hidden) | <image\|video\|pdf\|document\|spreadsheet\|presentation\|text\|archive> [desktop-id] |
+| `blob-default-pdf-viewer` | Set the default PDF and document viewer | [evince\|papers\|okular\|zathura\|firefox\|chromium] |
 | `blob-default-terminal` | Set the default terminal used by xdg-terminal-exec | [alacritty\|foot\|ghostty\|kitty] |
+| `blob-default-video-player` | Set the default video and audio player | [mpv\|vlc\|celluloid\|totem] |
 
 ## disk
 

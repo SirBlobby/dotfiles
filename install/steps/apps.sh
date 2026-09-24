@@ -1,14 +1,16 @@
 mimeapps_file="$config_dir/mimeapps.list"
 
+mime_types_dir="$repo_dir/default/mime"
+
 default_app_associations=(
-  "org.gnome.Loupe.desktop:image/png image/jpeg image/gif image/webp image/bmp image/tiff image/avif image/heif image/svg+xml"
-  "mpv.desktop:video/mp4 video/x-matroska video/webm video/quicktime video/x-msvideo video/mpeg video/ogg audio/mpeg audio/flac audio/ogg audio/x-wav audio/mp4"
-  "org.gnome.Evince.desktop:application/pdf application/postscript image/vnd.djvu application/oxps application/vnd.comicbook+zip application/x-cbz"
-  "libreoffice-writer.desktop:application/vnd.oasis.opendocument.text application/msword application/vnd.openxmlformats-officedocument.wordprocessingml.document application/rtf"
-  "libreoffice-calc.desktop:application/vnd.oasis.opendocument.spreadsheet application/vnd.ms-excel application/vnd.openxmlformats-officedocument.spreadsheetml.sheet text/csv"
-  "libreoffice-impress.desktop:application/vnd.oasis.opendocument.presentation application/vnd.ms-powerpoint application/vnd.openxmlformats-officedocument.presentationml.presentation"
-  "org.gnome.TextEditor.desktop:text/plain text/markdown"
-  "org.gnome.FileRoller.desktop:application/zip application/x-7z-compressed application/vnd.rar application/x-tar application/x-compressed-tar application/gzip application/x-xz application/x-bzip2 application/zstd"
+  "org.gnome.Loupe.desktop:image"
+  "mpv.desktop:video"
+  "org.gnome.Evince.desktop:pdf"
+  "libreoffice-writer.desktop:document"
+  "libreoffice-calc.desktop:spreadsheet"
+  "libreoffice-impress.desktop:presentation"
+  "org.gnome.TextEditor.desktop:text"
+  "org.gnome.FileRoller.desktop:archive"
 )
 
 mime_default_chosen() {
@@ -26,15 +28,17 @@ install_default_apps() {
     return 0
   fi
 
-  local pending=() entry desktop_file mime_types mime_type
+  local pending=() entry desktop_file kind mime_type
   for entry in "${default_app_associations[@]}"; do
     desktop_file="${entry%%:*}"
-    mime_types="${entry#*:}"
+    kind="${entry#*:}"
     [[ -f /usr/share/applications/$desktop_file ]] || continue
-    for mime_type in $mime_types; do
+    [[ -f $mime_types_dir/$kind.types ]] || continue
+    while IFS= read -r mime_type; do
+      [[ -n $mime_type ]] || continue
       mime_default_chosen "$mime_type" && continue
       pending+=("$desktop_file:$mime_type")
-    done
+    done <"$mime_types_dir/$kind.types"
   done
 
   if (( ${#pending[@]} == 0 )); then

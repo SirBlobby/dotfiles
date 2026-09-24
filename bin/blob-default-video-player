@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# blob:summary=Set the default video and audio player
+# blob:args=[mpv|vlc|celluloid|totem]
+# blob:examples=blob default video-player mpv | blob default video-player vlc
+
+if (($# == 0)); then
+  case "$(blob-default-mime video)" in
+  mpv.desktop) echo "mpv" ;;
+  vlc.desktop) echo "vlc" ;;
+  io.github.celluloid_player.Celluloid.desktop) echo "celluloid" ;;
+  org.gnome.Totem.desktop) echo "totem" ;;
+  *) blob-default-mime video ;;
+  esac
+  exit 0
+fi
+
+case "$1" in
+mpv) desktop_id="mpv.desktop"; name="mpv" ;;
+vlc) desktop_id="vlc.desktop"; name="VLC" ;;
+celluloid) desktop_id="io.github.celluloid_player.Celluloid.desktop"; name="Celluloid" ;;
+totem) desktop_id="org.gnome.Totem.desktop"; name="GNOME Videos" ;;
+*)
+  echo "Usage: blob-default-video-player <mpv|vlc|celluloid|totem>"
+  exit 1
+  ;;
+esac
+
+blob-default-mime video "$desktop_id" || exit 1
+
+blob-notify-send -g 󰕧 "$name is now the default video player"

@@ -180,7 +180,21 @@ the next boot, or now with `sudo systemctl start netbird@main`.
 `install.sh` makes them the default for their file types through `xdg-mime`,
 which writes `~/.config/mimeapps.list`. A type that already has a default in
 that file is left alone, so a choice you made yourself always wins, and an app
-that is not installed is skipped.
+that is not installed is skipped. The file types for each group are listed once, in
+`default/mime/<group>.types`, and read by both the installer and
+`blob-default-mime`.
+
+To change them later, use Setup > Defaults in the Blob menu, which has Image
+Viewer, Video Player and PDF Viewer next to Browser, Terminal and Editor, or:
+
+```
+blob default image-viewer imv
+blob default video-player vlc
+blob default pdf-viewer zathura
+```
+
+Each lists only the apps it knows, shows only the installed ones in the menu,
+and sets the whole group of file types at once.
 
 ## The boot splash
 
