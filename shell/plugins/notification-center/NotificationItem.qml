@@ -48,7 +48,7 @@ Rectangle {
 
       Text {
         anchors.right: parent.right
-        text: ""
+        text: "\uf00d"
         textFormat: Text.PlainText
         color: closeHover.hovered ? Color.urgent : Color.magenta
         font.family: Style.font.family

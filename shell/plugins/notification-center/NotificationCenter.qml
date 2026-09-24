@@ -45,8 +45,9 @@ Item {
   }
 
   function clearAll() {
-    root.run("blob-shell notifications clearHistory")
+    root.run("blob-shell notifications clear")
     root.entries = []
+    refreshTimer.restart()
   }
 
   function toggleSilence() {
@@ -57,16 +58,19 @@ Item {
   function dismissEntry(index) {
     var entry = root.entries[index]
     if (!entry) return
-    root.run("blob-notify-dismiss " + entry.id)
+    root.run("blob-shell notifications remove " + Util.shellQuote(entry.fileName))
     var next = []
     for (var i = 0; i < root.entries.length; i++)
       if (i !== index) next.push(root.entries[i])
     root.entries = next
+    refreshTimer.restart()
   }
 
   Process {
     id: historyProbe
-    command: ["bash", "-c", "cat " + root.historyDir + "/*.json 2>/dev/null || true"]
+    command: ["bash", "-c",
+      "for f in \"$1\"/*.json; do [[ -e $f ]] || continue; printf '%s\\t' \"${f##*/}\"; awk 1 \"$f\"; done",
+      "--", root.historyDir]
     stdout: StdioCollector {
       onStreamFinished: root.entries = HistoryModel.parseHistory(text)
     }
@@ -139,13 +143,13 @@ Item {
           spacing: Style.spaceReal(4)
 
           CardIconButton {
-            icon: root.doNotDisturb ? "" : ""
+            icon: root.doNotDisturb ? "\uf1f6" : "\uf0f3"
             active: root.doNotDisturb
             onActivated: root.toggleSilence()
           }
 
           CardIconButton {
-            icon: ""
+            icon: "\uf1f8"
             onActivated: root.clearAll()
           }
         }
@@ -177,7 +181,7 @@ Item {
 
         Text {
           anchors.horizontalCenter: parent.horizontalCenter
-          text: ""
+          text: "\uf0a2"
           textFormat: Text.PlainText
           color: Util.alpha(Color.blue, 0.6)
           font.family: Style.font.family

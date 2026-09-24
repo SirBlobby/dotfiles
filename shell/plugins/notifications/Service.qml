@@ -26,8 +26,8 @@ Item {
   readonly property string settingsPath: stateDir + "notifications.json"
   // One file per on-screen popup, so live toasts survive shell restarts.
   // A file exists exactly as long as its popup is showing: written when the
-  // toast appears, moved into historyDir when it expires, is dismissed, or is
-  // acted upon.
+  // toast appears, moved into historyDir when it expires unseen, and deleted
+  // when it is dismissed or acted upon.
   readonly property string popupStateDir: stateDir + "notifications/"
   // The notifications that already left the screen, one file each, trimmed to
   // the newest historyLimit. This directory IS the history: `showHistory`
@@ -327,12 +327,14 @@ Item {
     // id would dismiss that unrelated notification at the server.
     var restored = isRestoredRow(entry)
     var ref = !restored && originalId >= 0 ? liveRefs[originalId] : null
-    // The popup is leaving the screen — for any reason — so its file must not
-    // survive to the next shell restart. It becomes the newest history entry
-    // instead. Rows that never had a file (a history replay, the empty-history
-    // placeholder) archive to nothing, which the move tolerates.
+    // The popup is leaving the screen, so its file must not survive to the
+    // next shell restart. An expired toast was missed and becomes the newest
+    // history entry; a dismissed or acted-on one was seen and is deleted.
+    // Rows that never had a file (a history replay, the empty-history
+    // placeholder) archive or delete nothing, which both jobs tolerate.
     if (entry) {
-      archivePopupFileFor(entry)
+      if (reason === "expire") archivePopupFileFor(entry)
+      else deletePopupFileFor(entry)
       if (restored) delete restoredPopups[NotificationLogic.popupFileName(entry)]
     }
     popupModel.remove(index)
@@ -583,6 +585,15 @@ Item {
     for (var i = 0; i < persistable.copies.length; i++)
       command.push(persistable.copies[i].from, persistable.copies[i].to)
     enqueuePopupFileJob(command, done)
+  }
+
+  function removeHistoryEntry(fileName) {
+    var name = String(fileName || "")
+    if (!/^[A-Za-z0-9._-]+\.json$/.test(name)) return false
+    enqueuePopupFileJob(["bash", "-c",
+      "rm -f \"$1/$2\" \"$3/${2%.json}\"-*", "--",
+      historyDir, name, imagesDir])
+    return true
   }
 
   function clearHistory() {
@@ -886,6 +897,10 @@ Item {
     function clear(): string {
       service.clearHistory()
       return "ok"
+    }
+
+    function remove(fileName: string): string {
+      return service.removeHistoryEntry(fileName) ? "ok" : "none"
     }
 
     function dismissAll(): string {

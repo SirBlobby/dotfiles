@@ -53,6 +53,15 @@ border, so they read against the panel in any theme. An active tile takes the
 accent colour. The Wallpaper tile opens `blob.displays`, the Theme tile opens
 `blob theme menu`.
 
+## Notification centre
+
+`blob.notification-center` lists the notification history, newest first. A
+toast that expires unseen moves into history; a toast you close or click is
+deleted instead, so the centre only holds what you missed. The x on an entry
+removes it through `blob-shell notifications remove <file>`, the bell button
+toggles silencing, and the trash button clears the whole history with
+`blob-shell notifications clear`.
+
 ## Deliberately not ported
 
 The tiles still poll shell commands the way the GTK widgets did - `pamixer` for
