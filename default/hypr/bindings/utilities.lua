@@ -8,6 +8,7 @@ o.bind("SUPER + SHIFT + code:201", "Blob menu", "blob-menu toggle root")
 o.bind("SUPER + ESCAPE", "System menu", "blob-menu toggle system")
 o.bind("XF86PowerOff", "Power menu", "blob-menu toggle system", { locked = true })
 o.bind("SUPER + K", "Keybindings", "blob-menu-keybindings")
+o.bind("SUPER + SHIFT + K", "Manage keybindings", "blob-shell shell toggle blob.keybinds")
 
 o.bind_toggle("SUPER + SHIFT + SPACE", "Toggle top bar", "bar")
 o.bind("SUPER + CTRL + SPACE", "Background switcher", "blob-menu toggle background")

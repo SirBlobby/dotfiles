@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# blob:summary=List, add, reset and disable Hyprland keybindings
+# blob:args=list | add <keys> <description> <command> [replaced-keys] | reset <keys> | disable <keys>
+# blob:examples=blob keybinds add "SUPER + SHIFT + B" "Browser" "blob-launch-browser"
+
+set -euo pipefail
+
+blob_path="${BLOB_PATH:-$HOME/.local/share/blob}"
+manager="$blob_path/default/keybinds/manager.lua"
+action="${1:-list}"
+
+usage() {
+  echo "Usage: blob-keybinds list | add <keys> <description> <command> [replaced-keys] | reset <keys> | disable <keys>" >&2
+  exit 1
+}
+
+if ! command -v lua &>/dev/null; then
+  echo "blob-keybinds needs lua. Install it with: sudo pacman -S lua" >&2
+  exit 1
+fi
+
+case $action in
+  list) (( $# <= 1 )) || usage ;;
+  add) (( $# == 4 || $# == 5 )) || usage ;;
+  reset | disable) (( $# == 2 )) || usage ;;
+  *) usage ;;
+esac
+
+BLOB_PATH="$blob_path" \
+  BLOB_KEYBINDS_CONFIG="$HOME/.config/hypr/hyprland.lua" \
+  BLOB_KEYBINDS_USER_FILE="$HOME/.config/hypr/bindings.lua" \
+  lua "$manager" "$@"
+
+if [[ $action != list ]]; then
+  hyprctl reload >/dev/null 2>&1 || true
+fi

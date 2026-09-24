@@ -269,6 +269,12 @@ of the `blob` listing.
 | `blob-install-gaming-xbox-controllers` | Install support for using Xbox controllers with Steam/RetroArch/etc. | - |
 | `blob-install-launch` | Install a packaged app and launch it once it finishes | <display-name> <packages> <desktop-id> |
 
+## keybinds
+
+| Command | Does | Arguments |
+| --- | --- | --- |
+| `blob-keybinds` | List, add, reset and disable Hyprland keybindings | list \| add <keys> <description> <command> [replaced-keys] \| reset <keys> \| disable <keys> |
+
 ## launch
 
 | Command | Does | Arguments |

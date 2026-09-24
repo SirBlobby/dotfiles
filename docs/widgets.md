@@ -40,6 +40,7 @@ falling back to `accent` for themes that define neither. `color0` is
 | Quick settings | left-click the bar clock, or `Super + Ctrl + Q` |
 | Notification centre | left-click the bar bell; right-click silences notifications, and the bell is crossed out while they are |
 | System monitor | `Super + Ctrl + M` |
+| Keybindings | `Super + Shift + K`, or Setup > Keybindings in the Blob menu |
 
 Both new bar click actions are already in `shell.json`. The system monitor had no
 bar entry point in the AGS setup either, so the keybinding is how it is reached.
@@ -62,6 +63,31 @@ deleted instead, so the centre only holds what you missed. The x on an entry
 removes it through `blob-shell notifications remove <file>`, the bell button
 toggles silencing, and the trash button clears the whole history with
 `blob-shell notifications clear`.
+
+## Keybindings
+
+`blob.keybinds` lists every binding Hyprland loads, your own first, with a
+search field and filters for all, mine, and disabled or replaced. The list comes
+from `blob keybinds list`, which evaluates the real Lua config with a stubbed
+`hl`, so bindings made in loops or with Hyprland dispatchers show up too, each
+marked by the file it came from.
+
+| Button | On | Does |
+| --- | --- | --- |
+| + | header | add a binding |
+| pencil | your binding | edit it; changing the keys replaces the old line |
+| pencil | a default | replace it with your own command on the same keys |
+| trash | your binding | remove it, bringing back any default it replaced |
+| ban | a default | disable it with `hl.unbind` |
+| undo | a disabled or replaced default | restore it |
+
+The editor warns when the keys are already taken and says whether saving will
+replace your binding or disable a default. Every change is a line added to or
+removed from `~/.config/hypr/bindings.lua`, which is written through a temporary
+file, and Hyprland reloads straight after. Default bindings that call a Hyprland
+dispatcher rather than a command open the editor with an empty command, since
+only commands can be written from the widget. It needs `lua`, which is in the
+package list.
 
 ## Deliberately not ported
 

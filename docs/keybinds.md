@@ -193,6 +193,7 @@ Personal overrides in `hypr/bindings.lua` win over the defaults, and
 | `SUPER + SHIFT + comma` | Dismiss all notifications |
 | `SUPER + SHIFT + CTRL + R` | Clear reminders |
 | `SUPER + SHIFT + CTRL + SPACE` | Theme menu |
+| `SUPER + SHIFT + K` | Manage keybindings |
 | `SUPER + SHIFT + SPACE` | Toggle top bar |
 | `SUPER + SPACE` | Blob menu |
 | `XF86PowerOff` | Power menu |

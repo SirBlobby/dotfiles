@@ -200,7 +200,7 @@
 
   // Setup
   "setup.monitors": {"icon":"󰍹","label":"Monitors","action":"blob-launch-config-editor \"$HOME/.config/hypr/monitors.lua\""},
-  "setup.keybindings": {"icon":"","label":"Keybindings","when":"[[ -f ~/.config/hypr/bindings.lua ]]","action":"blob-launch-config-editor \"$HOME/.config/hypr/bindings.lua\""},
+  "setup.keybindings": {"icon":"","label":"Keybindings","action":"blob-shell shell toggle blob.keybinds"},
   "setup.input": {"icon":"","label":"Input","when":"[[ -f ~/.config/hypr/input.lua ]]","action":"blob-launch-config-editor \"$HOME/.config/hypr/input.lua\""},
   "setup.network": {"icon":"󰛳","label":"Network","aliases":["network"]},
   "setup.network.dns": {"icon":"󰇖","label":"DNS","aliases":["dns"]},

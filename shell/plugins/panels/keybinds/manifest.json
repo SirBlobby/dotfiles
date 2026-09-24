@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "name": "Keybindings",
+  "version": "1.0.0",
+  "author": "Blob",
+  "description": "Search, add, edit, disable and restore Hyprland keybindings",
+  "id": "blob.keybinds",
+  "kinds": [
+    "overlay"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "overlay": "Keybinds.qml"
+  }
+}

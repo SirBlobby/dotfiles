@@ -114,6 +114,7 @@ blob-docs-keybinds
 | `Super + Ctrl + Q` | Quick settings |
 | `Super + Ctrl + M` | System monitor |
 | `Super + Alt + W` | Wallpaper picker |
+| `Super + Shift + K` | Manage keybindings |
 | `Super + Ctrl + L` | Lock |
 
 The rest are in [keybinds.md](docs/keybinds.md), or run `blob menu keybindings`.
