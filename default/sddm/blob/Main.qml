@@ -8,13 +8,96 @@ Rectangle {
   readonly property color errorColor: "#f7768e"
   readonly property string fontFamily: "monospace"
 
+  readonly property color mutedTextColor: Qt.rgba(textColor.r, textColor.g, textColor.b, 0.55)
+  readonly property color faintTextColor: Qt.rgba(textColor.r, textColor.g, textColor.b, 0.18)
+  readonly property color panelColor: Qt.rgba(textColor.r, textColor.g, textColor.b, 0.04)
+
   property int sessionIndex: sessionModel.lastIndex >= 0 ? sessionModel.lastIndex : 0
   property string statusMessage: ""
   property bool loggingIn: false
 
   width: 1920
   height: 1080
-  color: root.backgroundColor
+
+  gradient: Gradient {
+    GradientStop { position: 0.0; color: root.backgroundColor }
+    GradientStop { position: 1.0; color: Qt.darker(root.backgroundColor, 1.35) }
+  }
+
+  component LoginField: Item {
+    id: field
+
+    property string label: ""
+    property bool hasError: false
+    property bool isPassword: false
+    property Item nextField: null
+    property Item previousField: null
+    property alias input: fieldInput
+    property alias text: fieldInput.text
+
+    signal submitted()
+
+    width: 320
+    height: 58
+
+    Text {
+      id: fieldLabel
+      text: field.label.toUpperCase()
+      color: fieldInput.activeFocus ? root.textColor : root.mutedTextColor
+      font.family: root.fontFamily
+      font.pixelSize: 11
+      font.letterSpacing: 2
+    }
+
+    TextInput {
+      id: fieldInput
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.top: fieldLabel.bottom
+      anchors.topMargin: 10
+      color: root.textColor
+      selectionColor: root.faintTextColor
+      echoMode: field.isPassword ? TextInput.Password : TextInput.Normal
+      passwordCharacter: "•"
+      font.family: root.fontFamily
+      font.pixelSize: 18
+      clip: true
+      KeyNavigation.tab: field.nextField ? field.nextField.input : null
+      KeyNavigation.backtab: field.previousField ? field.previousField.input : null
+      Keys.onReturnPressed: field.submitted()
+      Keys.onEnterPressed: field.submitted()
+    }
+
+    Rectangle {
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      height: fieldInput.activeFocus || field.hasError ? 2 : 1
+      color: field.hasError ? root.errorColor
+        : fieldInput.activeFocus ? root.textColor
+        : root.faintTextColor
+    }
+  }
+
+  component FooterButton: Text {
+    id: footerButton
+
+    signal clicked()
+
+    color: footerArea.containsMouse ? root.textColor : root.mutedTextColor
+    font.family: root.fontFamily
+    font.pixelSize: 12
+    font.letterSpacing: 2
+
+    MouseArea {
+      id: footerArea
+      anchors.fill: parent
+      anchors.margins: -8
+      hoverEnabled: true
+      cursorShape: Qt.PointingHandCursor
+      onClicked: footerButton.clicked()
+    }
+  }
 
   function sessionName(index) {
     var session = sessionNames.itemAt(index)
@@ -27,13 +110,13 @@ Rectangle {
 
   function login() {
     if (root.loggingIn) return
-    if (usernameInput.text.length === 0) {
-      usernameInput.forceActiveFocus()
+    if (usernameField.text.length === 0) {
+      usernameField.input.forceActiveFocus()
       return
     }
     root.loggingIn = true
     root.statusMessage = ""
-    sddm.login(usernameInput.text, passwordInput.text, root.sessionIndex)
+    sddm.login(usernameField.text, passwordField.text, root.sessionIndex)
   }
 
   Repeater {
@@ -51,175 +134,13 @@ Rectangle {
 
     function onLoginFailed() {
       root.loggingIn = false
-      root.statusMessage = "Wrong password"
-      passwordInput.text = ""
-      passwordInput.forceActiveFocus()
+      root.statusMessage = "Wrong password, try again"
+      passwordField.text = ""
+      passwordField.input.forceActiveFocus()
     }
 
     function onLoginSucceeded() {
       root.statusMessage = ""
-    }
-  }
-
-  Column {
-    anchors.centerIn: parent
-    spacing: 28
-
-    Image {
-      id: logo
-      anchors.horizontalCenter: parent.horizontalCenter
-      source: "logo.png"
-      sourceSize.width: 160
-      sourceSize.height: 160
-      fillMode: Image.PreserveAspectFit
-      onStatusChanged: if (status === Image.Error && source.toString().endsWith("logo.png")) source = "logo.svg"
-    }
-
-    Text {
-      anchors.horizontalCenter: parent.horizontalCenter
-      text: Qt.formatTime(clock.now, "HH:mm")
-      color: root.textColor
-      font.family: root.fontFamily
-      font.pixelSize: 56
-    }
-
-    Column {
-      anchors.horizontalCenter: parent.horizontalCenter
-      spacing: 12
-
-      Rectangle {
-        width: 320
-        height: 44
-        radius: 6
-        color: "transparent"
-        border.width: 1
-        border.color: usernameInput.activeFocus ? root.textColor : Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.35)
-
-        TextInput {
-          id: usernameInput
-          anchors.fill: parent
-          anchors.leftMargin: 14
-          anchors.rightMargin: 14
-          verticalAlignment: TextInput.AlignVCenter
-          text: userModel.lastUser
-          color: root.textColor
-          font.family: root.fontFamily
-          font.pixelSize: 16
-          clip: true
-          KeyNavigation.tab: passwordInput
-          Keys.onReturnPressed: passwordInput.forceActiveFocus()
-          Keys.onEnterPressed: passwordInput.forceActiveFocus()
-
-          Text {
-            anchors.verticalCenter: parent.verticalCenter
-            visible: usernameInput.text.length === 0
-            text: "Username"
-            color: Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.5)
-            font: usernameInput.font
-          }
-        }
-      }
-
-      Rectangle {
-        width: 320
-        height: 44
-        radius: 6
-        color: "transparent"
-        border.width: 1
-        border.color: root.statusMessage.length > 0 ? root.errorColor
-          : passwordInput.activeFocus ? root.textColor
-          : Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.35)
-
-        TextInput {
-          id: passwordInput
-          anchors.fill: parent
-          anchors.leftMargin: 14
-          anchors.rightMargin: 14
-          verticalAlignment: TextInput.AlignVCenter
-          echoMode: TextInput.Password
-          passwordCharacter: "•"
-          color: root.textColor
-          font.family: root.fontFamily
-          font.pixelSize: 16
-          clip: true
-          focus: usernameInput.text.length > 0
-          KeyNavigation.backtab: usernameInput
-          Keys.onReturnPressed: root.login()
-          Keys.onEnterPressed: root.login()
-
-          Text {
-            anchors.verticalCenter: parent.verticalCenter
-            visible: passwordInput.text.length === 0
-            text: root.loggingIn ? "Logging in..." : "Password"
-            color: Qt.rgba(root.textColor.r, root.textColor.g, root.textColor.b, 0.5)
-            font.family: root.fontFamily
-            font.pixelSize: 16
-          }
-        }
-      }
-
-      Text {
-        anchors.horizontalCenter: parent.horizontalCenter
-        height: 20
-        text: root.statusMessage
-        color: root.errorColor
-        font.family: root.fontFamily
-        font.pixelSize: 14
-      }
-    }
-  }
-
-  Row {
-    anchors.left: parent.left
-    anchors.bottom: parent.bottom
-    anchors.margins: 24
-
-    Text {
-      text: "Session: " + root.sessionName(root.sessionIndex)
-      color: root.textColor
-      opacity: sessionArea.containsMouse ? 1 : 0.6
-      font.family: root.fontFamily
-      font.pixelSize: 14
-
-      MouseArea {
-        id: sessionArea
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: root.nextSession()
-      }
-    }
-  }
-
-  Row {
-    anchors.right: parent.right
-    anchors.bottom: parent.bottom
-    anchors.margins: 24
-    spacing: 24
-
-    Repeater {
-      model: [
-        { label: "Reboot", available: sddm.canReboot, action: "reboot" },
-        { label: "Shut down", available: sddm.canPowerOff, action: "powerOff" }
-      ]
-
-      Text {
-        required property var modelData
-        visible: modelData.available
-        text: modelData.label
-        color: root.textColor
-        opacity: powerArea.containsMouse ? 1 : 0.6
-        font.family: root.fontFamily
-        font.pixelSize: 14
-
-        MouseArea {
-          id: powerArea
-          anchors.fill: parent
-          hoverEnabled: true
-          cursorShape: Qt.PointingHandCursor
-          onClicked: modelData.action === "reboot" ? sddm.reboot() : sddm.powerOff()
-        }
-      }
     }
   }
 
@@ -235,8 +156,166 @@ Rectangle {
     onTriggered: clock.now = new Date()
   }
 
+  Column {
+    anchors.centerIn: parent
+    spacing: 48
+
+    Column {
+      anchors.horizontalCenter: parent.horizontalCenter
+      spacing: 4
+
+      Text {
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: Qt.formatTime(clock.now, "HH:mm")
+        color: root.textColor
+        font.family: root.fontFamily
+        font.pixelSize: 104
+        font.weight: Font.Light
+      }
+
+      Text {
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: Qt.formatDate(clock.now, "dddd, MMMM d").toUpperCase()
+        color: root.mutedTextColor
+        font.family: root.fontFamily
+        font.pixelSize: 14
+        font.letterSpacing: 4
+      }
+    }
+
+    Rectangle {
+      anchors.horizontalCenter: parent.horizontalCenter
+      width: 400
+      height: loginColumn.implicitHeight + 80
+      color: root.panelColor
+      border.width: 1
+      border.color: root.faintTextColor
+
+      Rectangle {
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 2
+        color: root.statusMessage.length > 0 ? root.errorColor : root.textColor
+      }
+
+      Column {
+        id: loginColumn
+        anchors.centerIn: parent
+        spacing: 28
+
+        Row {
+          spacing: 16
+
+          Image {
+            id: logo
+            width: 40
+            height: 40
+            source: "logo.png"
+            sourceSize.width: 80
+            sourceSize.height: 80
+            fillMode: Image.PreserveAspectFit
+            anchors.verticalCenter: parent.verticalCenter
+            onStatusChanged: if (status === Image.Error && source.toString().endsWith("logo.png")) source = "logo.svg"
+          }
+
+          Column {
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: 4
+
+            Text {
+              text: "Welcome back"
+              color: root.textColor
+              font.family: root.fontFamily
+              font.pixelSize: 18
+            }
+
+            Text {
+              text: "Sign in to continue"
+              color: root.mutedTextColor
+              font.family: root.fontFamily
+              font.pixelSize: 12
+            }
+          }
+        }
+
+        LoginField {
+          id: usernameField
+          label: "Username"
+          text: userModel.lastUser
+          nextField: passwordField
+          onSubmitted: passwordField.input.forceActiveFocus()
+        }
+
+        LoginField {
+          id: passwordField
+          label: "Password"
+          hasError: root.statusMessage.length > 0
+          isPassword: true
+          previousField: usernameField
+          onSubmitted: root.login()
+        }
+
+        Text {
+          width: 320
+          height: 16
+          text: root.statusMessage.length > 0 ? root.statusMessage
+            : root.loggingIn ? "Signing in..."
+            : keyboard.capsLock ? "Caps Lock is on"
+            : "Press Enter to sign in"
+          color: root.statusMessage.length > 0 ? root.errorColor : root.mutedTextColor
+          font.family: root.fontFamily
+          font.pixelSize: 12
+        }
+      }
+    }
+  }
+
+  Rectangle {
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    height: 64
+    color: root.panelColor
+
+    Rectangle {
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      height: 1
+      color: root.faintTextColor
+    }
+
+    FooterButton {
+      anchors.left: parent.left
+      anchors.leftMargin: 32
+      anchors.verticalCenter: parent.verticalCenter
+      text: "SESSION  " + root.sessionName(root.sessionIndex).toUpperCase()
+      onClicked: root.nextSession()
+    }
+
+    Row {
+      anchors.right: parent.right
+      anchors.rightMargin: 32
+      anchors.verticalCenter: parent.verticalCenter
+      spacing: 32
+
+      FooterButton {
+        visible: sddm.canReboot
+        text: "REBOOT"
+        onClicked: sddm.reboot()
+      }
+
+      FooterButton {
+        visible: sddm.canPowerOff
+        text: "SHUT DOWN"
+        onClicked: sddm.powerOff()
+      }
+    }
+  }
+
   Component.onCompleted: {
-    if (usernameInput.text.length > 0) passwordInput.forceActiveFocus()
-    else usernameInput.forceActiveFocus()
+    if (usernameField.text.length > 0) passwordField.input.forceActiveFocus()
+    else usernameField.input.forceActiveFocus()
   }
 }
