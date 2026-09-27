@@ -127,7 +127,7 @@ Rectangle {
   Column {
     id: clockColumn
     anchors.horizontalCenter: parent.horizontalCenter
-    anchors.bottom: inputField.top
+    anchors.bottom: usernameLabel.visible ? usernameLabel.top : inputField.top
     anchors.bottomMargin: root.sectionGap
 
     Text {
@@ -140,7 +140,7 @@ Rectangle {
 
     Text {
       anchors.horizontalCenter: parent.horizontalCenter
-      text: Qt.formatDate(clock.now, "dddd, d MMMM")
+      text: Qt.formatDate(clock.now, "dddd, MMMM d")
       color: root.placeholderColor
       font.family: root.fontFamily
       font.pixelSize: root.dateFontSize
@@ -206,14 +206,15 @@ Rectangle {
   }
 
   Text {
+    id: usernameLabel
     anchors.horizontalCenter: parent.horizontalCenter
-    anchors.top: inputField.bottom
-    anchors.topMargin: 20
+    anchors.bottom: inputField.top
+    anchors.bottomMargin: 16
     visible: !root.enteringUsername
     text: root.username
     color: userArea.containsMouse ? root.textColor : root.placeholderColor
     font.family: root.fontFamily
-    font.pixelSize: root.smallFontSize
+    font.pixelSize: root.fieldFontSize
 
     MouseArea {
       id: userArea
