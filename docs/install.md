@@ -126,7 +126,8 @@ with `--check`.
    | File | Why |
    | --- | --- |
    | `/usr/local/share/wayland-sessions/blob.desktop` | the session SDDM offers |
-   | `/etc/sddm.conf.d/zz-blob.conf` | Wayland greeter, run on Hyprland, stock theme, remember the last session |
+   | `/etc/sddm.conf.d/zz-blob.conf` | Wayland greeter, run on Hyprland, Blob theme, remember the last session |
+| `/usr/share/sddm/themes/blob/` | the Blob login screen, from `default/sddm/blob/` and `branding/blob_icon.svg` |
    | `/etc/sddm/hyprland-greeter.lua` | the greeter's own tiny Hyprland config |
    | `/usr/local/bin/blob-hw-gpu-accelerated` | the renderer check that config runs, where SDDM's user can read it |
    | `/etc/pam.d/blob-lock-password` | the PAM stack the lock screen authenticates against |
@@ -145,8 +146,8 @@ with `--check`.
    The `zz-` prefix is load-bearing. SDDM reads `/etc/sddm.conf.d` in
    alphabetical order and the last file wins, so a leftover `10-wayland.conf`,
    `10-theme.conf` or `autologin.conf` from another desktop would otherwise
-   override Blob's. For the same reason `zz-blob.conf` blanks `Theme` and
-   `Autologin`: a greeter pointed at an uninstalled theme, or an autologin
+   override Blob's. For the same reason `zz-blob.conf` pins `Theme` to `blob`
+   and blanks `Autologin`: a greeter pointed at an uninstalled theme, or an autologin
    pointed at a session entry that no longer exists, leaves SDDM on a black
    screen it never falls back from, and the only way in is a TTY.
 

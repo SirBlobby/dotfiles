@@ -1,0 +1,10 @@
+[SddmGreeterTheme]
+Name=Blob
+Description=Blob login screen
+Type=sddm-theme
+Version=1.0
+MainScript=Main.qml
+ConfigFile=theme.conf
+QtVersion=6
+Theme-Id=blob
+Theme-API=2.0

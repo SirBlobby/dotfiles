@@ -9,12 +9,15 @@ greeter_compositor_config=/etc/sddm/hyprland-greeter.lua
 blob_greeter_conf="$greeter_config_dir/zz-blob.conf"
 blob_autologin_conf="$greeter_config_dir/zzz-blob-autologin.conf"
 greeter_gpu_detector=/usr/local/bin/blob-hw-gpu-accelerated
+greeter_theme_dir=/usr/share/sddm/themes/blob
+greeter_theme_files=(Main.qml metadata.desktop theme.conf)
 
 # SDDM's stock Wayland greeter runs on weston, which Blob does not install.
 # Point it at Hyprland with a greeter-only config instead. That config is Lua:
 # Hyprland dropped the old hyprlang format, and a config it cannot parse leaves
 # the greeter with no compositor and the screen black.
 install_login_config() {
+  install_greeter_theme
   install_root_file "$repo_dir/default/sddm/hyprland-greeter.lua" \
     "$greeter_compositor_config" "sddm/hyprland-greeter.lua"
   install_root_file "$repo_dir/default/sddm/zz-blob.conf" \
@@ -23,6 +26,16 @@ install_login_config() {
     "$greeter_gpu_detector" "blob-hw-gpu-accelerated" 0755
   install_root_file "$repo_dir/default/pam.d/blob-lock-password" \
     /etc/pam.d/blob-lock-password "pam.d/blob-lock-password"
+}
+
+install_greeter_theme() {
+  local file
+  for file in "${greeter_theme_files[@]}"; do
+    install_root_file "$repo_dir/default/sddm/blob/$file" \
+      "$greeter_theme_dir/$file" "sddm/themes/blob/$file"
+  done
+  install_root_file "$repo_dir/branding/blob_icon.svg" \
+    "$greeter_theme_dir/logo.svg" "sddm/themes/blob/logo.svg"
 }
 
 install_session_entry() {
@@ -75,8 +88,9 @@ report_greeter_compositor() {
   say "      SDDM cannot draw a greeter without it; it is set in $blob_greeter_conf"
 }
 
-# zz-blob.conf blanks Theme and Autologin, so a leftover drop-in cannot point the
-# greeter at a theme that was uninstalled or autolog into a session that no
+# zz-blob.conf pins Theme to Blob's own and blanks Autologin, so a leftover
+# drop-in cannot point the greeter at a theme that was uninstalled or autolog
+# into a session that no
 # longer exists. Either one leaves SDDM on a black screen it never falls back
 # from. Report the leftovers anyway: the file is confusing to find later, and the
 # Omarchy ISO wrote an autologin that no package owns, so it outlives Omarchy.

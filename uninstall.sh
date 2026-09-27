@@ -17,6 +17,10 @@ root_files=(
   /etc/sddm.conf.d/10-blob.conf
   /etc/sddm.conf.d/99-blob-autologin.conf
   /etc/sddm/hyprland-greeter.lua
+  /usr/share/sddm/themes/blob/Main.qml
+  /usr/share/sddm/themes/blob/metadata.desktop
+  /usr/share/sddm/themes/blob/theme.conf
+  /usr/share/sddm/themes/blob/logo.svg
   /etc/systemd/system.conf.d/10-blob.conf
   /etc/systemd/system/user@.service.d/10-blob.conf
   /etc/systemd/oomd.conf.d/10-blob.conf
