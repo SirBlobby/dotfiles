@@ -254,7 +254,7 @@ Item {
       anchors.top: parent.top
       anchors.topMargin: Style.spaceReal(10) + root.barInset
       anchors.horizontalCenter: parent.horizontalCenter
-      implicitWidth: Style.spaceReal(400)
+      implicitWidth: Math.max(Style.spaceReal(520), tabBar.requiredWidth + padding * 2)
       fillColor: Util.alpha(Color.background, Style.panelFillAlpha)
       spacing: Style.spaceReal(12)
 
@@ -268,6 +268,7 @@ Item {
       }
 
       TabBar {
+        id: tabBar
         width: parent.width
         tabs: root.tabs
         currentTab: root.currentTab
