@@ -274,7 +274,7 @@ Item {
       actionFor: function(value) { return "blob-font-set " + Util.shellQuote(value) }
     },
     "power-profiles": {
-      script: "current=$(powerprofilesctl get 2>/dev/null); blob-power-list 2>/dev/null | while read -r p; do [[ -z $p ]] && continue; printf '%s\\t%s\\t%s\\n' \"$p\" \"$p\" \"$current\"; done",
+      script: "current=$(blob-power-list --active-state 2>/dev/null | awk -F '\\t' '$2 == 1 { print $1 }'); blob-power-list 2>/dev/null | while read -r p; do [[ -z $p ]] && continue; printf '%s\\t%s\\t%s\\n' \"$p\" \"$p\" \"$current\"; done",
       icon: "\udb81\udc0b",
       actionFor: function(value) { return "blob-power-set autodetect " + Util.shellQuote(value) }
     }
