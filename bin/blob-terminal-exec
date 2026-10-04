@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # blob:summary=Run a command in the default terminal
-# blob:args=[--print-id] [--app-id=<app-id>] [--title=<title>] [-e] <command> [args...]
+# blob:args=[--print-id] [--app-id=<app-id>] [--title=<title>] [--dir=<dir>] [-e] <command> [args...]
 # blob:hidden=true
 
 terminal=""
@@ -23,6 +23,7 @@ fi
 
 app_id=""
 title=""
+dir=""
 command_args=()
 
 while (( $# > 0 )); do
@@ -37,6 +38,10 @@ while (( $# > 0 )); do
       ;;
     --title=*)
       title=${1#--title=}
+      shift
+      ;;
+    --dir=*)
+      dir=${1#--dir=}
       shift
       ;;
     -e)
@@ -56,9 +61,11 @@ launch=("$terminal")
 case "$terminal" in
   foot)
     [[ -n $app_id ]] && launch+=("--app-id=$app_id")
+    [[ -n $dir ]] && launch+=("--working-directory=$dir")
     ;;
   kitty)
     [[ -n $app_id ]] && launch+=("--class=$app_id")
+    [[ -n $dir ]] && launch+=("--directory=$dir")
     ;;
 esac
 

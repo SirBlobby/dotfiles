@@ -3,4 +3,6 @@
 # blob:summary=Launch the default terminal
 # blob:args=[command [args...]]
 
+(( $# == 0 )) && set -- --dir="$(blob-cmd-cwd)"
+
 exec setsid uwsm-app -- blob-terminal-exec "$@"
