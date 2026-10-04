@@ -16,7 +16,7 @@ error_symbol = "[✗](bold error)"
 success_symbol = "[❯](bold accent)"
 
 [directory]
-style = "foreground"
+style = "accent"
 truncation_length = 2
 truncation_symbol = "…/"
 repo_root_style = "bold accent"
