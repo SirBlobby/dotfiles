@@ -17,6 +17,7 @@ shell/
     menu/              both menus
     notifications/     daemon, popups, DND, history
     notification-center/
+    agents/            Claude Code usage limits and token stats
     lock/  polkit/  osd/  background/  clipboard/  emojis/
     image-picker/  reminders/
     panels/            audio bluetooth clock disk-speedtest monitor network
@@ -49,7 +50,7 @@ entirely rather than merging.
 | --- | --- |
 | left | `blob.menu`, `blob.workspaces` |
 | center | `blob.clock` (anchored), `blob.system-update` |
-| right | `blob.tray`, `blob.bluetooth`, `blob.network`, `blob.audio`, `blob.monitor`, `blob.power`, `blob.notifications` |
+| right | `blob.tray`, `blob.agents`, `blob.bluetooth`, `blob.network`, `blob.audio`, `blob.monitor`, `blob.power`, `blob.notifications` |
 
 `blob.clock` and `blob.notifications` are `type: "command"` modules, which is how
 they carry their own click actions: the clock opens quick settings on left click,
@@ -60,6 +61,33 @@ notifications are silenced.
 
 The centre module named by `centerAnchor` cannot be dragged out of the centre.
 Every other widget still reorders.
+
+## Agents
+
+`blob.agents` is Omarchy's agents panel (quattro branch), trimmed to Claude
+Code. The panel shows the plan, a line per limit window (session, weekly, and
+any model-scoped weekly allowance as a tick on the weekly meter) with the time
+until it resets, and a rotating summary of local token stats: tokens this week
+and today, the most used model, the busiest day, and today's prompts and
+sessions. The exact percentage is on hover.
+
+| Input | Action |
+| --- | --- |
+| left click | open the panel |
+| right click, Enter, the hero button | start Claude Code in a terminal |
+| middle click, `r` | refresh |
+| Tab | move to the neighboring bar panel |
+
+The icon turns urgent when a window reaches 90%. Records refresh every
+`refreshIntervalSec` (900 by default) and the limits again whenever the panel
+opens.
+
+`blob-agent-usage-claude` builds the record. Limits come from Anthropic's OAuth
+usage endpoint with the token in `~/.claude/.credentials.json`; token stats
+come from the transcripts in `~/.claude/projects`, with `stats-cache.json` and
+`history.jsonl` as fallbacks. Scans and probes are cached in
+`~/.cache/blob/agent-usage`. When the access token has lapsed, starting Claude
+Code refreshes it.
 
 ## Calendar
 
@@ -103,8 +131,8 @@ so it cannot paint over the shell.
 This shell was forked from Omarchy 4.0.4 and is not tracked against it. The
 changes beyond renaming:
 
-- `agents`, `tailscale`, `dropbox`, and `dev-gallery` plugins removed, about
-  7,000 lines.
+- `tailscale`, `dropbox`, and `dev-gallery` plugins removed. `agents` was
+  removed too, then ported back from the quattro branch with only Claude Code.
 - The `Dictation` bar indicator removed with voice typing.
 - Persistent workspaces 1-9 instead of 1-5.
 - Menu cards 440 wide instead of 300, with the Blob icon on the bar button.

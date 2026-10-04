@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# blob:summary=Print Claude Code session and weekly usage limits
+# blob:group=claude
+# blob:hidden=true
+
+set -euo pipefail
+
+credentials_file="$HOME/.claude/.credentials.json"
+usage_url="https://api.anthropic.com/api/oauth/usage"
+
+[[ -r $credentials_file ]] || { echo "Sign in to Claude Code first" >&2; exit 1; }
+
+access_token=$(jq -r '.claudeAiOauth.accessToken // empty' "$credentials_file")
+[[ -n $access_token ]] || { echo "Sign in to Claude Code first" >&2; exit 1; }
+
+response=$(printf 'Authorization: Bearer %s\nanthropic-beta: oauth-2025-04-20\n' "$access_token" |
+  curl -fsS --max-time 10 -H @- "$usage_url" 2>/dev/null) || {
+  echo "Could not load usage, open Claude Code to refresh sign-in" >&2
+  exit 1
+}
+
+jq -r '
+  def limit_rows(name; limit):
+    if limit then
+      "\(name)_percent\t\((limit.utilization // 0) | floor)",
+      "\(name)_resets\t\(limit.resets_at // "")"
+    else empty end;
+  limit_rows("session"; .five_hour),
+  limit_rows("weekly"; .seven_day),
+  limit_rows("weekly_opus"; .seven_day_opus)
+' <<<"$response"

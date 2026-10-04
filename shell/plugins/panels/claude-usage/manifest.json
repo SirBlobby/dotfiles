@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "blob.claude-usage",
+  "name": "Claude Usage",
+  "version": "1.0.0",
+  "author": "Blob",
+  "description": "Claude Code session and weekly usage limits",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Claude Usage",
+    "description": "Claude Code session and weekly usage limits",
+    "category": "Info",
+    "allowMultiple": false
+  }
+}

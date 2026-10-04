@@ -49,6 +49,7 @@ source "$repo_dir/install/steps/preflight.sh"
 source "$repo_dir/install/steps/directories.sh"
 source "$repo_dir/install/steps/packages.sh"
 source "$repo_dir/install/steps/config.sh"
+source "$repo_dir/install/steps/shell.sh"
 source "$repo_dir/install/steps/services.sh"
 source "$repo_dir/install/steps/boot.sh"
 source "$repo_dir/install/steps/theme.sh"
@@ -68,12 +69,14 @@ run_preflight
 section "Directories"
 create_directories
 link_blob_path
+make_scripts_executable
 
 section "Packages"
 install_packages
 
 section "Config"
 install_shipped_config
+install_bar_widgets
 remove_omarchy_font
 refresh_font_cache
 install_shell_profile

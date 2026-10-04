@@ -1,0 +1,71 @@
+import QtQuick
+import qs.Commons
+import qs.Ui
+
+BarWidget {
+  id: root
+  moduleName: "blob.claude-usage"
+
+  readonly property bool opened: panelLoader.item ? panelLoader.item.opened === true : false
+  readonly property bool popoutSwitchClosing: panelLoader.item ? panelLoader.item.popoutSwitchClosing === true : false
+
+  function injectPanel() {
+    var panel = panelLoader.item
+    if (!panel) return
+    panel.bar = root.bar
+    panel.settings = root.settings
+    panel.anchorItem = button
+    panel.hostWidget = root
+  }
+
+  function open() {
+    if (panelLoader.item) panelLoader.item.open()
+  }
+
+  function close() {
+    if (panelLoader.item) panelLoader.item.close()
+  }
+
+  function togglePanel() {
+    if (panelLoader.item) panelLoader.item.toggle()
+  }
+
+  function refresh() {
+    if (panelLoader.item) panelLoader.item.refresh()
+  }
+
+  function closeForPopoutSwitch() {
+    if (panelLoader.item) panelLoader.item.closeForPopoutSwitch()
+  }
+
+  implicitWidth: button.implicitWidth
+  implicitHeight: button.implicitHeight
+
+  onBarChanged: injectPanel()
+  onSettingsChanged: injectPanel()
+
+  Loader {
+    id: panelLoader
+    active: true
+    source: Qt.resolvedUrl("Panel.qml")
+    visible: false
+    onLoaded: {
+      root.injectPanel()
+      Qt.callLater(root.injectPanel)
+    }
+  }
+
+  BarIconButton {
+    id: button
+    anchors.fill: parent
+    bar: root.bar
+    text: "󰚩"
+    tooltipText: ""
+
+    onPressed: function(mouseButton) {
+      if (!root.bar) return
+      if (mouseButton === Qt.MiddleButton) root.refresh()
+      else root.togglePanel()
+    }
+  }
+}

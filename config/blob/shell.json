@@ -26,6 +26,7 @@
       ],
       "right": [
         { "id": "blob.tray" },
+        { "id": "blob.agents" },
         { "id": "blob.bluetooth" },
         { "id": "blob.network" },
         { "id": "blob.audio" },

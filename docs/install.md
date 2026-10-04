@@ -16,6 +16,7 @@ with `--check`.
 | `install/steps/directories.sh` | the directories the shell and scripts expect |
 | `install/steps/packages.sh` | repo and AUR packages, and the yay bootstrap |
 | `install/steps/config.sh` | the `BLOB_PATH` symlink, everything under `~/.config`, and the login shell profile |
+| `install/steps/shell.sh` | the executable bit on `bin/` scripts, and new bar widgets added to an existing `shell.json` |
 | `install/steps/services.sh` | system services, systemd drop-ins, user units |
 | `install/steps/boot.sh` | the Plymouth boot splash, GRUB, and other-OS detection |
 | `install/steps/theme.sh` | the wallpaper link, the first theme, the first background |
@@ -42,7 +43,8 @@ with `--check`.
 2. **`BLOB_PATH`** is symlinked to the checkout at `~/.local/share/blob`. Nothing
    under `bin/`, `shell/`, `themes/` or `default/` is ever copied. `ln` does not
    create the parent of a link, so this step makes `~/.local/share` itself rather
-   than assuming step 1 ran.
+   than assuming step 1 ran. Any script in `bin/` that lost its executable bit
+   gets it back.
 3. **Packages** come from `packages/blob.packages` and
    `packages/blob-aur.packages`. Repo packages go in with a full
    `pacman -Syu`, never a partial upgrade. A machine with no AUR helper gets
@@ -59,6 +61,11 @@ with `--check`.
    panels come up full of blanks. `fonts.conf` binds `monospace` to
    `JetBrainsMono Nerd Font`; `blob font set` rewrites the same file, and the
    installer then reports it as a local change and keeps your choice.
+   A `shell.json` you already have is kept, but widgets listed in
+   `bar_widgets` in `install/steps/shell.sh` are added to it when missing, each
+   after the widget it names (or at the start of the right section), with a
+   `.bak` of the previous file. That is how `blob.agents` reaches an existing
+   bar.
    Launcher entries in `applications/desktop/` go to `~/.local/share/applications`
    and their icons in `applications/icons/` to `~/.local/share/icons/hicolor/32x32/apps`;
    that is how the Draw web app is installed.

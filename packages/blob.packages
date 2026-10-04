@@ -197,6 +197,7 @@ unzip
 yt-dlp
 gum
 less
+python
 python-gobject
 
 # Containers
