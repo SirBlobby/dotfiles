@@ -320,10 +320,12 @@ var enterpriseConnectScript =
   "u=$(uuidgen); IFS= read -r pw; server_check=();" +
   " [ -n \"$5\" ] && server_check=(802-1x.system-ca-certs yes 802-1x.domain-suffix-match \"$5\");" +
   " nmcli connection add type wifi con-name \"$1\" ssid \"$1\" connection.uuid \"$u\"" +
+  " connection.autoconnect no" +
   " wifi-sec.key-mgmt wpa-eap 802-1x.eap \"$3\" 802-1x.phase2-auth \"$4\"" +
   " 802-1x.identity \"$2\" 802-1x.auth-timeout 8 \"${server_check[@]}\" >/dev/null" +
   " && printf 'set 802-1x.password %s\\nsave\\nquit\\n' \"$pw\" | nmcli connection edit uuid \"$u\" >/dev/null" +
   " && nmcli connection up uuid \"$u\"" +
+  " && { nmcli connection modify uuid \"$u\" connection.autoconnect yes; true; }" +
   " || { nmcli connection delete uuid \"$u\" >/dev/null 2>&1; false; }"
 
 var eapMethods = [
@@ -342,8 +344,9 @@ function isEnterpriseSecurity(security, enterpriseSecurityTypes) {
   return (enterpriseSecurityTypes || []).indexOf(security) !== -1
 }
 
-function networkFailureReason(reason, needsCredentials, reasons) {
+function networkFailureReason(reason, needsCredentials, reasons, isEnterprise) {
   var r = reasons || {}
+  if (isEnterprise && (reason === r.NoSecrets || reason === r.WifiAuthTimeout)) return "Wrong identity or password"
   if (needsCredentials && reason === r.NoSecrets) return "Passphrase required"
   if (needsCredentials && reason === r.WifiAuthTimeout) return "Wrong password"
   if (reason === r.WifiNetworkLost) return "Network lost"

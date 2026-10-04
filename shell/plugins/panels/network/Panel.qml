@@ -442,7 +442,7 @@ Panel {
     // connectedWifiNetwork when handed null, so a row left stale by scan churn
     // would otherwise tear down whatever is connected now instead.
     if (net.connected) { disconnectRow(net.ssid); return }
-    if (requiresCredentials(net.security) && !net.known) { openPasswordPrompt(net.ssid); return }
+    if (needsCredentialPrompt(net)) { openPasswordPrompt(net.ssid); return }
     connectDirectly(net.ssid)
   }
 
@@ -698,6 +698,12 @@ Panel {
     return Model.requiresCredentials(security, WifiSecurityType.Open, WifiSecurityType.Owe)
   }
 
+  function needsCredentialPrompt(row) {
+    if (!row || !requiresCredentials(row.security)) return false
+    var liveNetwork = networkForSsid(row.ssid)
+    return !(row.known && liveNetwork && liveNetwork.known)
+  }
+
   function openPasswordPrompt(ssid) {
     var network = networkForSsid(ssid)
     if (network && network.security === WifiSecurityType.Wpa3SuiteB192) {
@@ -757,14 +763,14 @@ Panel {
     if (!network || actionKind === "" || actionSsid !== (network.name || "")) return
     actionTimeout.stop()
     failureSsid = actionSsid
-    failureReason = networkFailureReason(reason, requiresCredentials(network.security))
+    failureReason = networkFailureReason(reason, requiresCredentials(network.security), isEnterpriseSecurity(network.security))
     actionSsid = ""
     actionKind = ""
     refresh()
   }
 
-  function networkFailureReason(reason, needsCredentials) {
-    return Model.networkFailureReason(reason, needsCredentials, connectionFailReasons)
+  function networkFailureReason(reason, needsCredentials, isEnterprise) {
+    return Model.networkFailureReason(reason, needsCredentials, connectionFailReasons, isEnterprise)
   }
 
   function shouldRepromptPassphrase(reason, needsCredentials) {
@@ -791,7 +797,7 @@ Panel {
       var method = Model.eapMethodFor(root.eapMethod)
       enterpriseConnect.secret = passphrase
       enterpriseConnect.command = ["bash", "-c", Model.enterpriseConnectScript, "nmcli-eap",
-        ssid, identity, method.eap, method.phase2, root.serverDomainText.trim()]
+        ssid, identity.trim(), method.eap, method.phase2, root.serverDomainText.trim()]
       enterpriseConnect.running = true
     })
   }
@@ -807,8 +813,14 @@ Panel {
       secret = ""
     }
     onExited: function(exitCode) {
-      if (exitCode !== 0 && root.actionKind === "connect") root.failNetworkAction(root.networkForSsid(root.actionSsid), -1)
+      if (exitCode !== 0 && root.actionKind === "connect") enterpriseFailFallback.restart()
     }
+  }
+
+  Timer {
+    id: enterpriseFailFallback
+    interval: 500
+    onTriggered: if (root.actionKind === "connect") root.failNetworkAction(root.networkForSsid(root.actionSsid), -1)
   }
 
   function disconnect(network) {
@@ -1648,7 +1660,7 @@ Panel {
     function submitCredentials() {
       if (!net || root.busy || root.passwordText.length === 0) return
       if (!isEnterprise) return root.connectWithPassphrase(net.ssid, root.passwordText)
-      if (root.identityText.length > 0) root.connectEnterprise(net.ssid, root.identityText, root.passwordText)
+      if (root.identityText.trim().length > 0) root.connectEnterprise(net.ssid, root.identityText, root.passwordText)
     }
 
     Connections {
@@ -1657,9 +1669,12 @@ Panel {
         // Background auto-connect retries fire this too; only reprompt for
         // the connect started from this panel. Checked before
         // failNetworkAction, which clears the action state.
-        var ours = root.actionKind === "connect" && root.actionSsid === (row.net.ssid || "")
-        root.failNetworkAction(root.networkForSsid(row.net.ssid), reason)
-        if (ours && root.shouldRepromptPassphrase(reason, row.requiresCredentials)) root.openPasswordPrompt(row.net.ssid)
+        var panel = root
+        var ssid = row.net.ssid || ""
+        var ours = panel.actionKind === "connect" && panel.actionSsid === ssid
+        var reprompt = ours && panel.shouldRepromptPassphrase(reason, row.requiresCredentials)
+        panel.failNetworkAction(panel.networkForSsid(ssid), reason)
+        if (reprompt) panel.openPasswordPrompt(ssid)
       }
       function onConnectedChanged() {
         if (row.net) root.checkActionCompletion(root.networkForSsid(row.net.ssid))
@@ -1720,7 +1735,7 @@ Panel {
           root.disconnectRow(row.net.ssid)
           return
         }
-        if (row.requiresCredentials && !row.isKnown) {
+        if (root.needsCredentialPrompt(row.net)) {
           root.openPasswordPrompt(row.net.ssid)
           return
         }
