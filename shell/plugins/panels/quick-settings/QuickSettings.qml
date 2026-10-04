@@ -196,7 +196,7 @@ Item {
     id: mediaValue
     polling: root.soundVisible
     intervalMs: 1000
-    command: "playerctl metadata -f '{{title}}|||{{artist}}|||{{status}}' 2>/dev/null || echo 'No Media||||||Stopped'"
+    command: "playerctl metadata -f '{{title}}|||{{artist}}|||{{status}}|||{{mpris:artUrl}}' 2>/dev/null || echo 'No Media||||||Stopped|||'"
   }
 
   PolledText {

@@ -44,6 +44,7 @@ Column {
     title: root.mediaParts.length > 0 ? root.mediaParts[0] : ""
     artist: root.mediaParts.length > 1 ? root.mediaParts[1] : ""
     status: root.mediaParts.length > 2 ? root.mediaParts[2] : "Stopped"
+    artUrl: root.mediaParts.length > 3 ? root.mediaParts[3] : ""
     onControlRequested: function(action) { root.mediaControlRequested(action) }
   }
 
