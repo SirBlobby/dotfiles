@@ -18,6 +18,7 @@ greeter_theme_files=(Main.qml metadata.desktop theme.conf)
 # the greeter with no compositor and the screen black.
 install_login_config() {
   install_greeter_theme
+  install_greeter_branding
   install_root_file "$repo_dir/default/sddm/hyprland-greeter.lua" \
     "$greeter_compositor_config" "sddm/hyprland-greeter.lua"
   install_root_file "$repo_dir/default/sddm/zz-blob.conf" \
@@ -29,13 +30,26 @@ install_login_config() {
 }
 
 install_greeter_theme() {
-  local file
+  local file force=true
   for file in "${greeter_theme_files[@]}"; do
     install_root_file "$repo_dir/default/sddm/blob/$file" \
       "$greeter_theme_dir/$file" "sddm/themes/blob/$file"
   done
   install_root_file "$repo_dir/branding/blob_icon.svg" \
     "$greeter_theme_dir/logo.svg" "sddm/themes/blob/logo.svg"
+}
+
+install_greeter_branding() {
+  local source="$HOME/.config/blob/branding/screensaver.txt"
+  [[ -r $source ]] || source="$repo_dir/branding/screensaver.txt"
+  [[ -r $source ]] && command -v jq >/dev/null || return 0
+
+  local generated force=true
+  generated="$(mktemp)"
+  printf 'import QtQuick\n\nQtObject {\n  readonly property string text: %s\n}\n' \
+    "$(jq -Rs . <"$source")" >"$generated"
+  install_root_file "$generated" "$greeter_theme_dir/Branding.qml" "sddm/themes/blob/Branding.qml"
+  rm -f "$generated"
 }
 
 install_session_entry() {

@@ -23,6 +23,11 @@ Rectangle {
   readonly property int smallFontSize: 14
   readonly property int sectionGap: 48
   readonly property int edgeMargin: 32
+  readonly property int brandingMaxWidth: 1100
+  readonly property int brandingMaxFontSize: 36
+  readonly property int brandingMinFontSize: 4
+
+  readonly property string brandingText: brandingLoader.item ? brandingLoader.item.text : ""
 
   property string username: userModel.lastUser
   property bool enteringUsername: username.length === 0
@@ -111,7 +116,31 @@ Rectangle {
     onClicked: fieldInput.forceActiveFocus()
   }
 
+  Loader {
+    id: brandingLoader
+    source: "Branding.qml"
+  }
+
+  Text {
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.bottom: clockColumn.top
+    anchors.bottomMargin: root.sectionGap
+    width: Math.min(parent.width * 0.86, root.brandingMaxWidth)
+    height: Math.max(0, clockColumn.y - root.sectionGap * 2)
+    visible: root.brandingText.length > 0
+    text: root.brandingText
+    textFormat: Text.PlainText
+    color: root.textColor
+    font.family: root.fontFamily
+    font.pixelSize: root.brandingMaxFontSize
+    minimumPixelSize: root.brandingMinFontSize
+    fontSizeMode: Text.Fit
+    horizontalAlignment: Text.AlignHCenter
+    verticalAlignment: Text.AlignBottom
+  }
+
   Image {
+    visible: root.brandingText.length === 0
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: clockColumn.top
     anchors.bottomMargin: root.sectionGap
