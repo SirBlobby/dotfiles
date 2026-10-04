@@ -269,6 +269,7 @@
 
   // Install
   "install.tui": {"icon":"","label":"TUI","action":"blob-launch-floating blob-tui-install"},
+  "install.webapp": {"icon":"","label":"Web App","action":"blob-launch-floating blob-webapp-install"},
   "install.style": {"icon":"","label":"Style"},
   "install.style.theme": {"icon":"󰸌","label":"Theme","action":"blob-launch-floating blob-theme-install"},
   "install.style.background": {"icon":"","label":"Background","action":"blob-bg-install"},
@@ -283,6 +284,7 @@
   // Remove
   "remove.package": {"icon":"󰣇","label":"Package","action":"blob-terminal-exec --app-id=org.blob.terminal blob-pkg-remove"},
   "remove.tui": {"icon":"","label":"TUI","when":"grep -qE '^Exec=.*(\\$TERMINAL|xdg-terminal-exec|blob-terminal-exec).*-e' $HOME/.local/share/applications/*.desktop","action":"blob-tui-remove"},
+  "remove.webapp": {"icon":"","label":"Web App","when":"grep -qE '^Exec=.*(blob-launch-webapp|blob-webapp-handler)' $HOME/.local/share/applications/*.desktop","action":"blob-webapp-remove"},
   "remove.theme": {"icon":"󰸌","label":"Theme","action":"blob-theme-remove"},
 
   // Update
