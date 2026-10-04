@@ -379,6 +379,7 @@ of the `blob` listing.
 | `blob-pkg-drop` | Remove all the named packages from the system if they're installed (otherwise ignore). | <packages...> |
 | `blob-pkg-install` | Show a fuzzy-finder TUI for picking new Arch and OPR packages to install. | - |
 | `blob-pkg-missing` | Returns true if any of the named packages are missing from the system (or false if they're all there). | <packages...> |
+| `blob-pkg-multilib` | Enable the multilib repository in pacman.conf if it is disabled | - |
 | `blob-pkg-present` | Returns true if all of the named packages are installed on the system (or false if any of them are missing). | <packages...> |
 | `blob-pkg-remove` | Show a fuzzy-finder TUI for picking packages installed on the system to be removed. | - |
 

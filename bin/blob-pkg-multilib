@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# blob:summary=Enable the multilib repository in pacman.conf if it is disabled
+# blob:requires-sudo=true
+
+pacman_conf=/etc/pacman.conf
+
+multilib_enabled() {
+  grep -q '^\[multilib\]' "$pacman_conf"
+}
+
+as_root() {
+  if (( EUID == 0 )); then
+    "$@"
+  else
+    sudo "$@"
+  fi
+}
+
+multilib_enabled && exit 0
+
+echo "Enabling the multilib repository..."
+as_root sed -i '/^#\[multilib\]$/,/^#Include/ s/^#//' "$pacman_conf"
+
+if ! multilib_enabled; then
+  echo -e "\033[31mError: Could not enable multilib in $pacman_conf\033[0m" >&2
+  exit 1
+fi
+
+as_root pacman -Syu --noconfirm
