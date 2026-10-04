@@ -514,7 +514,7 @@ QtObject {
   readonly property int cardRadius: 0
   readonly property real cardFillAlpha: 0.6
   readonly property real cardBorderAlpha: 0.5
-  readonly property real panelFillAlpha: 0.92
+  readonly property real panelFillAlpha: 1.0
   readonly property int cardPadding: spaceReal(14)
   readonly property int cardSpacing: spaceReal(10)
   readonly property int tilePadding: spaceReal(8)

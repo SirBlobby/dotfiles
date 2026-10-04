@@ -32,6 +32,9 @@ Item {
   readonly property int screensaverSeconds: root.timeoutSeconds(idleConfig.screensaver, 150)
   readonly property int lockSeconds: root.timeoutSeconds(idleConfig.lock, 300)
 
+  readonly property color floatingFillColor: Util.alpha(Color.background, Style.panelFillAlpha)
+  readonly property color floatingBorderColor: Qt.tint(Color.background, Util.alpha(Color.blue, Style.cardBorderAlpha))
+
   readonly property int barInset: {
     var bar = root.shell ? root.shell.bar : null
     if (!bar || bar.barHidden === true) return 0
@@ -242,6 +245,8 @@ Item {
       anchors.top: controlCentre.top
       anchors.right: controlCentre.left
       anchors.rightMargin: Style.spaceReal(12)
+      fillColor: root.floatingFillColor
+      borderColor: root.floatingBorderColor
       available: root.weatherAvailable
       glyph: root.weatherGlyph
       place: root.weatherPlace
@@ -255,7 +260,8 @@ Item {
       anchors.topMargin: Style.spaceReal(10) + root.barInset
       anchors.horizontalCenter: parent.horizontalCenter
       implicitWidth: Math.max(Style.spaceReal(520), tabBar.requiredWidth + padding * 2)
-      fillColor: Util.alpha(Color.background, Style.panelFillAlpha)
+      fillColor: root.floatingFillColor
+      borderColor: root.floatingBorderColor
       spacing: Style.spaceReal(12)
 
       Header {
