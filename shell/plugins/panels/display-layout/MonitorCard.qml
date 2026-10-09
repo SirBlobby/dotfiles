@@ -25,10 +25,10 @@ Rectangle {
 
   radius: Style.cardRadius
   color: root.selected
-    ? Util.alpha(Color.accent, 0.35)
-    : Util.alpha(Color.background, Style.cardFillAlpha)
+    ? Util.alpha(Colors.accent, 0.35)
+    : Util.alpha(Colors.background, Style.cardFillAlpha)
   border.width: Style.cardBorderWidth
-  border.color: root.selected ? Color.accent : Util.alpha(Color.blue, Style.cardBorderAlpha)
+  border.color: root.selected ? Colors.accent : Util.alpha(Colors.blue, Style.cardBorderAlpha)
   clip: true
 
   Column {
@@ -42,7 +42,7 @@ Rectangle {
       elide: Text.ElideRight
       text: root.name
       textFormat: Text.PlainText
-      color: Color.foreground
+      color: Colors.foreground
       font.family: Style.font.family
       font.pixelSize: Style.font.bodySmall
       font.bold: true
@@ -55,7 +55,7 @@ Rectangle {
       visible: root.height > Style.spaceReal(44)
       text: root.monitor ? root.monitor.width + "x" + root.monitor.height : ""
       textFormat: Text.PlainText
-      color: Util.alpha(Color.foreground, 0.7)
+      color: Util.alpha(Colors.foreground, 0.7)
       font.family: Style.font.family
       font.pixelSize: Style.font.bodySmall
     }
@@ -67,7 +67,7 @@ Rectangle {
       visible: root.monitor && root.monitor.focused && root.height > Style.spaceReal(58)
       text: "focused"
       textFormat: Text.PlainText
-      color: Color.blue
+      color: Colors.blue
       font.family: Style.font.family
       font.pixelSize: Style.font.bodySmall
     }

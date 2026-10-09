@@ -13,14 +13,14 @@ Row {
     width: Style.spaceReal(28)
     height: width
     radius: Style.cardRadius
-    color: Util.alpha(Color.blue, 0.2)
+    color: Util.alpha(Colors.blue, 0.2)
     anchors.verticalCenter: parent.verticalCenter
 
     Text {
       anchors.centerIn: parent
       text: root.icon
       textFormat: Text.PlainText
-      color: Color.blue
+      color: Colors.blue
       font.family: Style.font.family
       font.pixelSize: Style.font.body
     }
@@ -30,7 +30,7 @@ Row {
     anchors.verticalCenter: parent.verticalCenter
     text: root.title
     textFormat: Text.PlainText
-    color: Color.foreground
+    color: Colors.foreground
     font.family: Style.font.family
     font.pixelSize: Style.font.body
     font.bold: true

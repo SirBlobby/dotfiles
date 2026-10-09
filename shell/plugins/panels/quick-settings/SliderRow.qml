@@ -19,7 +19,7 @@ Item {
     width: Style.spaceReal(22)
     text: root.icon
     textFormat: Text.PlainText
-    color: root.dimmed ? Util.alpha(Color.magenta, 0.5) : Color.magenta
+    color: root.dimmed ? Util.alpha(Colors.magenta, 0.5) : Colors.magenta
     font.family: Style.font.family
     font.pixelSize: Style.font.body
 
@@ -37,13 +37,13 @@ Item {
     anchors.verticalCenter: parent.verticalCenter
     height: Style.spaceReal(8)
     radius: Style.cardRadius
-    color: Util.alpha(Color.foreground, 0.2)
+    color: Util.alpha(Colors.foreground, 0.2)
 
     Rectangle {
       width: parent.width * Math.max(0, Math.min(100, root.value)) / 100
       height: parent.height
       radius: Style.cardRadius
-      color: Color.accent
+      color: Colors.accent
     }
 
     Rectangle {
@@ -52,7 +52,7 @@ Item {
       width: Style.spaceReal(14)
       height: width
       radius: Style.cardRadius
-      color: Color.foreground
+      color: Colors.foreground
     }
 
     TapHandler {
@@ -78,7 +78,7 @@ Item {
     horizontalAlignment: Text.AlignRight
     text: root.value + "%"
     textFormat: Text.PlainText
-    color: Color.foreground
+    color: Colors.foreground
     font.family: Style.font.family
     font.pixelSize: Style.font.bodySmall
   }

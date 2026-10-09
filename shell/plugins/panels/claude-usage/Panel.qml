@@ -152,7 +152,7 @@ Panel {
           text: root.errorMessage !== "" ? root.errorMessage : "Loading usage..."
           textFormat: Text.PlainText
           wrapMode: Text.Wrap
-          color: root.errorMessage !== "" ? Color.urgent : Qt.darker(root.barForeground, 1.5)
+          color: root.errorMessage !== "" ? Colors.urgent : Qt.darker(root.barForeground, 1.5)
           font.family: Style.font.family
           font.pixelSize: Style.font.bodySmall
         }

@@ -7,7 +7,7 @@ Column {
 
   property date today: new Date()
   property int weekStart: CalendarModel.normalizedWeekStart(null, Qt.locale().firstDayOfWeek)
-  property color foreground: Color.foreground
+  property color foreground: Colors.foreground
   property string fontFamily: Style.font.family
   property bool showWeekNumbers: false
   property bool navigationAtBottom: false
@@ -191,7 +191,7 @@ Column {
         width: navigationLabel.width
         height: navigationLabel.implicitHeight + Style.space(6)
         radius: Style.cornerRadius
-        color: navigationMouse.containsMouse ? Style.hoverFillFor(root.foreground, Color.accent) : "transparent"
+        color: navigationMouse.containsMouse ? Style.hoverFillFor(root.foreground, Colors.accent) : "transparent"
       }
 
       Text {
@@ -204,7 +204,7 @@ Column {
           ? String(root.pickerYear)
           : Qt.formatDate(root.viewDate, "MMMM yyyy").toUpperCase()
         color: navigationMouse.containsMouse
-          ? Style.hoverStateColor(root.foreground, Color.accent)
+          ? Style.hoverStateColor(root.foreground, Colors.accent)
           : Qt.darker(root.foreground, 1.4)
         font.family: root.fontFamily
         font.pixelSize: Style.font.body

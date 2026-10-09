@@ -14,16 +14,16 @@ Rectangle {
   implicitHeight: Style.spaceReal(58)
   radius: Style.cardRadius
   color: root.active
-    ? Color.accent
-    : (hover.hovered ? Util.alpha(Color.blue, 0.3) : Util.alpha(Color.foreground, 0.1))
+    ? Colors.accent
+    : (hover.hovered ? Util.alpha(Colors.blue, 0.3) : Util.alpha(Colors.foreground, 0.1))
   border.width: 1
-  border.color: root.active ? Color.accent : Util.alpha(Color.foreground, 0.2)
+  border.color: root.active ? Colors.accent : Util.alpha(Colors.foreground, 0.2)
 
   Behavior on color {
     ColorAnimation { duration: 150 }
   }
 
-  readonly property color contentColor: root.active ? Color.background : Color.foreground
+  readonly property color contentColor: root.active ? Colors.background : Colors.foreground
 
   Column {
     anchors.centerIn: parent

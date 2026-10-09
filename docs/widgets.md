@@ -29,9 +29,9 @@ repeating literals.
 
 The CSS was written against pywal's `@color0`, `@color4` and `@color5` aliases.
 `blob-theme-color` resolves `color4` to blue and `color5` to magenta, so
-`Commons/Color.qml` now exposes `blue` and `magenta` with that same cascade,
+`Commons/Colors.qml` now exposes `blue` and `magenta` with that same cascade,
 falling back to `accent` for themes that define neither. `color0` is
-`background`, which Color already had.
+`background`, which Colors already had.
 
 ## Quick settings tabs
 

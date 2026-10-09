@@ -136,7 +136,7 @@ Item {
       anchors.centerIn: parent
       implicitWidth: Math.min(Style.spaceReal(760), panelWindow.width - screenMargin * 2)
       implicitHeight: Math.min(Style.spaceReal(640), panelWindow.height - screenMargin * 2)
-      fillColor: Util.alpha(Color.background, Style.panelFillAlpha)
+      fillColor: Util.alpha(Colors.background, Style.panelFillAlpha)
       spacing: Style.spaceReal(10)
 
       KeybindsHeader {
@@ -214,7 +214,7 @@ Item {
         text: root.statusText.length > 0 ? root.statusText
           : root.visibleBindings.length + " bindings. Changes go to ~/.config/hypr/bindings.lua and Hyprland reloads."
         textFormat: Text.PlainText
-        color: root.statusIsError ? Color.urgent : Util.alpha(Color.foreground, 0.6)
+        color: root.statusIsError ? Colors.urgent : Util.alpha(Colors.foreground, 0.6)
         font.family: Style.font.family
         font.pixelSize: Style.font.caption
       }

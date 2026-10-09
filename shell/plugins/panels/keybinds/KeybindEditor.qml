@@ -31,9 +31,9 @@ Rectangle {
 
   implicitHeight: form.implicitHeight + Style.spaceReal(24)
   radius: Style.cardRadius
-  color: Util.alpha(Color.foreground, 0.06)
+  color: Util.alpha(Colors.foreground, 0.06)
   border.width: 1
-  border.color: Util.alpha(Color.accent, 0.6)
+  border.color: Util.alpha(Colors.accent, 0.6)
 
   Column {
     id: form
@@ -47,7 +47,7 @@ Rectangle {
       text: !root.binding ? "New binding"
         : (root.binding.origin === "personal" ? "Edit binding" : "Replace default binding")
       textFormat: Text.PlainText
-      color: Color.foreground
+      color: Colors.foreground
       font.family: Style.font.family
       font.pixelSize: Style.font.bodySmall
       font.bold: true
@@ -86,7 +86,7 @@ Rectangle {
             ? "Replaces your binding: " + root.conflict.description
             : "Disables the default: " + root.conflict.description)
       textFormat: Text.PlainText
-      color: Color.urgent
+      color: Colors.urgent
       font.family: Style.font.family
       font.pixelSize: Style.font.caption
     }

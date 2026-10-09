@@ -154,7 +154,7 @@ Item {
 
       anchors.centerIn: parent
       implicitWidth: Math.min(Style.spaceReal(720), panelWindow.width - screenMargin * 2)
-      fillColor: Util.alpha(Color.background, Style.panelFillAlpha)
+      fillColor: Util.alpha(Colors.background, Style.panelFillAlpha)
       spacing: Style.spaceReal(10)
 
       Item {
@@ -171,7 +171,7 @@ Item {
           text: "Display layout"
           textFormat: Text.PlainText
           elide: Text.ElideRight
-          color: Color.foreground
+          color: Colors.foreground
           font.family: Style.font.family
           font.pixelSize: Style.font.body
           font.bold: true
@@ -192,7 +192,7 @@ Item {
         wrapMode: Text.WordWrap
         text: "Drag a monitor to move it. Edges snap to a neighbour. Changes apply as you drop and last until the session ends."
         textFormat: Text.PlainText
-        color: Util.alpha(Color.foreground, 0.6)
+        color: Util.alpha(Colors.foreground, 0.6)
         font.family: Style.font.family
         font.pixelSize: Style.font.bodySmall
       }

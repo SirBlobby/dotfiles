@@ -52,7 +52,7 @@ Column {
     wrapMode: Text.WordWrap
     text: "Stay Awake is on, so neither starts until it is turned off."
     textFormat: Text.PlainText
-    color: Util.alpha(Color.foreground, 0.6)
+    color: Util.alpha(Colors.foreground, 0.6)
     font.family: Style.font.family
     font.pixelSize: Style.font.bodySmall
   }

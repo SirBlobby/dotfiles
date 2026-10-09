@@ -126,7 +126,7 @@ Item {
       anchors.centerIn: parent
       implicitWidth: Style.spaceReal(720)
       implicitHeight: Style.spaceReal(520)
-      fillColor: Util.alpha(Color.background, Style.panelFillAlpha)
+      fillColor: Util.alpha(Colors.background, Style.panelFillAlpha)
       spacing: Style.spaceReal(10)
 
       Item {
@@ -139,7 +139,7 @@ Item {
           anchors.verticalCenter: parent.verticalCenter
           text: "Wallpapers"
           textFormat: Text.PlainText
-          color: Color.foreground
+          color: Colors.foreground
           font.family: Style.font.family
           font.pixelSize: Style.font.body
           font.bold: true
@@ -191,7 +191,7 @@ Item {
                 ? root.selectedName + ": " + root.assignedPath.replace(/^.*\//, "")
                 : root.selectedName + ": following the global wallpaper")
           textFormat: Text.PlainText
-          color: Util.alpha(Color.foreground, 0.7)
+          color: Util.alpha(Colors.foreground, 0.7)
           font.family: Style.font.family
           font.pixelSize: Style.font.bodySmall
         }

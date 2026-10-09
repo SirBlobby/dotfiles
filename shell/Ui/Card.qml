@@ -4,8 +4,8 @@ import qs.Commons
 Rectangle {
   id: root
 
-  property color fillColor: Util.alpha(Color.background, Style.cardFillAlpha)
-  property color borderColor: Util.alpha(Color.blue, Style.cardBorderAlpha)
+  property color fillColor: Util.alpha(Colors.background, Style.cardFillAlpha)
+  property color borderColor: Util.alpha(Colors.blue, Style.cardBorderAlpha)
   default property alias content: contentColumn.data
   property alias spacing: contentColumn.spacing
   property int padding: Style.cardPadding

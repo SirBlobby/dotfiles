@@ -22,7 +22,7 @@ Named keys are preferred: `background`, `foreground`, `accent`, `muted`,
 `color0`..`color15` form also works and is resolved through the same cascade:
 `color0` is the background, `color4` is blue, `color5` is magenta.
 
-That cascade lives in `blob-theme-color`, and `Commons/Color.qml` mirrors it so
+That cascade lives in `blob-theme-color`, and `Commons/Colors.qml` mirrors it so
 the shell and the CLI never disagree about what a slot means.
 
 ## Templates

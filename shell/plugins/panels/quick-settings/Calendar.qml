@@ -33,7 +33,7 @@ Item {
   CalendarView {
     id: calendar
     width: parent.width
-    foreground: Color.foreground
+    foreground: Colors.foreground
     fontFamily: Style.font.family
     cellSpacing: Style.space(2)
     cellWidth: Math.floor((width - cellSpacing * 6) / 7)

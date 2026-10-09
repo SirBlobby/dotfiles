@@ -22,7 +22,7 @@ Card {
     visible: !root.available
     text: "Weather unavailable"
     textFormat: Text.PlainText
-    color: Util.alpha(Color.foreground, 0.7)
+    color: Util.alpha(Colors.foreground, 0.7)
     font.family: Style.font.family
     font.pixelSize: Style.font.bodySmall
   }

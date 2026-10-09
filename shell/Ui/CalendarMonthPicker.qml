@@ -34,18 +34,18 @@ Item {
         height: (root.height - root.gap * (root.rows - 1)) / root.rows
         radius: Style.cornerRadius
         color: {
-          if (isCurrentMonth) return Style.selectedStateColor(root.foreground, Color.accent)
-          if (isCursor) return Style.hoverFillFor(root.foreground, Color.accent)
+          if (isCurrentMonth) return Style.selectedStateColor(root.foreground, Colors.accent)
+          if (isCursor) return Style.hoverFillFor(root.foreground, Colors.accent)
           return "transparent"
         }
         border.width: isViewedMonth && !isCurrentMonth ? Math.max(1, Style.spacing.hairline) : 0
-        border.color: Style.selectedBorderFor(root.foreground, Color.accent)
+        border.color: Style.selectedBorderFor(root.foreground, Colors.accent)
 
         Text {
           anchors.centerIn: parent
           textFormat: Text.PlainText
           text: root.calendar.monthLabel(monthCell.index)
-          color: monthCell.isCurrentMonth ? Color.background : root.foreground
+          color: monthCell.isCurrentMonth ? Colors.background : root.foreground
           font.family: root.calendar.fontFamily
           font.pixelSize: Style.font.body
           font.letterSpacing: 1

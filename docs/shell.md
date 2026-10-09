@@ -9,7 +9,7 @@ plugin, so summoning a panel is an IPC call into a process that is already up.
 ```
 shell/
   shell.qml            entry point
-  Commons/             Style, Color, Border, Util
+  Commons/             Style, Colors, Border, Util
   Ui/                  shared components
   services/            plugin registry, bar widget registry, app library
   plugins/

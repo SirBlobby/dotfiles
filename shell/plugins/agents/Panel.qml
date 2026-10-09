@@ -10,10 +10,10 @@ Panel {
   ipcTarget: "blob.agents"
   manageIpc: false
 
-  readonly property color foreground: bar ? bar.foreground : Color.foreground
-  readonly property color urgent: Color.urgent
+  readonly property color foreground: bar ? bar.foreground : Colors.foreground
+  readonly property color urgent: Colors.urgent
   readonly property color dim: Qt.darker(foreground, 1.55)
-  readonly property color track: Style.selectedFillFor(foreground, Color.accent)
+  readonly property color track: Style.selectedFillFor(foreground, Colors.accent)
   readonly property string fontFamily: bar ? bar.fontFamily : Style.font.family
   readonly property string barGlyph: "󱚣"
   readonly property string launchCommand: "blob-launch-terminal claude"
@@ -253,15 +253,15 @@ Panel {
     implicitWidth: Style.space(34)
     implicitHeight: implicitWidth
     radius: Style.cornerRadius
-    color: Util.alpha(Color.accent, heroMouse.containsMouse ? 0.3 : 0.12)
+    color: Util.alpha(Colors.accent, heroMouse.containsMouse ? 0.3 : 0.12)
     border.width: heroMouse.containsMouse ? Math.max(1, Style.hoverBorderWidth) : 0
-    border.color: Color.accent
+    border.color: Colors.accent
 
     Text {
       anchors.centerIn: parent
       textFormat: Text.PlainText
       text: heroButton.glyph
-      color: Color.accent
+      color: Colors.accent
       font.family: root.fontFamily
       font.pixelSize: Style.font.heading
     }

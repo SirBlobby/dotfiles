@@ -22,7 +22,7 @@ Rectangle {
 
   implicitHeight: Style.spaceReal(46)
   radius: Style.cardRadius
-  color: hover.hovered ? Util.alpha(Color.foreground, 0.08) : Util.alpha(Color.background, Style.cardFillAlpha)
+  color: hover.hovered ? Util.alpha(Colors.foreground, 0.08) : Util.alpha(Colors.background, Style.cardFillAlpha)
 
   HoverHandler {
     id: hover
@@ -36,9 +36,9 @@ Rectangle {
     width: Style.spaceReal(200)
     height: Style.spaceReal(26)
     radius: Style.cardRadius
-    color: root.personal ? Util.alpha(Color.accent, 0.25) : Util.alpha(Color.foreground, 0.1)
+    color: root.personal ? Util.alpha(Colors.accent, 0.25) : Util.alpha(Colors.foreground, 0.1)
     border.width: 1
-    border.color: root.personal ? Color.accent : Util.alpha(Color.foreground, 0.2)
+    border.color: root.personal ? Colors.accent : Util.alpha(Colors.foreground, 0.2)
     opacity: root.active ? 1 : 0.5
 
     Text {
@@ -49,7 +49,7 @@ Rectangle {
       text: root.binding ? root.binding.keys : ""
       textFormat: Text.PlainText
       elide: Text.ElideRight
-      color: Color.foreground
+      color: Colors.foreground
       font.family: Style.font.family
       font.pixelSize: Style.font.bodySmall
       font.bold: true
@@ -70,7 +70,7 @@ Rectangle {
       text: root.binding ? root.binding.description : ""
       textFormat: Text.PlainText
       elide: Text.ElideRight
-      color: Color.foreground
+      color: Colors.foreground
       font.family: Style.font.family
       font.pixelSize: Style.font.bodySmall
       font.bold: true
@@ -81,7 +81,7 @@ Rectangle {
       text: root.stateText
       textFormat: Text.PlainText
       elide: Text.ElideRight
-      color: root.active ? Util.alpha(Color.foreground, 0.6) : Color.urgent
+      color: root.active ? Util.alpha(Colors.foreground, 0.6) : Colors.urgent
       font.family: Style.font.family
       font.pixelSize: Style.font.caption
     }

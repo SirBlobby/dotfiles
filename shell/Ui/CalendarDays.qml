@@ -29,13 +29,13 @@ Item {
         width: root.calendar.weekColumnWidth
         height: root.headerHeight
         radius: Style.cornerRadius
-        color: weekHeaderMouse.containsMouse ? Style.hoverFillFor(root.foreground, Color.accent) : "transparent"
+        color: weekHeaderMouse.containsMouse ? Style.hoverFillFor(root.foreground, Colors.accent) : "transparent"
 
         Text {
           anchors.centerIn: parent
           text: "W"
           color: weekHeaderMouse.containsMouse
-            ? Style.hoverStateColor(root.foreground, Color.accent)
+            ? Style.hoverStateColor(root.foreground, Colors.accent)
             : Qt.darker(root.foreground, 1.9)
           font.family: root.calendar.fontFamily
           font.pixelSize: Style.font.caption
@@ -135,9 +135,9 @@ Item {
 
     required property var modelData
 
-    readonly property color todayFill: Style.selectedStateColor(root.foreground, Color.accent)
+    readonly property color todayFill: Style.selectedStateColor(root.foreground, Colors.accent)
     readonly property color dayColor: {
-      if (modelData.today) return Color.background
+      if (modelData.today) return Colors.background
       if (!modelData.inMonth) return root.foreground
       return modelData.weekend ? Qt.darker(root.foreground, 1.45) : root.foreground
     }
@@ -147,12 +147,12 @@ Item {
     radius: Style.cornerRadius
     color: {
       if (modelData.today) return todayFill
-      if (dayMouse.containsMouse) return Style.hoverFillFor(root.foreground, Color.accent)
-      if (modelData.selected) return Style.selectedFillFor(root.foreground, Color.accent)
+      if (dayMouse.containsMouse) return Style.hoverFillFor(root.foreground, Colors.accent)
+      if (modelData.selected) return Style.selectedFillFor(root.foreground, Colors.accent)
       return "transparent"
     }
     border.width: modelData.selected && !modelData.today ? Math.max(1, Style.spacing.hairline) : 0
-    border.color: Style.selectedBorderFor(root.foreground, Color.accent)
+    border.color: Style.selectedBorderFor(root.foreground, Colors.accent)
 
     Text {
       anchors.centerIn: parent

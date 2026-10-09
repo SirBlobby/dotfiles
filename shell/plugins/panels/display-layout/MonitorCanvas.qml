@@ -19,10 +19,10 @@ Rectangle {
     Math.max(1, width - Style.spaceReal(24)),
     Math.max(1, height - Style.spaceReal(24)))
 
-  color: Util.alpha(Color.background, 0.35)
+  color: Util.alpha(Colors.background, 0.35)
   radius: Style.cardRadius
   border.width: 1
-  border.color: Util.alpha(Color.foreground, 0.15)
+  border.color: Util.alpha(Colors.foreground, 0.15)
   clip: true
 
   Item {
@@ -53,7 +53,7 @@ Rectangle {
     visible: root.monitors.length === 0
     text: "No monitors reported"
     textFormat: Text.PlainText
-    color: Util.alpha(Color.foreground, 0.6)
+    color: Util.alpha(Colors.foreground, 0.6)
     font.family: Style.font.family
     font.pixelSize: Style.font.bodySmall
   }

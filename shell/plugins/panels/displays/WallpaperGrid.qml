@@ -57,11 +57,11 @@ Item {
         anchors.fill: parent
         anchors.margins: Style.spaceReal(3)
         radius: Style.cardRadius
-        color: Util.alpha(Color.background, Style.cardFillAlpha)
+        color: Util.alpha(Colors.background, Style.cardFillAlpha)
         border.width: Style.cardBorderWidth
         border.color: modelData === root.assignedPath
-          ? Color.accent
-          : (hover.hovered ? Color.blue : Util.alpha(Color.blue, Style.cardBorderAlpha))
+          ? Colors.accent
+          : (hover.hovered ? Colors.blue : Util.alpha(Colors.blue, Style.cardBorderAlpha))
         clip: true
 
         Image {
@@ -81,7 +81,7 @@ Item {
           anchors.margins: Style.cardBorderWidth
           height: caption.implicitHeight + Style.spaceReal(4)
           visible: hover.hovered || modelData === root.assignedPath
-          color: Util.alpha(Color.background, 0.8)
+          color: Util.alpha(Colors.background, 0.8)
 
           Text {
             id: caption
@@ -91,7 +91,7 @@ Item {
             elide: Text.ElideMiddle
             text: String(modelData).replace(/^.*\//, "")
             textFormat: Text.PlainText
-            color: Color.foreground
+            color: Colors.foreground
             font.family: Style.font.family
             font.pixelSize: Style.font.bodySmall
           }
@@ -113,7 +113,7 @@ Item {
     visible: root.wallpapers.length === 0
     text: "No images in " + root.directory
     textFormat: Text.PlainText
-    color: Util.alpha(Color.foreground, 0.6)
+    color: Util.alpha(Colors.foreground, 0.6)
     font.family: Style.font.family
     font.pixelSize: Style.font.bodySmall
   }

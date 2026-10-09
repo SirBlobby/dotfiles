@@ -12,14 +12,14 @@ Rectangle {
   implicitHeight: Style.spaceReal(24)
   radius: Style.cardRadius
   color: root.active
-    ? Color.accent
-    : (hover.hovered ? Util.alpha(Color.blue, 0.3) : Util.alpha(Color.foreground, 0.1))
+    ? Colors.accent
+    : (hover.hovered ? Util.alpha(Colors.blue, 0.3) : Util.alpha(Colors.foreground, 0.1))
 
   Text {
     anchors.centerIn: parent
     text: root.icon
     textFormat: Text.PlainText
-    color: root.active ? Color.background : (hover.hovered ? Color.blue : Color.magenta)
+    color: root.active ? Colors.background : (hover.hovered ? Colors.blue : Colors.magenta)
     font.family: Style.font.family
     font.pixelSize: Style.font.bodySmall
   }

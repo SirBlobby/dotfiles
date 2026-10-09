@@ -53,13 +53,13 @@ Item {
       anchors.topMargin: Style.spaceReal(10)
       anchors.rightMargin: Style.spaceReal(10)
       implicitWidth: Style.spaceReal(400)
-      fillColor: Util.alpha(Color.background, Style.panelFillAlpha)
+      fillColor: Util.alpha(Colors.background, Style.panelFillAlpha)
       spacing: Style.spaceReal(12)
 
       Text {
         text: "System Monitor"
         textFormat: Text.PlainText
-        color: Color.foreground
+        color: Colors.foreground
         font.family: Style.font.family
         font.pixelSize: Style.font.body
         font.bold: true

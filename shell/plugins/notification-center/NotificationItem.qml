@@ -10,7 +10,7 @@ Rectangle {
   signal dismissRequested()
 
   radius: Style.cardRadius
-  color: Util.alpha(Color.background, Style.cardFillAlpha)
+  color: Util.alpha(Colors.background, Style.cardFillAlpha)
   implicitHeight: layout.implicitHeight + Style.spaceReal(20)
 
   Rectangle {
@@ -18,7 +18,7 @@ Rectangle {
     anchors.top: parent.top
     anchors.bottom: parent.bottom
     width: Style.spaceReal(3)
-    color: Color.accent
+    color: Colors.accent
   }
 
   Column {
@@ -40,7 +40,7 @@ Rectangle {
         anchors.left: parent.left
         text: root.app.length > 0 ? root.app : "Notification"
         textFormat: Text.PlainText
-        color: Color.accent
+        color: Colors.accent
         font.family: Style.font.family
         font.pixelSize: Style.font.bodySmall
         font.bold: true
@@ -50,7 +50,7 @@ Rectangle {
         anchors.right: parent.right
         text: "\uf00d"
         textFormat: Text.PlainText
-        color: closeHover.hovered ? Color.urgent : Color.magenta
+        color: closeHover.hovered ? Colors.urgent : Colors.magenta
         font.family: Style.font.family
         font.pixelSize: Style.font.bodySmall
 
@@ -69,7 +69,7 @@ Rectangle {
       text: root.summary
       textFormat: Text.PlainText
       wrapMode: Text.WordWrap
-      color: Color.foreground
+      color: Colors.foreground
       font.family: Style.font.family
       font.pixelSize: Style.font.bodySmall
       font.bold: true
@@ -83,7 +83,7 @@ Rectangle {
       wrapMode: Text.WordWrap
       maximumLineCount: 4
       elide: Text.ElideRight
-      color: Util.alpha(Color.foreground, 0.8)
+      color: Util.alpha(Colors.foreground, 0.8)
       font.family: Style.font.family
       font.pixelSize: Style.font.bodySmall
     }

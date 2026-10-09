@@ -23,9 +23,9 @@ Item {
     width: Style.spaceReal(48)
     height: width
     radius: Style.cardRadius
-    color: Util.alpha(Color.background, Style.cardFillAlpha)
+    color: Util.alpha(Colors.background, Style.cardFillAlpha)
     border.width: Style.cardBorderWidth
-    border.color: Util.alpha(Color.blue, Style.cardBorderAlpha)
+    border.color: Util.alpha(Colors.blue, Style.cardBorderAlpha)
     clip: true
 
     Image {
@@ -45,7 +45,7 @@ Item {
       anchors.centerIn: parent
       visible: !root.hasArt || thumbnailImage.status !== Image.Ready
       text: ""
-      color: Util.alpha(Color.foreground, 0.6)
+      color: Util.alpha(Colors.foreground, 0.6)
       font.family: Style.font.family
       font.pixelSize: Style.font.title
     }
@@ -65,7 +65,7 @@ Item {
       text: root.title
       textFormat: Text.PlainText
       elide: Text.ElideRight
-      color: Color.foreground
+      color: Colors.foreground
       font.family: Style.font.family
       font.pixelSize: Style.font.bodySmall
       font.bold: true
@@ -77,7 +77,7 @@ Item {
       textFormat: Text.PlainText
       elide: Text.ElideRight
       visible: root.artist.length > 0
-      color: Util.alpha(Color.foreground, 0.75)
+      color: Util.alpha(Colors.foreground, 0.75)
       font.family: Style.font.family
       font.pixelSize: Style.font.bodySmall
     }

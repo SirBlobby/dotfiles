@@ -24,7 +24,7 @@ Column {
     text: root.monitor ? root.monitor.name : ""
     textFormat: Text.PlainText
     elide: Text.ElideRight
-    color: Color.foreground
+    color: Colors.foreground
     font.family: Style.font.family
     font.pixelSize: Style.font.body
     font.bold: true
@@ -35,7 +35,7 @@ Column {
     text: root.monitor ? root.monitor.description : ""
     textFormat: Text.PlainText
     elide: Text.ElideRight
-    color: Util.alpha(Color.foreground, 0.65)
+    color: Util.alpha(Colors.foreground, 0.65)
     font.family: Style.font.family
     font.pixelSize: Style.font.bodySmall
   }
@@ -57,7 +57,7 @@ Column {
   Text {
     text: "Mode"
     textFormat: Text.PlainText
-    color: Util.alpha(Color.foreground, 0.75)
+    color: Util.alpha(Colors.foreground, 0.75)
     font.family: Style.font.family
     font.pixelSize: Style.font.bodySmall
   }
@@ -81,7 +81,7 @@ Column {
   Text {
     text: "Scale"
     textFormat: Text.PlainText
-    color: Util.alpha(Color.foreground, 0.75)
+    color: Util.alpha(Colors.foreground, 0.75)
     font.family: Style.font.family
     font.pixelSize: Style.font.bodySmall
   }
@@ -107,7 +107,7 @@ Column {
     wrapMode: Text.WordWrap
     text: "Only scales that land on whole pixels are offered. Hyprland steps in 1/120 and rejects the rest."
     textFormat: Text.PlainText
-    color: Util.alpha(Color.foreground, 0.55)
+    color: Util.alpha(Colors.foreground, 0.55)
     font.family: Style.font.family
     font.pixelSize: Style.font.bodySmall
   }

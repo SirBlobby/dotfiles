@@ -19,7 +19,7 @@ Item {
     text: "Keybindings"
     textFormat: Text.PlainText
     elide: Text.ElideRight
-    color: Color.foreground
+    color: Colors.foreground
     font.family: Style.font.family
     font.pixelSize: Style.font.body
     font.bold: true

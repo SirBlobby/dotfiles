@@ -32,8 +32,8 @@ Item {
   readonly property int screensaverSeconds: root.timeoutSeconds(idleConfig.screensaver, 150)
   readonly property int lockSeconds: root.timeoutSeconds(idleConfig.lock, 300)
 
-  readonly property color floatingFillColor: Util.alpha(Color.background, Style.panelFillAlpha)
-  readonly property color floatingBorderColor: Qt.tint(Color.background, Util.alpha(Color.blue, Style.cardBorderAlpha))
+  readonly property color floatingFillColor: Util.alpha(Colors.background, Style.panelFillAlpha)
+  readonly property color floatingBorderColor: Qt.tint(Colors.background, Util.alpha(Colors.blue, Style.cardBorderAlpha))
 
   readonly property int barInset: {
     var bar = root.shell ? root.shell.bar : null

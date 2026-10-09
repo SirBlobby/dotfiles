@@ -22,7 +22,7 @@ Item {
     Text {
       text: root.clock
       textFormat: Text.PlainText
-      color: Color.foreground
+      color: Colors.foreground
       font.family: Style.font.family
       font.pixelSize: Style.font.heading
       font.bold: true
@@ -31,7 +31,7 @@ Item {
     Text {
       text: root.today
       textFormat: Text.PlainText
-      color: Util.alpha(Color.foreground, 0.75)
+      color: Util.alpha(Colors.foreground, 0.75)
       font.family: Style.font.family
       font.pixelSize: Style.font.bodySmall
     }

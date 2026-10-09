@@ -22,7 +22,7 @@ Column {
       width: Style.spaceReal(22)
       text: root.icon
       textFormat: Text.PlainText
-      color: Color.magenta
+      color: Colors.magenta
       font.family: Style.font.family
       font.pixelSize: Style.font.body
     }
@@ -34,7 +34,7 @@ Column {
       anchors.verticalCenter: parent.verticalCenter
       text: root.name
       textFormat: Text.PlainText
-      color: Color.foreground
+      color: Colors.foreground
       font.family: Style.font.family
       font.pixelSize: Style.font.bodySmall
       font.bold: true
@@ -45,7 +45,7 @@ Column {
       anchors.verticalCenter: parent.verticalCenter
       text: root.detail
       textFormat: Text.PlainText
-      color: Util.alpha(Color.foreground, 0.8)
+      color: Util.alpha(Colors.foreground, 0.8)
       font.family: Style.font.family
       font.pixelSize: Style.font.bodySmall
     }
@@ -55,13 +55,13 @@ Column {
     width: parent.width
     height: Style.spaceReal(8)
     radius: Style.cardRadius
-    color: Util.alpha(Color.foreground, 0.2)
+    color: Util.alpha(Colors.foreground, 0.2)
 
     Rectangle {
       width: parent.width * Math.max(0, Math.min(100, root.percent)) / 100
       height: parent.height
       radius: Style.cardRadius
-      color: Color.accent
+      color: Colors.accent
 
       Behavior on width {
         NumberAnimation { duration: 200 }

@@ -45,11 +45,11 @@ Item {
   readonly property int dateFontSize: Math.round(Style.font.heading * 1.125)
 
   readonly property bool inputActive: passwordText.length > 0 || authenticatingPassword
-  readonly property color inputRestingBorder: paletteColor4.length > 0 ? paletteColor4 : Color.accent
+  readonly property color inputRestingBorder: paletteColor4.length > 0 ? paletteColor4 : Colors.accent
   readonly property color inputBorderColor: errorState
-    ? Color.urgent
-    : (inputActive ? Color.accent : Util.alpha(root.inputRestingBorder, 0.5))
-  readonly property color inputBackground: Util.alpha(Color.background, 0.6)
+    ? Colors.urgent
+    : (inputActive ? Colors.accent : Util.alpha(root.inputRestingBorder, 0.5))
+  readonly property color inputBackground: Util.alpha(Colors.background, 0.6)
   readonly property var inputBorderSpec: Border.flat(root.inputBorderColor, root.outlineThickness)
 
   signal submitPassword(string password)
@@ -107,7 +107,7 @@ Item {
 
   Rectangle {
     anchors.fill: parent
-    color: Color.background
+    color: Colors.background
 
     Image {
       id: wallpaper
@@ -148,7 +148,7 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         text: Qt.formatDateTime(clock.date, "HH:mm")
         textFormat: Text.PlainText
-        color: Color.lock.text
+        color: Colors.lock.text
         font.family: Style.font.family
         font.pixelSize: root.clockFontSize
       }
@@ -157,7 +157,7 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         text: Qt.formatDateTime(clock.date, "dddd, d MMMM")
         textFormat: Text.PlainText
-        color: Color.lock.placeholder
+        color: Colors.lock.placeholder
         font.family: Style.font.family
         font.pixelSize: root.dateFontSize
       }
@@ -173,7 +173,7 @@ Item {
       visible: root.brandingText.length > 0 && height > 0
       text: root.brandingText
       textFormat: Text.PlainText
-      color: Color.lock.text
+      color: Colors.lock.text
       font.family: Style.font.family
       font.pixelSize: root.brandingMaxFontSize
       minimumPixelSize: 4
@@ -210,16 +210,16 @@ Item {
         echoMode: TextInput.Password
         passwordCharacter: "\u25CF"
         passwordMaskDelay: 0
-        color: Color.lock.text
-        selectionColor: Color.lock.selection
-        selectedTextColor: Color.lock.text
+        color: Colors.lock.text
+        selectionColor: Colors.lock.selection
+        selectedTextColor: Colors.lock.text
         font.family: Style.font.family
         font.pixelSize: text.length > 0 ? Math.max(1, Math.floor(root.passwordDotFontSize * root.passwordDotScale)) : root.fieldFontSize
         font.letterSpacing: text.length > 0 ? root.passwordDotLetterSpacing * root.passwordDotScale : 0
         cursorVisible: activeFocus && root.showPasswordCursor && text.length > 0
         cursorDelegate: Rectangle {
           width: 2
-          color: Color.lock.text
+          color: Colors.lock.text
           visible: passwordInput.cursorVisible
         }
 
@@ -251,7 +251,7 @@ Item {
         anchors.fill: passwordInput
         text: root.authenticatingPassword ? "Checking…" : (root.failureMessage.length > 0 ? root.failureMessage : root.placeholderText)
         visible: passwordInput.text.length === 0
-        color: root.authenticatingPassword ? Color.lock.text : (root.failureMessage.length > 0 ? Color.lock.textError : Color.lock.placeholder)
+        color: root.authenticatingPassword ? Colors.lock.text : (root.failureMessage.length > 0 ? Colors.lock.textError : Colors.lock.placeholder)
         font.family: Style.font.family
         font.pixelSize: root.fieldFontSize
         font.italic: !root.authenticatingPassword && root.failureMessage.length > 0
@@ -271,7 +271,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         visible: root.fingerprintConfigured
         text: "󰈷"
-        color: Color.lock.placeholder
+        color: Colors.lock.placeholder
         font.family: Style.font.family
         font.pixelSize: Math.round(root.fieldFontSize * 1.1)
         horizontalAlignment: Text.AlignHCenter

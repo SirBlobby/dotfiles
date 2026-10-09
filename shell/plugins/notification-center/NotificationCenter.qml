@@ -124,7 +124,7 @@ Item {
       anchors.rightMargin: Style.spaceReal(10)
       implicitWidth: Style.spaceReal(440)
       implicitHeight: Style.spaceReal(420)
-      fillColor: Util.alpha(Color.background, Style.panelFillAlpha)
+      fillColor: Util.alpha(Colors.background, Style.panelFillAlpha)
       spacing: Style.spaceReal(10)
 
       Item {
@@ -137,7 +137,7 @@ Item {
           anchors.verticalCenter: parent.verticalCenter
           text: "Notifications"
           textFormat: Text.PlainText
-          color: Color.foreground
+          color: Colors.foreground
           font.family: Style.font.family
           font.pixelSize: Style.font.body
           font.bold: true
@@ -189,7 +189,7 @@ Item {
           anchors.horizontalCenter: parent.horizontalCenter
           text: "\uf0a2"
           textFormat: Text.PlainText
-          color: Util.alpha(Color.blue, 0.6)
+          color: Util.alpha(Colors.blue, 0.6)
           font.family: Style.font.family
           font.pixelSize: Style.font.heading
         }
@@ -198,7 +198,7 @@ Item {
           anchors.horizontalCenter: parent.horizontalCenter
           text: "No notifications"
           textFormat: Text.PlainText
-          color: Util.alpha(Color.foreground, 0.6)
+          color: Util.alpha(Colors.foreground, 0.6)
           font.family: Style.font.family
           font.pixelSize: Style.font.bodySmall
         }

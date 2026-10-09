@@ -41,7 +41,7 @@ Item {
     width: Style.spaceReal(22)
     text: root.icon
     textFormat: Text.PlainText
-    color: Color.magenta
+    color: Colors.magenta
     font.family: Style.font.family
     font.pixelSize: Style.font.body
   }
@@ -53,7 +53,7 @@ Item {
     anchors.verticalCenter: parent.verticalCenter
     text: root.label
     textFormat: Text.PlainText
-    color: Color.foreground
+    color: Colors.foreground
     font.family: Style.font.family
     font.pixelSize: Style.font.bodySmall
   }
@@ -75,7 +75,7 @@ Item {
       horizontalAlignment: Text.AlignHCenter
       text: root.formatSeconds(root.seconds)
       textFormat: Text.PlainText
-      color: Color.foreground
+      color: Colors.foreground
       font.family: Style.font.family
       font.pixelSize: Style.font.bodySmall
     }
