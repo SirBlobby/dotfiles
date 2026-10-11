@@ -93,7 +93,7 @@ It runs these steps, in this order, and every one of them is idempotent:
 | 4. Config | copies `hypr/`, the themed app configs, `blob/shell.json`, and the uwsm environment into `~/.config`, sets the default apps for images, video, PDFs, office files, text and archives, and writes `/etc/profile.d/blob.sh` so a login shell finds the `blob` command |
 | 5. First theme | links `~/wallpapers` to the checkout, applies `flats` headless, picks a background, and links the btop and Neovim theme files, so the first login is not a blank desktop |
 | 6. User units | installs the session services into `~/.config/systemd/user` and enables them |
-| 7. systemd drop-ins | writes the shutdown timeouts, oomd thresholds, plocate prune paths, and sleep hooks under `/etc` |
+| 7. systemd drop-ins | writes the shutdown timeouts, oomd thresholds, plocate prune paths, and sleep hooks under `/etc`, and turns Wi-Fi power saving off in NetworkManager |
 | 8. System services | enables NetworkManager, resolved, bluetooth, cups, avahi, docker, power-profiles-daemon, and oomd, masks `NetworkManager-wait-online`, sets the boot splash to `branding/blob_boot.png`, and sets GRUB up with every other installed OS in its menu |
 | 9. Login screen | installs the session entry, the SDDM config and the Blob login theme, enables `sddm.service`, and sets the default target to `graphical.target` |
 | 10. Reload | reloads systemd, restarts the running user services, and in a running session re-renders the theme, reloads Hyprland, and restarts the Blob shell |
