@@ -66,7 +66,7 @@ Example `shell.json` (bar subtree only shown):
 | `blob.audio` | Volume icon + popup with master slider, output-device picker, per-app mixer | left = popup · right = mute · middle = popup · scroll = volume |
 | `blob.network` | Wi-Fi/Ethernet icon + popup with Wi-Fi scan, signal, connect, DNS provider selection | left = popup |
 | `blob.power` | Battery/AC icon + popup with battery stats, power profiles, and system info | left = popup · right = toggle percentage |
-| `blob.bluetooth` | Bluetooth icon + popup with device list, connect/disconnect, battery | left = popup · right = toggle radio |
+| `blob.bluetooth` | Bluetooth icon + popup with device list, MAC addresses, connect/disconnect, battery | left = popup · right = toggle radio |
 | `blob.monitor` | Brightness and laptop display controls | left = popup |
 
 The `blob.indicators` widget loads individual bar indicators from `indicators/`. Omit `items` (or set it to an empty array) to show all indicators in the default order, or set `items` to a subset such as `["Dnd", "Reminder", "NightLight"]`. Set `alwaysShow` to `true` to keep inactive indicators visible instead of revealing them only on hover. Multiple `blob.indicators` instances are allowed, so different sections can show different subsets.

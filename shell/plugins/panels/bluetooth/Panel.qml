@@ -38,6 +38,10 @@ Panel {
     return Model.deviceLabel(device)
   }
 
+  function deviceDetail(status, address) {
+    return Model.deviceDetail(status, address)
+  }
+
   function isUuidLike(value) {
     return Model.isUuidLike(value)
   }
@@ -922,6 +926,8 @@ Panel {
       return ""
     }
 
+    readonly property string detailText: root.deviceDetail(statusText, dev ? dev.address : "")
+
     readonly property color statusColor: {
       if (isConnected) return root.bar.foreground
       if (action !== "" || devState === 3 || dev.pairing === true) return root.bar.foreground
@@ -1003,8 +1009,8 @@ Panel {
         }
         Text {
           textFormat: Text.PlainText
-          visible: row.statusText !== ""
-          text: row.statusText
+          visible: row.detailText !== ""
+          text: row.detailText
           color: row.statusColor
           font.family: root.bar.fontFamily
           font.pixelSize: Style.font.caption

@@ -3,6 +3,17 @@ function deviceLabel(device) {
   return String(device.deviceName || device.name || "").trim()
 }
 
+function deviceDetail(status, address) {
+  var parts = []
+  var statusText = String(status || "").trim()
+  var addressText = String(address || "").trim().toUpperCase()
+
+  if (statusText !== "") parts.push(statusText)
+  if (addressText !== "") parts.push(addressText)
+
+  return parts.join(" · ")
+}
+
 function toArray(values) {
   if (!values) return []
   if (Array.isArray(values)) return values.slice()
@@ -157,6 +168,7 @@ function sectionDevices(lists, section) {
 if (typeof module !== "undefined") {
   module.exports = {
     deviceLabel: deviceLabel,
+    deviceDetail: deviceDetail,
     toArray: toArray,
     isUuidLike: isUuidLike,
     isAddressLike: isAddressLike,
