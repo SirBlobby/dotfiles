@@ -116,6 +116,18 @@ install_systemd_dropins() {
   fi
 }
 
+install_network_config() {
+  local changes_before=$changes
+
+  install_root_file "$repo_dir/default/networkmanager/conf.d/10-blob-wifi-powersave.conf" \
+    /etc/NetworkManager/conf.d/10-blob-wifi-powersave.conf \
+    "NetworkManager/conf.d/10-blob-wifi-powersave.conf"
+
+  [[ $check == true ]] && return 0
+  (( changes > changes_before )) || return 0
+  as_root systemctl reload NetworkManager.service &>/dev/null || true
+}
+
 install_user_units() {
   local unit
 

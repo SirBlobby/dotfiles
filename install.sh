@@ -83,6 +83,7 @@ install_shell_profile
 install_bash_integration
 install_user_units
 install_systemd_dropins
+install_network_config
 install_zen_config
 install_desktop_apps
 install_default_apps

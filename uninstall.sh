@@ -28,6 +28,7 @@ root_files=(
   /etc/systemd/system/netbird@.service.d/10-blob.conf
   /etc/systemd/system-sleep/keyboard-backlight
   /etc/systemd/system-sleep/unmount-fuse
+  /etc/NetworkManager/conf.d/10-blob-wifi-powersave.conf
 )
 
 user_units=(

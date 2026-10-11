@@ -105,6 +105,8 @@ with `--check`.
    `blob-audio-tuning` installs it only on machines with a tuning profile.
 7. **systemd drop-ins** are written under `/etc`: the shutdown timeouts, the
    oomd pressure thresholds, the plocate prune paths, and the sleep hooks.
+   `/etc/NetworkManager/conf.d/10-blob-wifi-powersave.conf` turns Wi-Fi power
+   saving off, and NetworkManager is reloaded when it changes.
 8. **System services** are enabled: NetworkManager, resolved, bluetooth, cups,
    avahi, docker, power-profiles-daemon, and oomd.
    `NetworkManager-wait-online.service` is masked so a slow DHCP lease cannot
