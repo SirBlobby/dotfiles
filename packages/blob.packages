@@ -56,6 +56,7 @@ pipewire-pulse
 wireplumber
 alsa-utils
 lsp-plugins-lv2
+noise-suppression-for-voice
 
 # Power and thermals
 power-profiles-daemon

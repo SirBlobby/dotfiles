@@ -107,7 +107,7 @@ if [[ -L $HOME/wallpapers ]]; then
   say "remove  ~/wallpapers symlink"
 fi
 
-for relative in blob/shell.json uwsm/default uwsm/env.d/10-blob; do
+for relative in blob/shell.json uwsm/default uwsm/env.d/10-blob pipewire/pipewire.conf.d/50-blob-noise-suppression.conf; do
   restore_or_remove "$config_dir/$relative" "$relative"
 done
 

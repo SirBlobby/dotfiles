@@ -53,7 +53,12 @@ with `--check`.
    resolves cannot cost you the other hundred and the config, service and login
    steps below. See [packages.md](packages.md).
 4. **Config** is copied into `~/.config`: `hypr/`, the themed app configs,
-   `blob/shell.json`, the uwsm environment, and `fontconfig/fonts.conf`. A
+   `blob/shell.json`, the uwsm environment, `fontconfig/fonts.conf`, and
+   `pipewire/pipewire.conf.d/50-blob-noise-suppression.conf`. That last file
+   adds a "Noise Suppressed Microphone" input, which runs the default
+   microphone through RNNoise from `noise-suppression-for-voice`; PipeWire
+   loads it at its next start, and apps use it when it is picked as their
+   input. A
    leftover Omarchy icon font in `~/.local/share/fonts` is removed, and the
    font cache is refreshed. The shell draws every icon as a Nerd Font glyph in
    the `monospace` family, and on a fresh Arch install
