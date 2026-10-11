@@ -5,6 +5,10 @@ esac
 
 [ -r "$HOME/.local/share/blob/session/env-bootstrap" ] && . "$HOME/.local/share/blob/session/env-bootstrap"
 
+powerprofilesctl() {
+  /usr/bin/python3 /usr/bin/powerprofilesctl "$@"
+}
+
 command -v starship >/dev/null 2>&1 && eval "$(starship init bash)"
 
 command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init bash --cmd cd)"

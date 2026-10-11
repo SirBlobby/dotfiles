@@ -202,14 +202,15 @@ with `--check`.
 ## The interactive shell
 
 `session/bashrc` is sourced from `~/.bashrc` and returns immediately in a
-non-interactive shell, so it cannot disturb `scp` or `rsync`. It does three
-things, each only when the tool is installed:
+non-interactive shell, so it cannot disturb `scp` or `rsync`. It does four
+things, the first three only when the tool is installed:
 
 | Line | Effect |
 | --- | --- |
 | `session/env-bootstrap` | `BLOB_PATH` and `$BLOB_PATH/bin` on `PATH`, so `blob` resolves |
 | `starship init bash` | the themed prompt, see [themes.md](themes.md#the-prompt) |
 | `zoxide init bash --cmd cd` | `cd` learns the directories you actually use |
+| `powerprofilesctl` function | runs it on `/usr/bin/python3`, since a mise Python ahead on `PATH` has no `gi` module |
 
 `--cmd cd` replaces `cd` rather than adding a `z` command, so
 `cd blomarchy` jumps to the last matching directory you have visited from
