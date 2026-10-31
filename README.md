@@ -37,7 +37,7 @@ and nothing to re-apply after somebody else's release.
 | `shell.json` | bar layout and idle timings |
 | `hooks/` | optional user hook templates (`.sample`), copied to `~/.config/blob/hooks` and run by `blob-hook` once renamed |
 | `branding/` | icon, ASCII art, boot splash |
-| `wallpapers/` | 107 wallpapers, previewed in [the gallery](wallpaper-gallery/index.md) |
+| `wallpapers/` | 112 wallpapers, previewed in [the gallery](wallpaper-gallery/index.md) |
 | `session/` | wayland session entry and uwsm environment |
 | `install/` | the installer steps `install.sh` runs |
 | `docs/` | everything below |

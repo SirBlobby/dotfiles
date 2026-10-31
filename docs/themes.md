@@ -117,7 +117,7 @@ calling `blob-theme-refresh`.
 
 Twenty-two came across from upstream, plus `flats` and `pitch-dark`. Their
 `backgrounds/` directories are empty on purpose: the upstream images were
-Omarchy branding, and `~/wallpapers` holds 103 of your own. A theme with no
+Omarchy branding, and `~/wallpapers` holds 112 of your own. A theme with no
 background of its own leaves the current wallpaper alone.
 
 Because of that, a machine with no wallpaper yet would get none from the theme
