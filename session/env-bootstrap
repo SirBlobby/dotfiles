@@ -14,3 +14,10 @@ case ":$PATH:" in
 *) PATH="${PATH:+$PATH:}$HOME/.local/bin" ;;
 esac
 export PATH
+
+cpu_cores=$(nproc 2>/dev/null || echo 1)
+: "${MAKEFLAGS:=-j$cpu_cores}"
+: "${CMAKE_BUILD_PARALLEL_LEVEL:=$cpu_cores}"
+: "${CARGO_BUILD_JOBS:=$cpu_cores}"
+export MAKEFLAGS CMAKE_BUILD_PARALLEL_LEVEL CARGO_BUILD_JOBS
+unset cpu_cores

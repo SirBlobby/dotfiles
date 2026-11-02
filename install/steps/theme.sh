@@ -9,7 +9,7 @@ link_wallpapers() {
   local source="$repo_dir/wallpapers"
   local current=""
 
-  [[ -L $wallpaper_dir ]] && current="$(readlink -f "$wallpaper_dir")"
+  [[ -L $wallpaper_dir ]] && current="$(readlink -f "$wallpaper_dir" || true)"
 
   if [[ $current == "$source" ]]; then
     say "ok    wallpapers"

@@ -80,6 +80,7 @@ install_bar_widgets
 remove_omarchy_font
 refresh_font_cache
 install_shell_profile
+install_makepkg_config
 install_bash_integration
 install_user_units
 install_systemd_dropins

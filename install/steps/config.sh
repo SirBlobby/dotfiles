@@ -7,7 +7,7 @@
 # having run first.
 link_blob_path() {
   local current=""
-  [[ -L $blob_path ]] && current="$(readlink -f "$blob_path")"
+  [[ -L $blob_path ]] && current="$(readlink -f "$blob_path" || true)"
 
   if [[ $current == "$repo_dir" ]]; then
     say "ok    BLOB_PATH -> $repo_dir"
@@ -123,6 +123,11 @@ refresh_font_cache() {
 
 install_shell_profile() {
   install_root_file "$repo_dir/session/profile.sh" /etc/profile.d/blob.sh "profile.d/blob.sh"
+}
+
+install_makepkg_config() {
+  install_root_file "$repo_dir/default/makepkg/blob-parallel.conf" \
+    /etc/makepkg.conf.d/blob-parallel.conf "makepkg.conf.d/blob-parallel.conf"
 }
 
 install_zen_config() {
