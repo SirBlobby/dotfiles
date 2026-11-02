@@ -317,14 +317,18 @@ function canForgetNetwork(network) {
 // must never be an argument (printf is a bash builtin, so no process spawns
 // with it either).
 var enterpriseConnectScript =
-  "u=$(uuidgen); IFS= read -r pw; server_check=();" +
+  "u=$(uuidgen); IFS= read -r pw; server_check=(); old_profiles=();" +
   " [ -n \"$5\" ] && server_check=(802-1x.system-ca-certs yes 802-1x.domain-suffix-match \"$5\");" +
+  " while IFS=: read -r id type; do" +
+  " [ \"$type\" = 802-11-wireless ] && [ \"$(nmcli -e no -g 802-11-wireless.ssid connection show uuid \"$id\")\" = \"$1\" ] && old_profiles+=(\"$id\");" +
+  " done < <(nmcli -g UUID,TYPE connection show);" +
   " nmcli connection add type wifi con-name \"$1\" ssid \"$1\" connection.uuid \"$u\"" +
   " connection.autoconnect no" +
   " wifi-sec.key-mgmt wpa-eap 802-1x.eap \"$3\" 802-1x.phase2-auth \"$4\"" +
   " 802-1x.identity \"$2\" 802-1x.auth-timeout 8 \"${server_check[@]}\" >/dev/null" +
   " && printf 'set 802-1x.password %s\\nsave\\nquit\\n' \"$pw\" | nmcli connection edit uuid \"$u\" >/dev/null" +
   " && nmcli connection up uuid \"$u\"" +
+  " && { for id in \"${old_profiles[@]}\"; do nmcli connection delete uuid \"$id\" >/dev/null 2>&1; done; true; }" +
   " && { nmcli connection modify uuid \"$u\" connection.autoconnect yes; true; }" +
   " || { nmcli connection delete uuid \"$u\" >/dev/null 2>&1; false; }"
 
@@ -361,9 +365,10 @@ function networkFailureReason(reason, needsCredentials, reasons, isEnterprise) {
 // same profile a first failed attempt leaves behind as "known"), so the user
 // needs a chance to re-enter it -- connectWithPsk overwrites the stored PSK on
 // submit.
-function shouldRepromptPassphrase(reason, needsCredentials, reasons) {
+function shouldRepromptPassphrase(reason, needsCredentials, reasons, isEnterprise) {
   var r = reasons || {}
   if (!needsCredentials) return false
+  if (isEnterprise) return reason !== r.WifiNetworkLost
   return reason === r.NoSecrets || reason === r.WifiAuthTimeout
 }
 

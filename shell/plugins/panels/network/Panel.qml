@@ -773,8 +773,8 @@ Panel {
     return Model.networkFailureReason(reason, needsCredentials, connectionFailReasons, isEnterprise)
   }
 
-  function shouldRepromptPassphrase(reason, needsCredentials) {
-    return Model.shouldRepromptPassphrase(reason, needsCredentials, connectionFailReasons)
+  function shouldRepromptPassphrase(reason, needsCredentials, isEnterprise) {
+    return Model.shouldRepromptPassphrase(reason, needsCredentials, connectionFailReasons, isEnterprise)
   }
 
   function checkActionCompletion(network) {
@@ -1672,7 +1672,7 @@ Panel {
         var panel = root
         var ssid = row.net.ssid || ""
         var ours = panel.actionKind === "connect" && panel.actionSsid === ssid
-        var reprompt = ours && panel.shouldRepromptPassphrase(reason, row.requiresCredentials)
+        var reprompt = ours && panel.shouldRepromptPassphrase(reason, row.requiresCredentials, row.isEnterprise)
         panel.failNetworkAction(panel.networkForSsid(ssid), reason)
         if (reprompt) panel.openPasswordPrompt(ssid)
       }
