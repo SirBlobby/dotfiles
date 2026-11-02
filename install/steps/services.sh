@@ -1,5 +1,6 @@
 system_services=(
   NetworkManager.service
+  NetworkManager-dispatcher.service
   systemd-resolved.service
   bluetooth.service
   cups.service
@@ -122,6 +123,9 @@ install_network_config() {
   install_root_file "$repo_dir/default/networkmanager/conf.d/10-blob-wifi-powersave.conf" \
     /etc/NetworkManager/conf.d/10-blob-wifi-powersave.conf \
     "NetworkManager/conf.d/10-blob-wifi-powersave.conf"
+  install_root_file "$repo_dir/default/networkmanager/dispatcher.d/90-blob-wifi-prefer-5ghz" \
+    /etc/NetworkManager/dispatcher.d/90-blob-wifi-prefer-5ghz \
+    "NetworkManager/dispatcher.d/90-blob-wifi-prefer-5ghz" 0755
 
   [[ $check == true ]] && return 0
   (( changes > changes_before )) || return 0

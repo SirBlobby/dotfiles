@@ -2,7 +2,7 @@
 
 set -e
 
-repo_url="${BLOB_REPO_URL:-https://git.sirblob.co/SirBlob/blomarchy.git}"
+repo_url="${BLOB_REPO_URL:-https://git.sirblob.co/SirBlob/dotfiles.git}"
 repo_branch="${BLOB_REPO_BRANCH:-main}"
 checkout_dir="${BLOB_CHECKOUT_DIR:-$HOME/dotfiles}"
 

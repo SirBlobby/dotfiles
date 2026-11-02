@@ -112,7 +112,11 @@ with `--check`.
    oomd pressure thresholds, the plocate prune paths, and the sleep hooks.
    `/etc/NetworkManager/conf.d/10-blob-wifi-powersave.conf` turns Wi-Fi power
    saving off, and NetworkManager is reloaded when it changes.
-8. **System services** are enabled: NetworkManager, resolved, bluetooth, cups,
+   `/etc/NetworkManager/dispatcher.d/90-blob-wifi-prefer-5ghz` moves a Wi-Fi
+   connection that comes up on 2.4GHz to the same network on 5GHz or 6GHz when
+   that band has a usable signal. It skips profiles that have a band or BSSID
+   pinned with `blob network band`.
+8. **System services** are enabled: NetworkManager and its dispatcher, resolved, bluetooth, cups,
    avahi, docker, power-profiles-daemon, and oomd.
    `NetworkManager-wait-online.service` is masked so a slow DHCP lease cannot
    hold up the login screen, and `plymouth-start.service` and
@@ -218,7 +222,7 @@ things, the first three only when the tool is installed:
 | `powerprofilesctl` function | runs it on `/usr/bin/python3`, since a mise Python ahead on `PATH` has no `gi` module |
 
 `--cmd cd` replaces `cd` rather than adding a `z` command, so
-`cd blomarchy` jumps to the last matching directory you have visited from
+`cd dotfiles` jumps to the last matching directory you have visited from
 anywhere, while `cd ./relative/path`, `cd -` and `cd` with no argument keep
 behaving exactly as the builtin does. `cdi` picks from the matches
 interactively through `fzf`, and `zoxide query -ls` prints the database.

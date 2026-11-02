@@ -1,0 +1,108 @@
+#!/bin/bash
+
+interface=$1
+action=$2
+connection_uuid=${CONNECTION_UUID:-}
+
+minimum_signal=40
+signal_margin=20
+retry_seconds=600
+settle_seconds=5
+state_dir=/run/blob-wifi-band
+field_separator=$'\x1f'
+
+nm_get() {
+  LC_ALL=C nmcli -g "$@" 2>/dev/null
+}
+
+frequency_band() {
+  local mhz=${1%%[!0-9]*}
+  [[ -n $mhz ]] || return 1
+
+  if ((mhz >= 2400 && mhz < 2500)); then
+    echo "2.4"
+  elif ((mhz >= 4900 && mhz < 7125)); then
+    echo "5"
+  else
+    return 1
+  fi
+}
+
+should_run() {
+  [[ $action == up && -n $interface && -n $connection_uuid ]] || return 1
+  [[ $(nm_get GENERAL.TYPE device show "$interface") == wifi ]] || return 1
+  [[ -z $(nm_get 802-11-wireless.band connection show "$connection_uuid") ]] || return 1
+  [[ -z $(nm_get 802-11-wireless.bssid connection show "$connection_uuid") ]] || return 1
+}
+
+attempted_recently() {
+  local marker="$state_dir/$connection_uuid"
+  [[ -e $marker ]] || return 1
+  (($(date +%s) - $(stat -c %Y "$marker") < retry_seconds))
+}
+
+mark_attempt() {
+  mkdir -p "$state_dir"
+  touch "$state_dir/$connection_uuid"
+}
+
+list_access_points() {
+  nm_get IN-USE,FREQ,SIGNAL,BSSID,SSID device wifi list ifname "$interface" --rescan no |
+    sed "s/\\\\:/$field_separator/g"
+}
+
+find_better_access_point() {
+  local in_use frequency signal bssid ssid
+  local current_ssid="" current_signal=0 current_band=""
+  local best_bssid="" best_signal=0
+  local access_points
+
+  access_points=$(list_access_points)
+
+  while IFS=: read -r in_use frequency signal bssid ssid; do
+    [[ $in_use == "*" ]] || continue
+    current_ssid=${ssid//$field_separator/:}
+    current_signal=$signal
+    current_band=$(frequency_band "$frequency")
+  done <<<"$access_points"
+
+  [[ $current_band == "2.4" && -n $current_ssid ]] || return 1
+
+  while IFS=: read -r in_use frequency signal bssid ssid; do
+    [[ ${ssid//$field_separator/:} == "$current_ssid" ]] || continue
+    [[ $(frequency_band "$frequency") == "5" ]] || continue
+    ((signal > best_signal)) || continue
+    best_signal=$signal
+    best_bssid=${bssid//$field_separator/:}
+  done <<<"$access_points"
+
+  [[ -n $best_bssid ]] || return 1
+  ((best_signal >= minimum_signal)) || return 1
+  ((best_signal + signal_margin >= current_signal)) || return 1
+
+  echo "$best_bssid"
+}
+
+switch_to_faster_band() {
+  local target_bssid
+
+  nmcli device wifi rescan ifname "$interface" &>/dev/null
+  sleep "$settle_seconds"
+
+  [[ $(nm_get GENERAL.CONNECTION device show "$interface") == "$(nm_get connection.id connection show "$connection_uuid")" ]] || return 0
+
+  target_bssid=$(find_better_access_point) || return 0
+
+  mark_attempt
+  nmcli connection up uuid "$connection_uuid" ifname "$interface" ap "$target_bssid" &>/dev/null
+}
+
+should_run || exit 0
+attempted_recently && exit 0
+
+if [[ -z ${BLOB_WIFI_BAND_DETACHED:-} ]]; then
+  BLOB_WIFI_BAND_DETACHED=1 setsid -f "$0" "$@" &>/dev/null
+  exit 0
+fi
+
+switch_to_faster_band
